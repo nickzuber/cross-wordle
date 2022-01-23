@@ -24,7 +24,7 @@ export const Controls: FC = () => {
 const DraggableTile: FC<DraggableTileProps> = ({ letter }) => {
   const [collected, drag, dragPreview] = useDrag(() => ({
     type: DragTypes.Tile,
-    item: { ...letter },
+    item: { letter },
   }));
 
   return (
@@ -53,4 +53,5 @@ const Tile = styled.div`
   align-items: center;
   justify-content: center;
   background: #d3d6da;
+  user-select: none;
 `;

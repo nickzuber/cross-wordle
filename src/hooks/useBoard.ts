@@ -15,7 +15,10 @@ export const useBoard = (): BoardOptions => {
       setBoard((board) => {
         const [row, col] = position;
         const newTiles = board.tiles.slice();
+
+        // Set new tile.
         newTiles[row][col].letter = letter;
+
         return { tiles: newTiles };
       });
     },
