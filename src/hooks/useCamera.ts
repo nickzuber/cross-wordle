@@ -20,7 +20,7 @@ export const useCamera = (): CameraOptions => {
     setCamera({
       x: -(Bounds.maxX - width) / 2,
       y: -(Bounds.maxY - height) / 2,
-      z: 1,
+      z: 1.1,
     });
   }, [height, width]);
 

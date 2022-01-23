@@ -1,6 +1,6 @@
 export const Config = {
   MaxLetters: 15,
-  TileCount: 12,
+  TileCount: 10,
   TileSize: 60,
   TileSpacing: 10,
 };

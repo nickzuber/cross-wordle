@@ -6,8 +6,8 @@ export const Bounds = {
   minY: 0,
   maxX: Config.TileCount * Config.TileSize + Config.TileSpacing * 2,
   maxY: Config.TileCount * Config.TileSize + Config.TileSpacing * 2,
-  minZ: 1,
-  maxZ: 1.1,
+  minZ: 0.5,
+  maxZ: 2,
 };
 
 export function getBox(): Box {

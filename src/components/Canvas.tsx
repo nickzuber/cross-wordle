@@ -57,4 +57,5 @@ const Board = styled.div`
   background: #ffffff;
   width: 1200px;
   height: 1200px;
+  transform-origin: top left;
 `;
