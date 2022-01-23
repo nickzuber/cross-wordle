@@ -65,7 +65,7 @@ export const BoardTile: FC<BoardTileProps> = ({ row, col, letter }) => {
 };
 
 const PlacedTile: FC<PlacedTileProps> = ({ letter, row, col, hovered }) => {
-  const [{ draggedItem }, drag, dragPreview] = useDrag(() => ({
+  const [{ draggedItem }, drag] = useDrag(() => ({
     type: DragTypes.BoardTile,
     item: { letter, position: [row, col] },
     collect: (monitor) => ({
@@ -133,18 +133,18 @@ const FilledTile = styled(Tile)<Dragable>`
   opacity: ${(p) => (p.dragged ? 0.5 : 1)};
 `;
 
-const SuccessTile = styled(Tile)<Dragable>`
-  background: #6aaa64;
-  border-color: #6aaa64;
-  color: #ffffff;
-  opacity: ${(p) => (p.dragged ? 0.5 : 1)};
-`;
+// const SuccessTile = styled(Tile)<Dragable>`
+//   background: #6aaa64;
+//   border-color: #6aaa64;
+//   color: #ffffff;
+//   opacity: ${(p) => (p.dragged ? 0.5 : 1)};
+// `;
 
-const Tag = styled.div`
-  position: absolute;
-  top: 6px;
-  left: 7px;
-  font-size: 8px;
-  font-weight: 500;
-  opacity: 0.2;
-`;
+// const Tag = styled.div`
+//   position: absolute;
+//   top: 6px;
+//   left: 7px;
+//   font-size: 8px;
+//   font-weight: 500;
+//   opacity: 0.2;
+// `;
