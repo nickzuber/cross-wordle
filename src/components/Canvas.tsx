@@ -39,7 +39,6 @@ const Container = styled.div`
   position: relative;
   max-width: 600px;
   width: 100%;
-  min-height: 200px;
   max-height: 500px;
   flex: 10;
   margin: 0 auto;
