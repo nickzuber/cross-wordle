@@ -5,6 +5,7 @@ import { Board, Config, Letter, Tile } from "../utils/game";
 type BoardOptions = {
   board: Board;
   setLetterOnBoard: (position: [number, number], letter: Letter | null) => void;
+  resetBoard: () => void;
 };
 
 export const useBoard = (): BoardOptions => {
@@ -25,9 +26,18 @@ export const useBoard = (): BoardOptions => {
     [],
   );
 
+  const resetBoard = useCallback(() => {
+    setBoard((board) => ({
+      tiles: board.tiles.map((row) =>
+        row.map((tile) => ({ ...tile, letter: null })),
+      ),
+    }));
+  }, []);
+
   return {
     board,
     setLetterOnBoard,
+    resetBoard,
   };
 };
 

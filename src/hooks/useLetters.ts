@@ -1,12 +1,13 @@
 import React, { useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { Config, getRandomLetters, Letter } from "../utils/game";
+import { Config, getRandomLetters, Letter, shuffle } from "../utils/game";
 
 type LettersOptions = {
   letters: Letter[];
   addLetter: (letter: Letter) => void;
   removeLetter: (id: string) => void;
   setLetters: (fn: (letters: Letter[]) => Letter[]) => void;
+  shuffleLetters: () => void;
 };
 
 export const useLetters = (): LettersOptions => {
@@ -27,11 +28,16 @@ export const useLetters = (): LettersOptions => {
     [],
   );
 
+  const shuffleLetters = useCallback(() => {
+    setLetters((letters) => shuffle(letters));
+  }, []);
+
   return {
     letters,
     addLetter,
     removeLetter,
     setLetters: publicSetLetters,
+    shuffleLetters,
   };
 };
 

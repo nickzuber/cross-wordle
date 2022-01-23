@@ -183,6 +183,10 @@ function getRandom<T>(arr: T[], n: number) {
   return result;
 }
 
+export function shuffle<T>(arr: T[]) {
+  return getRandom(arr, arr.length);
+}
+
 export function getRandomLetters(n: number) {
   return getRandom(Letters, n);
 }

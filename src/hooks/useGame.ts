@@ -9,12 +9,15 @@ export type GameOptions = {
   unusedLetters: Letter[];
   boardLetterIds: Set<string>;
   setLetterOnBoard: (position: [number, number], letter: Letter | null) => void;
+  shuffleLetters: () => void;
+  requestFinish: () => void;
+  clearBoard: () => void;
   shareBoard: () => void;
 };
 
 export const useGame = (): GameOptions => {
-  const { letters } = useLetters();
-  const { board, setLetterOnBoard } = useBoard();
+  const { letters, shuffleLetters } = useLetters();
+  const { board, setLetterOnBoard, resetBoard } = useBoard();
 
   const shareBoard = useCallback(() => {
     const boardString = board.tiles
@@ -29,6 +32,10 @@ export const useGame = (): GameOptions => {
 
     console.info(boardString);
   }, [board]);
+
+  const requestFinish = useCallback(() => {
+    shareBoard();
+  }, [shareBoard]);
 
   const boardLetterIds = React.useMemo(
     () =>
@@ -52,6 +59,9 @@ export const useGame = (): GameOptions => {
     unusedLetters,
     boardLetterIds,
     setLetterOnBoard,
+    shuffleLetters,
     shareBoard,
+    requestFinish,
+    clearBoard: resetBoard,
   };
 };

@@ -11,7 +11,14 @@ type DraggableTileProps = {
 };
 
 export const Controls: FC = () => {
-  const { letters, boardLetterIds, setLetterOnBoard } = useContext(GameContext);
+  const {
+    letters,
+    boardLetterIds,
+    setLetterOnBoard,
+    shuffleLetters,
+    requestFinish,
+    clearBoard,
+  } = useContext(GameContext);
 
   const [{ isOver, item, isDraggingBoardTile }, drop] = useDrop(() => ({
     accept: [DragTypes.BoardTile],
@@ -29,8 +36,16 @@ export const Controls: FC = () => {
 
   return (
     <Container ref={drop}>
+      <ButtonsContainer>
+        <button onClick={shuffleLetters}>Shuffle</button>
+        <button onClick={clearBoard}>Clear board</button>
+        <button onClick={requestFinish}>Finish</button>
+      </ButtonsContainer>
+
       {isDraggingBoardTile ? (
-        <DropZone hovered={isOver}>{"Put letter back"}</DropZone>
+        <DropZone hovered={isOver}>
+          <span>{"Put letter back"}</span>
+        </DropZone>
       ) : null}
       {letters.map((letter) =>
         boardLetterIds.has(letter.id) ? (
@@ -74,8 +89,19 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  flex: 3;
-  min-height: 175px;
+  flex: 0 0 200px;
+  margin: 0 0 4px;
+  box-shadow: rgb(99 99 99 / 20%) 0px -2px 8px 0px;
+`;
+
+const ButtonsContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  background: #fff;
+  width: 100%;
+  min-height: 50px;
 `;
 
 const DropZone = styled.div<Hoverable>`
@@ -90,8 +116,13 @@ const DropZone = styled.div<Hoverable>`
   left: 0;
   right: 0;
   bottom: 0;
-  opacity: 0.8;
-  background: ${(p) => (p.hovered ? "#eee" : "#fff")};
+  background: ${(p) => (p.hovered ? "#eeeeeeaa" : "#ffffffaa")};
+
+  span {
+    background: #ffffff;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
 `;
 
 const Tile = styled.div<Draggable>`
@@ -99,7 +130,7 @@ const Tile = styled.div<Draggable>`
   width: 50px;
   font-weight: 700;
   font-size: 20px;
-  margin: 4px;
+  margin: 2px;
   display: flex;
   align-items: center;
   justify-content: center;

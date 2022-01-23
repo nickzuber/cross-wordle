@@ -11,15 +11,17 @@ export const Header: FC = () => {
 
 const Container = styled.div`
   position: relative;
-  border-bottom: 1px solid #d3d6da;
+  // border-bottom: 1px solid #d3d6da;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 1;
+  flex: 0 0 60px;
+  box-shadow: rgb(99 99 99 / 20%) 0px 2px 8px 0px;
+  z-index: 2;
 `;
 
 const Title = styled.h1`
-  margin: 12px 0 4px;
+  margin: 0;
   font-weight: 700;
   font-size: 28px;
   letter-spacing: 0.05rem;

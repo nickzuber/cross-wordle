@@ -42,7 +42,7 @@ const Container = styled.div`
   min-height: 200px;
   max-height: 500px;
   flex: 10;
-  margin: 12px auto;
+  margin: 0 auto;
   overflow: hidden;
 `;
 
