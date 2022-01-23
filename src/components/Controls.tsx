@@ -74,7 +74,7 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  flex: 2;
+  flex: 3;
   min-height: 175px;
 `;
 

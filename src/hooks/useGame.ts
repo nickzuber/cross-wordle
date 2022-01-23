@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
-import { v4 as uuidv4 } from "uuid";
-import { Board, Config, Letter } from "../utils/game";
+import { Board, Letter } from "../utils/game";
 import { useBoard } from "./useBoard";
 import { useLetters } from "./useLetters";
 
@@ -10,11 +9,26 @@ export type GameOptions = {
   unusedLetters: Letter[];
   boardLetterIds: Set<string>;
   setLetterOnBoard: (position: [number, number], letter: Letter | null) => void;
+  shareBoard: () => void;
 };
 
 export const useGame = (): GameOptions => {
-  const { letters, addLetter, removeLetter } = useLetters();
+  const { letters } = useLetters();
   const { board, setLetterOnBoard } = useBoard();
+
+  const shareBoard = useCallback(() => {
+    const boardString = board.tiles
+      .map((row) => {
+        return row
+          .map((tile) => {
+            return tile.letter ? "🟩" : "⬜";
+          })
+          .join("");
+      })
+      .join("\n");
+
+    console.info(boardString);
+  }, [board]);
 
   const boardLetterIds = React.useMemo(
     () =>
@@ -38,5 +52,6 @@ export const useGame = (): GameOptions => {
     unusedLetters,
     boardLetterIds,
     setLetterOnBoard,
+    shareBoard,
   };
 };

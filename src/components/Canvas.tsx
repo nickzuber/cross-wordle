@@ -40,7 +40,8 @@ const Container = styled.div`
   max-width: 600px;
   width: 100%;
   min-height: 200px;
-  flex: 8;
+  max-height: 500px;
+  flex: 10;
   margin: 12px auto;
   overflow: hidden;
 `;
