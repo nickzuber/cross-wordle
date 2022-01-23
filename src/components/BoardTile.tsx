@@ -62,7 +62,7 @@ export const BoardTile: FC<BoardTileProps> = ({
         <PlacedTile letter={letter} row={row} col={col} hovered={isOver} />
       ) : (
         <Tile hovered={isOver}>
-          <Tag>{row * 10 + col + 1}</Tag>
+          {/* <Tag>{row * 10 + col + 1}</Tag> */}
           {isOver ? item?.letter.letter : null}
         </Tile>
       )}
@@ -71,14 +71,21 @@ export const BoardTile: FC<BoardTileProps> = ({
 };
 
 const PlacedTile: FC<PlacedTileProps> = ({ letter, row, col, hovered }) => {
-  const [collected, drag, dragPreview] = useDrag(() => ({
+  const [{ draggedItem }, drag, dragPreview] = useDrag(() => ({
     type: DragTypes.BoardTile,
     item: { letter, position: [row, col] },
+    collect: (monitor) => ({
+      draggedItem: monitor.getItem() as
+        | DragTileItem
+        | DragBoardTileItem
+        | undefined,
+    }),
   }));
 
+  const isBeingDragged = draggedItem?.letter.id === letter.id;
+
   return (
-    <FilledTile ref={drag} {...collected} hovered={hovered}>
-      <Tag>{row * 10 + col + 1}</Tag>
+    <FilledTile ref={drag} hovered={hovered} dragged={isBeingDragged}>
       {letter.letter}
     </FilledTile>
   );
@@ -93,22 +100,27 @@ type Hoverable = {
   hovered: boolean;
 };
 
+type Dragable = {
+  dragged: boolean;
+};
+
 const TileWrapper = styled.div<TileProps>`
   position: absolute;
   top: ${(p) => p.row * Config.TileSize + Config.TileSpacing}px;
   left: ${(p) => p.col * Config.TileSize + Config.TileSpacing}px;
-  height: 60px;
-  width: 60px;
+  height: ${Config.TileSize}px;
+  width: ${Config.TileSize}px;
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
 const Tile = styled.div<Hoverable>`
-  border: 2px solid ${(p) => (p.hovered ? "#d3d6da" : "#d3d6da")};
-  background: ${(p) => (p.hovered ? "#d3d6da88" : "transparent")};
-  height: 50px;
-  width: 50px;
+  border: 2px solid ${(p) => (p.hovered ? "#787c7e" : "#d3d6da")};
+  background: ${(p) => (p.hovered ? "transparent" : "transparent")};
+  height: ${Config.TileSize - Config.TileSpacing}px;
+  width: ${Config.TileSize - Config.TileSpacing}px;
+  opacity: ${(p) => (p.hovered ? 0.5 : 1)};
   font-weight: 700;
   font-size: 20px;
   display: flex;
@@ -121,17 +133,24 @@ const Tile = styled.div<Hoverable>`
 // Yellow  #c9b458
 // Grey    #787c7e
 
-const FilledTile = styled(Tile)`
-  background: #c9b458;
-  border-color: #c9b458;
+const FilledTile = styled(Tile)<Dragable>`
+  background: #ffffff;
+  border-color: #787c7e;
+  opacity: ${(p) => (p.dragged ? 0.5 : 1)};
+`;
+
+const SuccessTile = styled(Tile)<Dragable>`
+  background: #6aaa64;
+  border-color: #6aaa64;
   color: #ffffff;
+  opacity: ${(p) => (p.dragged ? 0.5 : 1)};
 `;
 
 const Tag = styled.div`
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 6px;
+  left: 7px;
   font-size: 8px;
   font-weight: 500;
-  opacity: 0.1;
+  opacity: 0.2;
 `;

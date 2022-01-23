@@ -1,16 +1,16 @@
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
 import styled from "@emotion/styled";
 import { useTrackpadPanning } from "../hooks/useTrackpadPanning";
 import { useCamera } from "../hooks/useCamera";
-import { useBoard } from "../hooks/useBoard";
 import { BoardTile } from "./BoardTile";
+import { GameContext } from "../contexts/game";
 
 type CanvasProps = {};
 
 export const Canvas: FC<CanvasProps> = () => {
   const canvasRef = React.useRef<HTMLDivElement>(null);
   const { camera, panCamera } = useCamera();
-  const { board, setLetter } = useBoard();
+  const { board, setLetter } = useContext(GameContext);
 
   useTrackpadPanning(canvasRef, panCamera);
 

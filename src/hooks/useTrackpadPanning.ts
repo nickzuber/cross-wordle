@@ -8,6 +8,10 @@ export const useTrackpadPanning = (
   panCamera: (dx: number, dy: number) => void,
 ) => {
   React.useEffect(() => {
+    function killGlobalWheel(event: WheelEvent) {
+      event.preventDefault();
+    }
+
     function handleWheel(event: WheelEvent) {
       event.preventDefault();
 
@@ -19,10 +23,14 @@ export const useTrackpadPanning = (
     if (!canvasElement) return;
 
     const handleWheelPerf = withRequestAnimationFrame(handleWheel);
+    document.addEventListener("wheel", killGlobalWheel, {
+      passive: false,
+    });
     canvasElement.addEventListener("wheel", handleWheelPerf, {
       passive: false,
     });
     return () => {
+      document.removeEventListener("wheel", killGlobalWheel);
       canvasElement.removeEventListener("wheel", handleWheelPerf);
     };
   }, [canvasRef, panCamera]);

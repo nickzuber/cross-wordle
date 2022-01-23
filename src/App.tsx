@@ -1,20 +1,22 @@
 import styled from "@emotion/styled";
 import "./App.css";
 import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import { Canvas } from "./components";
 import { Controls } from "./components/Controls";
 import { Header } from "./components/Header";
+import { GameProvider } from "./contexts/game";
 
 function App() {
   return (
     <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
-      <Container>
-        <Header />
-        <Canvas />
-        <Controls />
-      </Container>
+      <GameProvider>
+        <Container>
+          <Header />
+          <Canvas />
+          <Controls />
+        </Container>
+      </GameProvider>
     </DndProvider>
   );
 }

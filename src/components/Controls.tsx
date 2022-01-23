@@ -1,16 +1,16 @@
-import { FC } from "react";
+import { FC, useContext } from "react";
 import styled from "@emotion/styled";
-import { useLetters } from "../hooks/useLetters";
 import { useDrag } from "react-dnd";
 import { DragTypes } from "../constants.ts/game";
 import { Letter } from "../utils/game";
+import { GameContext } from "../contexts/game";
 
 type DraggableTileProps = {
   letter: Letter;
 };
 
 export const Controls: FC = () => {
-  const { letters } = useLetters();
+  const { letters } = useContext(GameContext);
 
   return (
     <Container>
