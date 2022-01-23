@@ -9,10 +9,10 @@ type CanvasProps = {};
 
 export const Canvas: FC<CanvasProps> = () => {
   const canvasRef = React.useRef<HTMLDivElement>(null);
-  const { camera, panCamera } = useCamera();
+  const { camera, zoomCamera, panCamera } = useCamera();
   const { board } = useContext(GameContext);
 
-  useTrackpadPanning(canvasRef, panCamera);
+  useTrackpadPanning(canvasRef, zoomCamera, panCamera);
 
   const transform = `scale(${camera.z}) translate(${camera.x}px, ${camera.y}px)`;
   return (

@@ -5,6 +5,7 @@ import { Point } from "../types/canvas";
 
 export const useTrackpadPanning = (
   canvasRef: React.RefObject<HTMLDivElement>,
+  zoomCamera: (center: Point, dz: number) => void,
   panCamera: (dx: number, dy: number) => void,
 ) => {
   React.useEffect(() => {
@@ -15,8 +16,16 @@ export const useTrackpadPanning = (
     function handleWheel(event: WheelEvent) {
       event.preventDefault();
 
-      const { deltaX, deltaY } = event;
-      panCamera(deltaX, deltaY);
+      if (event.ctrlKey) {
+        const { clientX, clientY, deltaY } = event;
+        const { left, top } = getBox();
+        const center = { x: clientX - left, y: clientY - top };
+        const dz = deltaY / 100;
+        zoomCamera(center, dz);
+      } else {
+        const { deltaX, deltaY } = event;
+        panCamera(deltaX, deltaY);
+      }
     }
 
     const canvasElement = canvasRef.current;
@@ -33,7 +42,7 @@ export const useTrackpadPanning = (
       document.removeEventListener("wheel", killGlobalWheel);
       canvasElement.removeEventListener("wheel", handleWheelPerf);
     };
-  }, [canvasRef, panCamera]);
+  }, [canvasRef, zoomCamera, panCamera]);
 
   return null;
 };

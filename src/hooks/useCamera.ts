@@ -1,10 +1,11 @@
 import React from "react";
-import { Camera } from "../types/canvas";
-import { panCameraBy, updateCamera } from "../utils/camera";
+import { Camera, Point } from "../types/canvas";
+import { panCameraBy, updateCamera, zoomCameraTo } from "../utils/camera";
 import { Bounds, getBox } from "../utils/canvas";
 
 type CameraOptions = {
   camera: Camera;
+  zoomCamera: (center: Point, dz: number) => void;
   panCamera: (dx: number, dy: number) => void;
 };
 
@@ -33,8 +34,20 @@ export const useCamera = (): CameraOptions => {
     [setCamera],
   );
 
+  const zoomCamera = React.useCallback(
+    (center: Point, dz: number) => {
+      setCamera((camera) => {
+        return updateCamera(camera, (camera) =>
+          zoomCameraTo(camera, center, dz),
+        );
+      });
+    },
+    [setCamera],
+  );
+
   return {
     camera,
+    zoomCamera,
     panCamera,
   };
 };
