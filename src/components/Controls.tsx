@@ -63,7 +63,7 @@ export const Controls: FC = () => {
 };
 
 const DraggableTile: FC<DraggableTileProps> = ({ letter, dragging }) => {
-  const [collected, drag, dragPreview] = useDrag(() => ({
+  const [collected, drag] = useDrag(() => ({
     type: DragTypes.Tile,
     item: { letter },
   }));
