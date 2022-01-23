@@ -4,6 +4,11 @@ export const Config = {
   TileSpacing: 10,
 };
 
+export type Letter = {
+  id: string;
+  letter: string;
+};
+
 // https://en.wikipedia.org/wiki/Bananagrams#cite_note-7
 const Letters = [
   "J",
@@ -151,6 +156,7 @@ const Letters = [
   "E",
 ];
 
+// @TODO use a seeded randomizer so we can get one combo per day.
 function getRandom<T>(arr: T[], n: number) {
   var result = new Array(n),
     len = arr.length,

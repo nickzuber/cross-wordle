@@ -3,6 +3,8 @@ import styled from "@emotion/styled";
 import { useTrackpadPanning } from "../hooks/useTrackpadPanning";
 import { useCamera } from "../hooks/useCamera";
 import { Config } from "../utils/game";
+import { useDrop } from "react-dnd";
+import { DragTypes } from "../constants.ts/game";
 
 type CanvasProps = {};
 
@@ -21,7 +23,9 @@ export const Canvas: FC<CanvasProps> = () => {
       <Wrapper ref={canvasRef}>
         <Board style={{ transform }}>
           {board.map((row, r) => {
-            return row.map((tile, c) => <Tile row={r} col={c} />);
+            return row.map((tile, c) => (
+              <BoardTile key={`${r},${c}`} row={r} col={c} />
+            ));
           })}
         </Board>
       </Wrapper>
@@ -29,18 +33,55 @@ export const Canvas: FC<CanvasProps> = () => {
   );
 };
 
-type Positioned = {
+interface DragItem {
+  type: string;
+  id: string;
+  top: number;
+  left: number;
+}
+
+type BoardTileProps = {
   row: number;
   col: number;
 };
 
-const Tile = styled.div<Positioned>`
+const BoardTile: FC<BoardTileProps> = ({ row, col }) => {
+  const [hovered, setHovered] = React.useState(false);
+  const [collectedProps, drop] = useDrop(() => ({
+    accept: DragTypes.Tile,
+    drop(item: DragItem, monitor) {
+      console.info(item, monitor);
+    },
+    collect: (monitor) => ({
+      isOver: !!monitor.isOver(),
+      canDrop: !!monitor.canDrop(),
+    }),
+    // hover(item, monitor) {
+    //   // console.info("hover", [row, col], monitor.isOver());
+    //   if (monitor.isOver() === true) console.info("on", [row, col]);
+    //   if (monitor.isOver() === false) console.info("off", [row, col]);
+    //   setHovered(monitor.isOver());
+    // },
+  }));
+
+  return (
+    <Tile ref={drop} row={row} col={col} hovered={collectedProps.isOver} />
+  );
+};
+
+type TileProps = {
+  row: number;
+  col: number;
+  hovered: boolean;
+};
+
+const Tile = styled.div<TileProps>`
   position: absolute;
   top: ${(p) => p.row * Config.TileSize + Config.TileSpacing}px;
   left: ${(p) => p.col * Config.TileSize + Config.TileSpacing}px;
   height: 50px;
   width: 50px;
-  border: 2px solid #d3d6da;
+  border: 2px solid ${(p) => (p.hovered ? "red" : "#d3d6da")};
   background: transparent;
 `;
 
