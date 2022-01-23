@@ -10,7 +10,7 @@ type CanvasProps = {};
 export const Canvas: FC<CanvasProps> = () => {
   const canvasRef = React.useRef<HTMLDivElement>(null);
   const { camera, panCamera } = useCamera();
-  const { board, setLetter } = useContext(GameContext);
+  const { board } = useContext(GameContext);
 
   useTrackpadPanning(canvasRef, panCamera);
 
@@ -26,7 +26,6 @@ export const Canvas: FC<CanvasProps> = () => {
                 row={tile.row}
                 col={tile.col}
                 letter={tile.letter}
-                setLetter={setLetter}
               />
             ));
           })}

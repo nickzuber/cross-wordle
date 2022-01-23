@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useContext } from "react";
 import styled from "@emotion/styled";
 import { Config, Letter } from "../utils/game";
 import { useDrag, useDrop } from "react-dnd";
@@ -7,6 +7,7 @@ import {
   DragTileItem,
   DragTypes,
 } from "../constants.ts/game";
+import { GameContext } from "../contexts/game";
 
 type PlacedTileProps = {
   row: number;
@@ -19,15 +20,11 @@ type BoardTileProps = {
   row: number;
   col: number;
   letter: Letter | null;
-  setLetter: (position: [number, number], letter: Letter | null) => void;
 };
 
-export const BoardTile: FC<BoardTileProps> = ({
-  row,
-  col,
-  letter,
-  setLetter,
-}) => {
+export const BoardTile: FC<BoardTileProps> = ({ row, col, letter }) => {
+  const { setLetterOnBoard } = useContext(GameContext);
+
   const [{ item, isOver }, drop] = useDrop(() => ({
     accept: [DragTypes.Tile, DragTypes.BoardTile],
     drop(item: DragTileItem | DragBoardTileItem, monitor) {
@@ -36,17 +33,14 @@ export const BoardTile: FC<BoardTileProps> = ({
       switch (monitor.getItemType()) {
         // Set new tile.
         case DragTypes.Tile:
-          setLetter([row, col], item.letter);
+          setLetterOnBoard([row, col], item.letter);
           break;
         // If this tile came from the board, we need to remove it from it's old position.
         case DragTypes.BoardTile:
           const [prevRow, prevCol] = (item as DragBoardTileItem).position;
-          setLetter([prevRow, prevCol], null);
-          setLetter([row, col], item.letter);
+          setLetterOnBoard([prevRow, prevCol], null);
+          setLetterOnBoard([row, col], item.letter);
           break;
-      }
-
-      if (monitor.getItemType() === DragTypes.BoardTile) {
       }
     },
     collect: (monitor) => ({

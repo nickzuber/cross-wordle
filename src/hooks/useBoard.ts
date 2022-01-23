@@ -4,13 +4,13 @@ import { Board, Config, Letter, Tile } from "../utils/game";
 
 type BoardOptions = {
   board: Board;
-  setLetter: (position: [number, number], letter: Letter | null) => void;
+  setLetterOnBoard: (position: [number, number], letter: Letter | null) => void;
 };
 
 export const useBoard = (): BoardOptions => {
   const [board, setBoard] = React.useState(initalizeBoard());
 
-  const setLetter = useCallback(
+  const setLetterOnBoard = useCallback(
     (position: [number, number], letter: Letter | null) => {
       setBoard((board) => {
         const [row, col] = position;
@@ -27,7 +27,7 @@ export const useBoard = (): BoardOptions => {
 
   return {
     board,
-    setLetter,
+    setLetterOnBoard,
   };
 };
 

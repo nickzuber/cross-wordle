@@ -6,6 +6,7 @@ type LettersOptions = {
   letters: Letter[];
   addLetter: (letter: Letter) => void;
   removeLetter: (id: string) => void;
+  setLetters: (fn: (letters: Letter[]) => Letter[]) => void;
 };
 
 export const useLetters = (): LettersOptions => {
@@ -19,10 +20,18 @@ export const useLetters = (): LettersOptions => {
     setLetters((letters) => letters.filter((letter) => letter.id !== id));
   }, []);
 
+  const publicSetLetters = useCallback(
+    (fn: (letters: Letter[]) => Letter[]) => {
+      setLetters((letters) => fn(letters));
+    },
+    [],
+  );
+
   return {
     letters,
     addLetter,
     removeLetter,
+    setLetters: publicSetLetters,
   };
 };
 
