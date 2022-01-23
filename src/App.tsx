@@ -9,7 +9,7 @@ import { Header } from "./components/Header";
 
 function App() {
   return (
-    <DndProvider backend={HTML5Backend}>
+    <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
       <Container>
         <Header />
         <Canvas />
@@ -21,6 +21,7 @@ function App() {
 
 const Container = styled.div`
   max-width: 600px;
+  height: 100vh;
   width: 100%;
   margin: 0 auto;
   display: flex;

@@ -46,7 +46,6 @@ type BoardTileProps = {
 };
 
 const BoardTile: FC<BoardTileProps> = ({ row, col }) => {
-  const [hovered, setHovered] = React.useState(false);
   const [collectedProps, drop] = useDrop(() => ({
     accept: DragTypes.Tile,
     drop(item: DragItem, monitor) {
@@ -56,12 +55,6 @@ const BoardTile: FC<BoardTileProps> = ({ row, col }) => {
       isOver: !!monitor.isOver(),
       canDrop: !!monitor.canDrop(),
     }),
-    // hover(item, monitor) {
-    //   // console.info("hover", [row, col], monitor.isOver());
-    //   if (monitor.isOver() === true) console.info("on", [row, col]);
-    //   if (monitor.isOver() === false) console.info("off", [row, col]);
-    //   setHovered(monitor.isOver());
-    // },
   }));
 
   return (
@@ -90,7 +83,7 @@ const Container = styled.div`
   max-width: 600px;
   width: 100%;
   min-height: 200px;
-  height: 80vh;
+  flex: 8;
   margin: 12px auto;
   overflow: hidden;
 `;

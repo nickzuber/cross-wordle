@@ -40,11 +40,14 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
+  flex: 2;
 `;
 
 const Tile = styled.div`
-  height: 30px;
-  width: 30px;
+  height: 50px;
+  width: 50px;
+  font-weight: 700;
+  font-size: 20px;
   margin: 4px;
   display: flex;
   align-items: center;
