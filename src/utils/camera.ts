@@ -70,14 +70,14 @@ export function updateCamera(
     y = nextViewport.height - Bounds.maxY;
   }
 
-  if (nextCamera.x >= Bounds.minX && isOverflowingX) {
-    x = Bounds.minX;
-    z = camera.z;
-  }
-  if (nextCamera.y >= Bounds.minY && isOverflowingY) {
-    y = Bounds.minY;
-    z = camera.z;
-  }
+  // if (nextCamera.x >= Bounds.minX && isOverflowingX) {
+  //   x = Bounds.minX;
+  //   z = camera.z;
+  // }
+  // if (nextCamera.y >= Bounds.minY && isOverflowingY) {
+  //   y = Bounds.minY;
+  //   z = camera.z;
+  // }
 
   return {
     x,
