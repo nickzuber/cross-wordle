@@ -1,5 +1,6 @@
 export const Config = {
   MaxLetters: 15,
+  TileCount: 12,
   TileSize: 60,
   TileSpacing: 10,
 };
@@ -7,6 +8,17 @@ export const Config = {
 export type Letter = {
   id: string;
   letter: string;
+};
+
+export type Tile = {
+  id: string;
+  row: number;
+  col: number;
+  letter: Letter | null;
+};
+
+export type Board = {
+  tiles: Tile[][];
 };
 
 // https://en.wikipedia.org/wiki/Bananagrams#cite_note-7

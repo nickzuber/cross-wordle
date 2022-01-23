@@ -4,8 +4,8 @@ import { Config } from "./game";
 export const Bounds = {
   minX: 0,
   minY: 0,
-  maxX: Config.MaxLetters * Config.TileSize + Config.TileSpacing,
-  maxY: Config.MaxLetters * Config.TileSize + Config.TileSpacing,
+  maxX: Config.TileCount * Config.TileSize + Config.TileSpacing,
+  maxY: Config.TileCount * Config.TileSize + Config.TileSpacing,
   minZ: 1,
   maxZ: 1.1,
 };
