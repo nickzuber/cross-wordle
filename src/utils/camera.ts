@@ -75,7 +75,12 @@ export function updateCamera(
   }
 
   if (isOverflowingY) {
-    y = nextViewport.height - Bounds.maxY;
+    const boundedY = nextViewport.height - Bounds.maxY;
+    // // const deltaY = Math.max(Math.log2(boundedY - y) * 2, 0);
+    // const excessDeltaY = boundedY - y;
+    // const deltaY = excessDeltaY / 4;
+    // y = boundedY - deltaY;
+    y = boundedY;
   }
 
   if (nextCamera.x >= Bounds.minX && isOverflowingX) {

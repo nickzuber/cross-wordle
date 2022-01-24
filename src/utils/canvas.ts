@@ -1,11 +1,13 @@
 import { Box, Camera, Point, Viewport } from "../types/canvas";
 import { Config } from "./game";
 
+const padding = 100;
+
 export const Bounds = {
-  minX: 0,
-  minY: 0,
-  maxX: Config.TileCount * Config.TileSize + Config.TileSpacing * 2,
-  maxY: Config.TileCount * Config.TileSize + Config.TileSpacing * 2,
+  minX: 0 + padding,
+  minY: 0 + padding,
+  maxX: Config.TileCount * Config.TileSize + Config.TileSpacing * 2 + padding,
+  maxY: Config.TileCount * Config.TileSize + Config.TileSpacing * 2 + padding,
   minZ: 0.5,
   maxZ: 2,
 };
