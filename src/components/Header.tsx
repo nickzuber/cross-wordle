@@ -15,7 +15,7 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 60px;
+  flex: 0 0 50px;
   box-shadow: rgb(99 99 99 / 20%) 0px 2px 8px 0px;
   z-index: 2;
 `;
