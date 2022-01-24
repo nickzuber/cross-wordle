@@ -6,6 +6,14 @@ export type ZoomRequest = {
   dz: number;
 };
 
+export function centerCameraAt(camera: Camera, x: number, y: number): Camera {
+  return {
+    x: x,
+    y: y,
+    z: camera.z,
+  };
+}
+
 export function panCameraBy(camera: Camera, dx: number, dy: number): Camera {
   return {
     x: camera.x - dx / camera.z,

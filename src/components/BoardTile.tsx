@@ -56,7 +56,7 @@ export const BoardTile: FC<BoardTileProps> = ({ row, col, letter }) => {
         <PlacedTile letter={letter} row={row} col={col} hovered={isOver} />
       ) : (
         <Tile hovered={isOver}>
-          {/* <Tag>{row * 10 + col + 1}</Tag> */}
+          <Tag>{row * 10 + col + 1}</Tag>
           {isOver ? item?.letter.letter : null}
         </Tile>
       )}
@@ -138,18 +138,11 @@ const FilledTile = styled(Tile)<Dragable>`
   opacity: ${(p) => (p.dragged ? 0.5 : 1)};
 `;
 
-// const SuccessTile = styled(Tile)<Dragable>`
-//   background: #6aaa64;
-//   border-color: #6aaa64;
-//   color: #ffffff;
-//   opacity: ${(p) => (p.dragged ? 0.5 : 1)};
-// `;
-
-// const Tag = styled.div`
-//   position: absolute;
-//   top: 6px;
-//   left: 7px;
-//   font-size: 8px;
-//   font-weight: 500;
-//   opacity: 0.2;
-// `;
+const Tag = styled.div`
+  position: absolute;
+  top: 6px;
+  left: 7px;
+  font-size: 8px;
+  font-weight: 500;
+  opacity: 0.2;
+`;

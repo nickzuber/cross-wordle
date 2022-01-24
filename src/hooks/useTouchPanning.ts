@@ -1,13 +1,15 @@
 import React from "react";
 import withRequestAnimationFrame from "raf-schd";
 import { getBox } from "../utils/canvas";
-import { Point } from "../types/canvas";
+import { Camera, Point } from "../types/canvas";
 
 export const useTouchPanning = (
   canvasRef: React.RefObject<HTMLDivElement>,
+  camera: Camera,
   zoomCamera: (center: Point, dz: number) => void,
-  panCamera: (dx: number, dy: number) => void,
+  panCameraTo: (x: number, y: number) => void,
 ) => {
+  const cameraXYRef = React.useRef<Point | null>(null);
   const positionRef = React.useRef<Point | null>(null);
   const centerRef = React.useRef<Point | null>(null);
   const distanceRef = React.useRef<number | null>(null);
@@ -30,6 +32,7 @@ export const useTouchPanning = (
       if (event.touches.length === 1) {
         const { clientX, clientY } = event.touches[0];
         positionRef.current = { x: clientX, y: clientY };
+        cameraXYRef.current = { x: camera.x, y: camera.y };
       }
       // Do zoom.
       else if (event.touches.length === 2) {
@@ -56,14 +59,16 @@ export const useTouchPanning = (
       event.preventDefault();
 
       // Do pan.
-      if (positionRef.current) {
+      if (positionRef.current && cameraXYRef.current) {
         if (event.touches.length === 1) {
           const { clientX, clientY } = event.touches[0];
-          const deltaX = positionRef.current.x - clientX;
-          const deltaY = positionRef.current.y - clientY;
+          const deltaX = (positionRef.current.x - clientX) / camera.z;
+          const deltaY = (positionRef.current.y - clientY) / camera.z;
 
-          panCamera(deltaX, deltaY);
-          positionRef.current = { x: clientX, y: clientY };
+          const newPositionX = cameraXYRef.current.x - deltaX;
+          const newPositionY = cameraXYRef.current.y - deltaY;
+
+          panCameraTo(newPositionX, newPositionY);
         }
       }
 
@@ -120,7 +125,7 @@ export const useTouchPanning = (
       document.removeEventListener("gesturestart", killEvent);
       // document.removeEventListener("killEvent", killEvent);
     };
-  }, [canvasRef, zoomCamera, panCamera]);
+  }, [canvasRef, zoomCamera, panCameraTo, camera]);
 
   return null;
 };
