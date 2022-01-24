@@ -37,9 +37,10 @@ export const Controls: FC = () => {
   return (
     <Container ref={drop}>
       <ButtonsContainer>
-        <button onClick={shuffleLetters}>Shuffle</button>
+        <span id="debug" />
+        {/* <button onClick={shuffleLetters}>Shuffle</button>
         <button onClick={clearBoard}>Clear board</button>
-        <button onClick={requestFinish}>Finish</button>
+        <button onClick={requestFinish}>Finish</button> */}
       </ButtonsContainer>
 
       {isDraggingBoardTile ? (

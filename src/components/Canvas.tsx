@@ -4,6 +4,7 @@ import { useTrackpadPanning } from "../hooks/useTrackpadPanning";
 import { useCamera } from "../hooks/useCamera";
 import { BoardTile } from "./BoardTile";
 import { GameContext } from "../contexts/game";
+import { useTouchPanning } from "../hooks/useTouchPanning";
 
 type CanvasProps = {};
 
@@ -13,6 +14,7 @@ export const Canvas: FC<CanvasProps> = () => {
   const { board } = useContext(GameContext);
 
   useTrackpadPanning(canvasRef, zoomCamera, panCamera);
+  useTouchPanning(canvasRef, zoomCamera, panCamera);
 
   const transform = `scale(${camera.z}) translate(${camera.x}px, ${camera.y}px)`;
   return (
@@ -43,6 +45,7 @@ const Container = styled.div`
   flex: 10;
   margin: 0 auto;
   overflow: hidden;
+  touch-action: none;
 `;
 
 const Wrapper = styled.div`

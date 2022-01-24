@@ -79,7 +79,12 @@ const PlacedTile: FC<PlacedTileProps> = ({ letter, row, col, hovered }) => {
   const isBeingDragged = draggedItem?.letter.id === letter.id;
 
   return (
-    <FilledTile ref={drag} hovered={hovered} dragged={isBeingDragged}>
+    <FilledTile
+      ref={drag}
+      className="placed-tile"
+      hovered={hovered}
+      dragged={isBeingDragged}
+    >
       {letter.letter}
     </FilledTile>
   );
