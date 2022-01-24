@@ -44,8 +44,8 @@ export const useTouchPanning = (
         );
 
         // Debug
-        (document.querySelector("#debug") as HTMLElement).innerHTML =
-          "" + distanceZ;
+        // (document.querySelector("#debug") as HTMLElement).innerHTML =
+        //   "" + distanceZ;
 
         distanceRef.current = distanceZ;
         centerRef.current = center;
@@ -77,8 +77,8 @@ export const useTouchPanning = (
         const deltaZ = distanceRef.current - distanceZ;
 
         // Debug
-        (document.querySelector("#debug") as HTMLElement).innerHTML =
-          "" + deltaZ;
+        // (document.querySelector("#debug") as HTMLElement).innerHTML =
+        //   "" + deltaZ;
 
         const dz = deltaZ / 200;
         zoomCamera(centerRef.current, dz);
