@@ -35,7 +35,12 @@ export const useGame = (): GameOptions => {
   }, [board]);
 
   const requestFinish = useCallback(() => {
-    validateWordIsland(board);
+    const isBoardValidToCheck = validateWordIsland(board);
+    if (isBoardValidToCheck) {
+      alert("tiles are good");
+    } else {
+      alert("please connect all your tiles!");
+    }
   }, [board]);
 
   const boardLetterIds = React.useMemo(

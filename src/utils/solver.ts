@@ -65,7 +65,7 @@ export function validateWordIsland(board: Board) {
 
   markTilesDFS(startingTile);
 
-  console.info(visitedTiles.size, total);
+  return visitedTiles.size === total;
 }
 
 function findAnyTile(tiles: Tile[][]) {
