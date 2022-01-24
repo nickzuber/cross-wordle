@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import { Board, Letter } from "../utils/game";
+import { validateWordIsland } from "../utils/solver";
 import { useBoard } from "./useBoard";
 import { useLetters } from "./useLetters";
 
@@ -34,8 +35,8 @@ export const useGame = (): GameOptions => {
   }, [board]);
 
   const requestFinish = useCallback(() => {
-    shareBoard();
-  }, [shareBoard]);
+    validateWordIsland(board);
+  }, [board]);
 
   const boardLetterIds = React.useMemo(
     () =>
