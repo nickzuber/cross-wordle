@@ -11,12 +11,11 @@ export const Header: FC = () => {
 
 const Container = styled.div`
   position: relative;
-  // border-bottom: 1px solid #d3d6da;
+  border-bottom: 1px solid #d3d6da;
   display: flex;
   align-items: center;
   justify-content: center;
   flex: 0 0 50px;
-  box-shadow: rgb(99 99 99 / 20%) 0px 2px 8px 0px;
   z-index: 2;
 `;
 

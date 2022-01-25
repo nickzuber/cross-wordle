@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import "./App.css";
 import { DndProvider } from "react-dnd";
 import { TouchBackend } from "react-dnd-touch-backend";
-import { Canvas } from "./components";
+import { StaticCanvas } from "./components";
 import { Controls } from "./components/Controls";
 import { Header } from "./components/Header";
 import { GameProvider } from "./contexts/game";
@@ -13,7 +13,7 @@ function App() {
       <GameProvider>
         <Container>
           <Header />
-          <Canvas />
+          <StaticCanvas />
           <Controls />
         </Container>
       </GameProvider>
