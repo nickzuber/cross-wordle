@@ -22,8 +22,8 @@ const Container = styled.div`
 const Title = styled.h1`
   margin: 0;
   font-weight: 700;
-  font-size: 28px;
-  letter-spacing: 0.05rem;
+  font-size: 26px;
+  letter-spacing: 0.025rem;
   text-transform: uppercase;
   text-align: center;
 `;

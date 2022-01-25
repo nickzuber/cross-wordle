@@ -136,6 +136,7 @@ export function validateBoard(board: Board): [Board, boolean] {
         break;
       case WordDirection.TopToBottom:
         for (let r = 0; r < length; r++) {
+          if (word.row + r > length - 1) continue;
           const tile = validatedBoard.tiles[word.row + r][word.col];
           tile.state = TileState.VALID;
         }
@@ -162,6 +163,7 @@ export function validateBoard(board: Board): [Board, boolean] {
         break;
       case WordDirection.TopToBottom:
         for (let r = 0; r < length; r++) {
+          if (word.row + r > length - 1) continue;
           const tile = validatedBoard.tiles[word.row + r][word.col];
           tile.state =
             tile.state === TileState.VALID ? TileState.MIXED : tile.state;
@@ -224,9 +226,10 @@ function getWordsFromTilesLTR(tiles: Tile[][]): WordFromTile[] {
 
 function getWordsFromTilesTTB(tiles: Tile[][]): WordFromTile[] {
   const words: WordFromTile[] = [];
-  let current: WordFromTile | null = null;
 
   for (let c = 0; c < tiles[0].length; c++) {
+    let current: WordFromTile | null = null;
+
     for (let r = 0; r < tiles.length; r++) {
       const tile = tiles[r][c];
       const char = tile.letter?.letter;

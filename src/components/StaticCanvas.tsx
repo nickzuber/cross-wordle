@@ -36,8 +36,9 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 1;
   width: 100%;
-  flex: 10;
+  min-height: 360px; // 6 tiles * tile size
   margin: 12px auto;
   overflow: hidden;
   touch-action: none;

@@ -50,9 +50,7 @@ export const Controls: FC = () => {
       <LettersContainer>
         {letters.map((letter) =>
           boardLetterIds.has(letter.id) ? (
-            <DisabledLetterButton key={letter.id}>
-              {letter.letter}
-            </DisabledLetterButton>
+            <DisabledLetterButton key={letter.id} />
           ) : (
             <DraggableLetterButton
               key={letter.id}
@@ -98,7 +96,6 @@ const Container = styled.div`
   flex-wrap: wrap;
   flex: 0 0 200px;
   margin: 0;
-  box-shadow: rgb(99 99 99 / 20%) 0px -2px 8px 0px;
 `;
 
 const ButtonsContainer = styled.div`
@@ -139,7 +136,6 @@ const DropZone = styled.div<Hoverable>`
   span {
     background: #ffffff;
     padding: 4px 8px;
-    border-radius: 4px;
   }
 `;
 
@@ -163,5 +159,5 @@ const LetterButton = styled.div<Draggable>`
 `;
 
 const DisabledLetterButton = styled(LetterButton)`
-  opacity: 0;
+  opacity: 0.5;
 `;
