@@ -1,6 +1,6 @@
 import { FC, useContext } from "react";
 import styled from "@emotion/styled";
-import { Config, Letter, TileState } from "../utils/game";
+import { Letter, TileState } from "../utils/game";
 import { useDrag, useDrop } from "react-dnd";
 import { DragBoardTileItem, DragTileItem, DragTypes } from "../constants/game";
 import { GameContext } from "../contexts/game";
