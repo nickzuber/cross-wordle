@@ -18,12 +18,12 @@ export const Controls: FC = () => {
     shuffleLetters,
     requestFinish,
     clearBoard,
+    canFinish,
   } = useContext(GameContext);
 
   const [{ isOver, item, isDraggingBoardTile }, drop] = useDrop(() => ({
     accept: [DragTypes.BoardTile],
     drop(item: DragBoardTileItem, monitor) {
-      console.info(item, monitor.getItemType());
       const [prevRow, prevCol] = (item as DragBoardTileItem).position;
       setLetterOnBoard([prevRow, prevCol], null);
     },
@@ -39,7 +39,9 @@ export const Controls: FC = () => {
       <ButtonsContainer>
         <button onClick={shuffleLetters}>Shuffle</button>
         <button onClick={clearBoard}>Clear board</button>
-        <button onClick={requestFinish}>Finish</button>
+        <button disabled={!canFinish} onClick={requestFinish}>
+          Finish
+        </button>
       </ButtonsContainer>
 
       {isDraggingBoardTile ? (

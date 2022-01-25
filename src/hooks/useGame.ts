@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { Board, Letter } from "../utils/game";
 import { validateBoard, validateWordIsland } from "../utils/solver";
 import { useBoard } from "./useBoard";
@@ -14,11 +14,34 @@ export type GameOptions = {
   requestFinish: () => void;
   clearBoard: () => void;
   shareBoard: () => void;
+  canFinish: boolean;
 };
 
 export const useGame = (): GameOptions => {
   const { letters, shuffleLetters } = useLetters();
   const { board, setLetterOnBoard, resetBoard, setBoard } = useBoard();
+
+  const tilesAreConnected = React.useMemo(
+    () => validateWordIsland(board),
+    [board],
+  );
+
+  const boardLetterIds = React.useMemo(
+    () =>
+      new Set(
+        board.tiles
+          .map((row) => row.map((tile) => tile.letter))
+          .flat()
+          .filter((letter) => letter !== null)
+          .map((letter) => (letter as Letter).id),
+      ),
+    [board],
+  );
+
+  const canFinish = useMemo(
+    () => tilesAreConnected && boardLetterIds.size > 1,
+    [tilesAreConnected, boardLetterIds],
+  );
 
   const shareBoard = useCallback(() => {
     const boardString = board.tiles
@@ -35,29 +58,14 @@ export const useGame = (): GameOptions => {
   }, [board]);
 
   const requestFinish = useCallback(() => {
-    const isBoardValidToCheck = validateWordIsland(board);
-    if (isBoardValidToCheck) {
-      const [newBoard, isValidBoard] = validateBoard(board);
-      setBoard(newBoard);
-      if (isValidBoard) {
-        console.info("done!");
-      }
-    } else {
-      console.info("Invalid tiles");
-    }
-  }, [board, setBoard]);
+    if (!tilesAreConnected) return;
 
-  const boardLetterIds = React.useMemo(
-    () =>
-      new Set(
-        board.tiles
-          .map((row) => row.map((tile) => tile.letter))
-          .flat()
-          .filter((letter) => letter !== null)
-          .map((letter) => (letter as Letter).id),
-      ),
-    [board],
-  );
+    const [newBoard, isValidBoard] = validateBoard(board);
+    setBoard(newBoard);
+    if (isValidBoard) {
+      console.info("done!");
+    }
+  }, [board, tilesAreConnected, setBoard]);
 
   const unusedLetters = letters.filter(
     (letter) => !boardLetterIds.has(letter.id),
@@ -73,5 +81,6 @@ export const useGame = (): GameOptions => {
     shareBoard,
     requestFinish,
     clearBoard: resetBoard,
+    canFinish,
   };
 };

@@ -31,8 +31,6 @@ export const StaticBoardTile: FC<StaticBoardTileProps> = ({
   const [{ item, isOver }, drop] = useDrop(() => ({
     accept: [DragTypes.Tile, DragTypes.BoardTile],
     drop(item: DragTileItem | DragBoardTileItem, monitor) {
-      console.info(item, monitor.getItemType());
-
       switch (monitor.getItemType()) {
         // Set new tile.
         case DragTypes.Tile:
