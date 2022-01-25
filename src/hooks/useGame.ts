@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { Board, Letter } from "../utils/game";
-import { validateWordIsland } from "../utils/solver";
+import { validateBoard, validateWordIsland } from "../utils/solver";
 import { useBoard } from "./useBoard";
 import { useLetters } from "./useLetters";
 
@@ -18,7 +18,7 @@ export type GameOptions = {
 
 export const useGame = (): GameOptions => {
   const { letters, shuffleLetters } = useLetters();
-  const { board, setLetterOnBoard, resetBoard } = useBoard();
+  const { board, setLetterOnBoard, resetBoard, setBoard } = useBoard();
 
   const shareBoard = useCallback(() => {
     const boardString = board.tiles
@@ -37,11 +37,15 @@ export const useGame = (): GameOptions => {
   const requestFinish = useCallback(() => {
     const isBoardValidToCheck = validateWordIsland(board);
     if (isBoardValidToCheck) {
-      alert("tiles are good");
+      const [newBoard, isValidBoard] = validateBoard(board);
+      setBoard(newBoard);
+      if (isValidBoard) {
+        console.info("done!");
+      }
     } else {
-      alert("please connect all your tiles!");
+      console.info("Invalid tiles");
     }
-  }, [board]);
+  }, [board, setBoard]);
 
   const boardLetterIds = React.useMemo(
     () =>

@@ -1,12 +1,27 @@
-import { Board, Tile } from "./game";
+import { Board, Tile, TileState } from "./game";
+import { words as dictionary } from "../constants/words";
 
-// treat tiles as 2D array
-// count all letters used <- total
-// scan until we find a single tile
-// recursively DFS tile with its neighbors
-// keep track of all nodes we've seen via WeakMap
-// when DFS completes, compare total with WeakMap.size()
-// equal means valid, otherwise invalid
+enum WordDirection {
+  LeftToRight,
+  TopToBottom,
+}
+
+type WordFromTile = {
+  word: string;
+  row: number;
+  col: number;
+  direction: WordDirection;
+};
+
+// Check if all words on the board are connected like a crossword.
+// Algorithm is roughly:
+//  - treat tiles as 2D array
+//  - count all letters used <- total
+//  - scan until we find a single tile
+//  - recursively DFS tile with its neighbors
+//  - keep track of all nodes we've seen via WeakMap
+//  - when DFS completes, compare total with WeakMap.size()
+//  - equal means valid, otherwise invalid
 export function validateWordIsland(board: Board) {
   const tiles = board.tiles;
   const maxRow = tiles.length;
@@ -78,6 +93,182 @@ function findAnyTile(tiles: Tile[][]) {
   }
 
   return null;
+}
+
+export function validateBoard(board: Board): [Board, boolean] {
+  const tiles = board.tiles;
+
+  // Get all words going left to right.
+  const leftToRight = getWordsFromTilesLTR(tiles);
+
+  // Get all words going top to bottom.
+  const topToBottom = getWordsFromTilesTTB(tiles);
+
+  // Collect all the words together.
+  const foundWords = leftToRight.concat(topToBottom);
+
+  // Validate entire board (easier this way).
+  let allWordsAreValid = foundWords.every(({ word }) => dictionary.has(word));
+
+  // Initialize all tiles to be invalid.
+  const validatedBoard = {
+    tiles: tiles.map((row) =>
+      row.map((tile) =>
+        tile.letter
+          ? { ...tile, state: TileState.INVALID }
+          : { ...tile, state: TileState.IDLE },
+      ),
+    ),
+  };
+
+  // Validate the found words tiles.
+  const validFoundWords = foundWords.filter(({ word }) => dictionary.has(word));
+  for (const word of validFoundWords) {
+    const length = word.word.length;
+    const direction = word.direction;
+
+    switch (direction) {
+      case WordDirection.LeftToRight:
+        for (let c = 0; c < length; c++) {
+          const tile = validatedBoard.tiles[word.row][word.col + c];
+          tile.state = TileState.VALID;
+        }
+        break;
+      case WordDirection.TopToBottom:
+        for (let r = 0; r < length; r++) {
+          const tile = validatedBoard.tiles[word.row + r][word.col];
+          tile.state = TileState.VALID;
+        }
+        break;
+    }
+  }
+
+  // Mark any mixed tiles (partially correct).
+  // It's easier to do this after we mark the correct tiles.
+  const invalidFoundWords = foundWords.filter(
+    ({ word }) => !dictionary.has(word),
+  );
+  for (const word of invalidFoundWords) {
+    const length = word.word.length;
+    const direction = word.direction;
+
+    switch (direction) {
+      case WordDirection.LeftToRight:
+        for (let c = 0; c < length; c++) {
+          const tile = validatedBoard.tiles[word.row][word.col + c];
+          tile.state =
+            tile.state === TileState.VALID ? TileState.MIXED : tile.state;
+        }
+        break;
+      case WordDirection.TopToBottom:
+        for (let r = 0; r < length; r++) {
+          const tile = validatedBoard.tiles[word.row + r][word.col];
+          tile.state =
+            tile.state === TileState.VALID ? TileState.MIXED : tile.state;
+        }
+        break;
+    }
+  }
+
+  return [validatedBoard, allWordsAreValid];
+}
+
+function getWordsFromTilesLTR(tiles: Tile[][]): WordFromTile[] {
+  return tiles
+    .map((row): WordFromTile[] => {
+      const words: WordFromTile[] = [];
+      let current: WordFromTile | null = null;
+
+      for (const tile of row) {
+        const char = tile.letter?.letter;
+
+        // Initialize.
+        if (!current && char) {
+          current = {
+            word: char,
+            row: tile.row,
+            col: tile.col,
+            direction: WordDirection.LeftToRight,
+          };
+          continue;
+        }
+
+        // Append the new character.
+        if (current && char) {
+          current.word += char;
+          continue;
+        }
+
+        // Complete the word.
+        if (current && !char) {
+          words.push(current);
+          current = null;
+          continue;
+        }
+      }
+
+      // Flush the `current`
+      if (current) {
+        words.push(current);
+      }
+
+      return words;
+    })
+    .flat()
+    .filter((word) => word.word.length > 1)
+    .map((word) => ({
+      ...word,
+      word: word.word.toLowerCase(),
+    }));
+}
+
+function getWordsFromTilesTTB(tiles: Tile[][]): WordFromTile[] {
+  const words: WordFromTile[] = [];
+  let current: WordFromTile | null = null;
+
+  for (let c = 0; c < tiles[0].length; c++) {
+    for (let r = 0; r < tiles.length; r++) {
+      const tile = tiles[r][c];
+      const char = tile.letter?.letter;
+
+      // Initialize.
+      if (!current && char) {
+        current = {
+          word: char,
+          row: tile.row,
+          col: tile.col,
+          direction: WordDirection.TopToBottom,
+        };
+        continue;
+      }
+
+      // Append the new character.
+      if (current && char) {
+        current.word += char;
+        continue;
+      }
+
+      // Complete the word.
+      if (current && !char) {
+        words.push(current);
+        current = null;
+        continue;
+      }
+    }
+
+    // Flush the `current`
+    if (current) {
+      words.push(current);
+    }
+  }
+
+  return words
+    .flat()
+    .filter((word) => word.word.length > 1)
+    .map((word) => ({
+      ...word,
+      word: word.word.toLowerCase(),
+    }));
 }
 
 function countFilledTiles(tiles: Tile[][]) {

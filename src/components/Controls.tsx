@@ -1,7 +1,7 @@
 import { FC, useContext } from "react";
 import styled from "@emotion/styled";
 import { useDrag, useDrop } from "react-dnd";
-import { DragBoardTileItem, DragTypes } from "../constants.ts/game";
+import { DragBoardTileItem, DragTypes } from "../constants/game";
 import { Letter } from "../utils/game";
 import { GameContext } from "../contexts/game";
 

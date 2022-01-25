@@ -28,6 +28,7 @@ export const Canvas: FC<CanvasProps> = () => {
                 row={tile.row}
                 col={tile.col}
                 letter={tile.letter}
+                tileState={tile.state}
               />
             ));
           })}

@@ -1,12 +1,8 @@
 import { FC, useContext } from "react";
 import styled from "@emotion/styled";
-import { Config, Letter } from "../utils/game";
+import { Config, Letter, TileState } from "../utils/game";
 import { useDrag, useDrop } from "react-dnd";
-import {
-  DragBoardTileItem,
-  DragTileItem,
-  DragTypes,
-} from "../constants.ts/game";
+import { DragBoardTileItem, DragTileItem, DragTypes } from "../constants/game";
 import { GameContext } from "../contexts/game";
 
 type PlacedTileProps = {
@@ -14,15 +10,22 @@ type PlacedTileProps = {
   col: number;
   hovered: boolean;
   letter: Letter;
+  tileState: TileState;
 };
 
 type BoardTileProps = {
   row: number;
   col: number;
   letter: Letter | null;
+  tileState: TileState;
 };
 
-export const BoardTile: FC<BoardTileProps> = ({ row, col, letter }) => {
+export const BoardTile: FC<BoardTileProps> = ({
+  row,
+  col,
+  letter,
+  tileState,
+}) => {
   const { setLetterOnBoard } = useContext(GameContext);
 
   const [{ item, isOver }, drop] = useDrop(() => ({
@@ -53,7 +56,13 @@ export const BoardTile: FC<BoardTileProps> = ({ row, col, letter }) => {
   return (
     <TileWrapper ref={drop} row={row} col={col}>
       {letter && !isOver ? (
-        <PlacedTile letter={letter} row={row} col={col} hovered={isOver} />
+        <PlacedTile
+          letter={letter}
+          row={row}
+          col={col}
+          hovered={isOver}
+          tileState={tileState}
+        />
       ) : (
         <Tile hovered={isOver}>
           {/* <Tag>{row * 10 + col + 1}</Tag> */}
@@ -64,7 +73,13 @@ export const BoardTile: FC<BoardTileProps> = ({ row, col, letter }) => {
   );
 };
 
-const PlacedTile: FC<PlacedTileProps> = ({ letter, row, col, hovered }) => {
+const PlacedTile: FC<PlacedTileProps> = ({
+  letter,
+  row,
+  col,
+  hovered,
+  tileState,
+}) => {
   const [{ draggedItem }, drag] = useDrag(() => ({
     type: DragTypes.BoardTile,
     item: { letter, position: [row, col] },
@@ -84,6 +99,7 @@ const PlacedTile: FC<PlacedTileProps> = ({ letter, row, col, hovered }) => {
       className="placed-tile"
       hovered={hovered}
       dragged={isBeingDragged}
+      tileState={tileState}
     >
       {letter.letter}
     </FilledTile>
@@ -99,8 +115,9 @@ type Hoverable = {
   hovered: boolean;
 };
 
-type Dragable = {
+type FilledTileProps = {
   dragged: boolean;
+  tileState: TileState;
 };
 
 const TileWrapper = styled.div<TileProps>`
@@ -117,11 +134,12 @@ const TileWrapper = styled.div<TileProps>`
 const Tile = styled.div<Hoverable>`
   border: 2px solid ${(p) => (p.hovered ? "#787c7e" : "#d3d6da")};
   background: ${(p) => (p.hovered ? "transparent" : "transparent")};
+  color: #1a1a1b;
   height: ${Config.TileSize - Config.TileSpacing}px;
   width: ${Config.TileSize - Config.TileSpacing}px;
   opacity: ${(p) => (p.hovered ? 0.5 : 1)};
   font-weight: 700;
-  font-size: 20px;
+  font-size: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -132,9 +150,31 @@ const Tile = styled.div<Hoverable>`
 // Yellow  #c9b458
 // Grey    #787c7e
 
-const FilledTile = styled(Tile)<Dragable>`
-  background: #ffffff;
-  border-color: #787c7e;
+const FilledTile = styled(Tile)<FilledTileProps>`
+  background: ${(p) =>
+    p.tileState === TileState.VALID
+      ? "#6aaa64"
+      : p.tileState === TileState.INVALID
+      ? "#787c7e"
+      : p.tileState === TileState.MIXED
+      ? "#c9b458"
+      : "#ffffff"};
+  border-color: ${(p) =>
+    p.tileState === TileState.VALID
+      ? "#6aaa64"
+      : p.tileState === TileState.INVALID
+      ? "#787c7e"
+      : p.tileState === TileState.MIXED
+      ? "#c9b458"
+      : "#787c7e"};
+  color: ${(p) =>
+    p.tileState === TileState.VALID
+      ? "#ffffff"
+      : p.tileState === TileState.INVALID
+      ? "#ffffff"
+      : p.tileState === TileState.MIXED
+      ? "#ffffff"
+      : "#1a1a1b"};
   opacity: ${(p) => (p.dragged ? 0.5 : 1)};
 `;
 

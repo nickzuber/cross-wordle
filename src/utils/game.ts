@@ -7,14 +7,22 @@ export const Config = {
 
 export type Letter = {
   id: string;
-  letter: string;
+  letter: string; // TODO: refactor to `char`
 };
+
+export enum TileState {
+  IDLE = "idle",
+  VALID = "valid",
+  INVALID = "invalid",
+  MIXED = "mixed",
+}
 
 export type Tile = {
   id: string;
   row: number;
   col: number;
   letter: Letter | null;
+  state: TileState;
 };
 
 export type Board = {
