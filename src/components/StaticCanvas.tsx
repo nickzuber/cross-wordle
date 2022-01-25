@@ -1,4 +1,4 @@
-import React, { FC, useContext } from "react";
+import { FC, useContext } from "react";
 import styled from "@emotion/styled";
 import { StaticBoardTile } from "./StaticBoardTile";
 import { GameContext } from "../contexts/game";
@@ -33,10 +33,10 @@ export const StaticCanvas: FC<StaticCanvasProps> = () => {
 
 const Container = styled.div`
   position: relative;
-  min-width: 360px; // 6 tiles * tile size
-  max-width: 600px;
-  width: calc(100% - 20px);
-  max-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
   flex: 10;
   margin: 12px auto;
   overflow: hidden;
@@ -46,8 +46,8 @@ const Container = styled.div`
 const Board = styled.div`
   position: relative;
   background: #ffffff;
-  width: 100%;
-  height: 100%;
+  width: 360px; // 6 tiles * tile size
+  height: 360px;
 `;
 
 const StaticTileRow = styled.div`

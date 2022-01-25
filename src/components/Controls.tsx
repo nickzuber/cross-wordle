@@ -47,31 +47,38 @@ export const Controls: FC = () => {
           <span>{"Put letter back"}</span>
         </DropZone>
       ) : null}
-      {letters.map((letter) =>
-        boardLetterIds.has(letter.id) ? (
-          <DisabledTile key={letter.id}>{letter.letter}</DisabledTile>
-        ) : (
-          <DraggableTile
-            key={letter.id}
-            letter={letter}
-            dragging={letter.id === item?.letter.id}
-          />
-        ),
-      )}
+      <LettersContainer>
+        {letters.map((letter) =>
+          boardLetterIds.has(letter.id) ? (
+            <DisabledLetterButton key={letter.id}>
+              {letter.letter}
+            </DisabledLetterButton>
+          ) : (
+            <DraggableLetterButton
+              key={letter.id}
+              letter={letter}
+              dragging={letter.id === item?.letter.id}
+            />
+          ),
+        )}
+      </LettersContainer>
     </Container>
   );
 };
 
-const DraggableTile: FC<DraggableTileProps> = ({ letter, dragging }) => {
+const DraggableLetterButton: FC<DraggableTileProps> = ({
+  letter,
+  dragging,
+}) => {
   const [collected, drag] = useDrag(() => ({
     type: DragTypes.Tile,
     item: { letter },
   }));
 
   return (
-    <Tile ref={drag} {...collected} dragging={dragging}>
+    <LetterButton ref={drag} {...collected} dragging={dragging}>
       {letter.letter}
-    </Tile>
+    </LetterButton>
   );
 };
 
@@ -90,7 +97,7 @@ const Container = styled.div`
   justify-content: center;
   flex-wrap: wrap;
   flex: 0 0 200px;
-  margin: 0 0 4px;
+  margin: 0;
   box-shadow: rgb(99 99 99 / 20%) 0px -2px 8px 0px;
 `;
 
@@ -99,6 +106,17 @@ const ButtonsContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-evenly;
+  background: #fff;
+  width: 100%;
+  min-height: 50px;
+`;
+
+const LettersContainer = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
   background: #fff;
   width: 100%;
   min-height: 50px;
@@ -125,12 +143,17 @@ const DropZone = styled.div<Hoverable>`
   }
 `;
 
-const Tile = styled.div<Draggable>`
-  height: 50px;
-  width: 50px;
+const LetterButton = styled.div<Draggable>`
+  height: 58px;
+  width: 38px;
   font-weight: 700;
   font-size: 20px;
-  margin: 2px;
+  border: 0;
+  padding: 0;
+  margin: 0 10px 10px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -139,6 +162,6 @@ const Tile = styled.div<Draggable>`
   opacity: ${(p) => (p.dragging ? 0.5 : 1)};
 `;
 
-const DisabledTile = styled(Tile)`
+const DisabledLetterButton = styled(LetterButton)`
   opacity: 0;
 `;
