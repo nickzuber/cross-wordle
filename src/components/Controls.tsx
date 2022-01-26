@@ -1,11 +1,10 @@
-import { FC, useContext } from "react";
+import { FC, useCallback, useContext } from "react";
 import styled from "@emotion/styled";
-import { useDrag, useDrop } from "react-dnd";
 import { DragBoardTileItem, DragTypes } from "../constants/game";
 import { Letter } from "../utils/game";
 import { GameContext } from "../contexts/game";
 
-type DraggableTileProps = {
+type TileProps = {
   letter: Letter;
   dragging?: boolean;
 };
@@ -21,21 +20,15 @@ export const Controls: FC = () => {
     canFinish,
   } = useContext(GameContext);
 
-  const [{ isOver, item, isDraggingBoardTile }, drop] = useDrop(() => ({
-    accept: [DragTypes.BoardTile],
-    drop(item: DragBoardTileItem, monitor) {
-      const [prevRow, prevCol] = (item as DragBoardTileItem).position;
-      setLetterOnBoard([prevRow, prevCol], null);
+  const onLetterButtonPress = useCallback(
+    (letter: Letter) => {
+      setLetterOnBoard(letter);
     },
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
-      item: monitor.getItem(),
-      isDraggingBoardTile: monitor.getItemType() === DragTypes.BoardTile,
-    }),
-  }));
+    [setLetterOnBoard],
+  );
 
   return (
-    <Container ref={drop}>
+    <Container>
       <ButtonsContainer>
         <button onClick={shuffleLetters}>Shuffle</button>
         <button onClick={clearBoard}>Clear board</button>
@@ -44,50 +37,22 @@ export const Controls: FC = () => {
         </button>
       </ButtonsContainer>
 
-      {isDraggingBoardTile ? (
-        <DropZone hovered={isOver}>
-          <span>{"Put letter back"}</span>
-        </DropZone>
-      ) : null}
       <LettersContainer>
         {letters.map((letter) =>
           boardLetterIds.has(letter.id) ? (
             <DisabledLetterButton key={letter.id} />
           ) : (
-            <DraggableLetterButton
+            <LetterButton
+              onClick={() => onLetterButtonPress(letter)}
               key={letter.id}
-              letter={letter}
-              dragging={letter.id === item?.letter.id}
-            />
+            >
+              {letter.letter}
+            </LetterButton>
           ),
         )}
       </LettersContainer>
     </Container>
   );
-};
-
-const DraggableLetterButton: FC<DraggableTileProps> = ({
-  letter,
-  dragging,
-}) => {
-  const [collected, drag] = useDrag(() => ({
-    type: DragTypes.Tile,
-    item: { letter },
-  }));
-
-  return (
-    <LetterButton ref={drag} {...collected} dragging={dragging}>
-      {letter.letter}
-    </LetterButton>
-  );
-};
-
-type Hoverable = {
-  hovered?: boolean;
-};
-
-type Draggable = {
-  dragging?: boolean;
 };
 
 const Container = styled.div`
@@ -121,34 +86,14 @@ const LettersContainer = styled.div`
   min-height: 50px;
 `;
 
-const DropZone = styled.div<Hoverable>`
-  position: absolute;
-  z-index: 9999;
-  font-size: 24px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: ${(p) => (p.hovered ? "#eeeeeeaa" : "#ffffffaa")};
-
-  span {
-    background: #ffffff;
-    padding: 4px 8px;
-  }
-`;
-
-const LetterButton = styled.div<Draggable>`
-  height: 58px;
+const LetterButton = styled.div`
+  height: 56px;
   width: 38px;
-  font-weight: 700;
-  font-size: 20px;
+  font-weight: 600;
+  font-size: 16px;
   border: 0;
   padding: 0;
-  margin: 0 10px 10px 0;
+  margin: 0 6px 6px 0;
   border-radius: 4px;
   cursor: pointer;
   user-select: none;
@@ -157,7 +102,6 @@ const LetterButton = styled.div<Draggable>`
   justify-content: center;
   background: #d3d6da;
   user-select: none;
-  opacity: ${(p) => (p.dragging ? 0.5 : 1)};
 `;
 
 const DisabledLetterButton = styled(LetterButton)`

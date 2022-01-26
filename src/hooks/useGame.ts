@@ -9,7 +9,7 @@ export type GameOptions = {
   letters: Letter[];
   unusedLetters: Letter[];
   boardLetterIds: Set<string>;
-  setLetterOnBoard: (position: [number, number], letter: Letter | null) => void;
+  setLetterOnBoard: (letter: Letter) => void;
   shuffleLetters: () => void;
   requestFinish: () => void;
   clearBoard: () => void;

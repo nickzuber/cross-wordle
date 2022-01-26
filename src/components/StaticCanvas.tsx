@@ -1,32 +1,13 @@
-import { FC, useContext } from "react";
+import { FC } from "react";
 import styled from "@emotion/styled";
-import { StaticBoardTile } from "./StaticBoardTile";
-import { GameContext } from "../contexts/game";
+import { Board } from "./Board";
 
 type StaticCanvasProps = {};
 
 export const StaticCanvas: FC<StaticCanvasProps> = () => {
-  const { board } = useContext(GameContext);
-
   return (
     <Container id="canvas">
-      <Board>
-        {board.tiles.map((row, _xid) => {
-          return (
-            <StaticTileRow key={_xid}>
-              {row.map((tile) => (
-                <StaticBoardTile
-                  key={tile.id}
-                  row={tile.row}
-                  col={tile.col}
-                  letter={tile.letter}
-                  tileState={tile.state}
-                />
-              ))}
-            </StaticTileRow>
-          );
-        })}
-      </Board>
+      <Board />
     </Container>
   );
 };
@@ -42,19 +23,4 @@ const Container = styled.div`
   margin: 12px auto;
   overflow: hidden;
   touch-action: none;
-`;
-
-const Board = styled.div`
-  position: relative;
-  background: #ffffff;
-  width: 360px; // 6 tiles * tile size
-  height: 360px;
-`;
-
-const StaticTileRow = styled.div`
-  position: relative;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `;
