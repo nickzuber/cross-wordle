@@ -96,7 +96,7 @@ const PlacedTile: FC<PlacedTileProps> = ({
 
     let ts: ReturnType<typeof setTimeout>;
     if (tileState !== TileState.IDLE) {
-      const baseTiming = row * col * 30;
+      const baseTiming = row * 100 + col * 100;
       ts = setTimeout(() => setReveal(true), baseTiming);
       ts = setTimeout(() => setTheme(tileState), baseTiming + 250);
     }

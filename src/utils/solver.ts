@@ -136,7 +136,6 @@ export function validateBoard(board: Board): [Board, boolean] {
         }
         break;
       case WordDirection.TopToBottom:
-        console.info(word);
         for (let r = 0; r < length; r++) {
           if (word.row + r > gridBounds - 1) continue;
           const tile = validatedBoard.tiles[word.row + r][word.col];

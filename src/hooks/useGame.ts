@@ -13,7 +13,7 @@ export type GameOptions = {
   shuffleLetters: () => void;
   requestFinish: () => void;
   clearBoard: () => void;
-  shareBoard: () => void;
+  getEmojiBoard: () => void;
   canFinish: boolean;
 };
 
@@ -43,7 +43,7 @@ export const useGame = (): GameOptions => {
     [tilesAreConnected, boardLetterIds],
   );
 
-  const shareBoard = useCallback(() => {
+  const getEmojiBoard = useCallback(() => {
     const boardString = board.tiles
       .map((row) => {
         return row
@@ -54,7 +54,7 @@ export const useGame = (): GameOptions => {
       })
       .join("\n");
 
-    console.info(boardString);
+    return boardString;
   }, [board]);
 
   const requestFinish = useCallback(() => {
@@ -63,9 +63,9 @@ export const useGame = (): GameOptions => {
     const [newBoard, isValidBoard] = validateBoard(board);
     setBoard(newBoard);
     if (isValidBoard) {
-      console.info("done!");
+      setTimeout(() => alert(getEmojiBoard()), 2000);
     }
-  }, [board, tilesAreConnected, setBoard]);
+  }, [board, tilesAreConnected, setBoard, getEmojiBoard]);
 
   const unusedLetters = letters.filter(
     (letter) => !boardLetterIds.has(letter.id),
@@ -78,7 +78,7 @@ export const useGame = (): GameOptions => {
     boardLetterIds,
     setLetterOnBoard,
     shuffleLetters,
-    shareBoard,
+    getEmojiBoard,
     requestFinish,
     clearBoard: resetBoard,
     canFinish,
