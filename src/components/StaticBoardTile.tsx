@@ -1,8 +1,10 @@
-import { FC, useContext } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import styled from "@emotion/styled";
+import { css } from "@emotion/react";
 import { Letter, TileState } from "../utils/game";
 import { useDrag, useDrop } from "react-dnd";
 import { DragBoardTileItem, DragTileItem, DragTypes } from "../constants/game";
+import { Reveal, PopIn } from "../constants/animations";
 import { GameContext } from "../contexts/game";
 
 type PlacedTileProps = {
@@ -75,6 +77,9 @@ const PlacedTile: FC<PlacedTileProps> = ({
   hovered,
   tileState,
 }) => {
+  const [reveal, setReveal] = useState(false);
+  const [theme, setTheme] = useState(tileState);
+
   const [{ draggedItem }, drag] = useDrag(() => ({
     type: DragTypes.BoardTile,
     item: { letter, position: [row, col] },
@@ -86,6 +91,18 @@ const PlacedTile: FC<PlacedTileProps> = ({
     }),
   }));
 
+  useEffect(() => {
+    setReveal(false);
+
+    let ts: ReturnType<typeof setTimeout>;
+    if (tileState !== TileState.IDLE) {
+      const baseTiming = row * col * 30;
+      ts = setTimeout(() => setReveal(true), baseTiming);
+      ts = setTimeout(() => setTheme(tileState), baseTiming + 250);
+    }
+    return () => clearTimeout(ts);
+  }, [tileState, row, col]);
+
   const isBeingDragged = draggedItem?.letter.id === letter.id;
 
   return (
@@ -94,6 +111,8 @@ const PlacedTile: FC<PlacedTileProps> = ({
       className="placed-tile"
       hovered={hovered}
       dragged={isBeingDragged}
+      reveal={reveal}
+      theme={theme}
       tileState={tileState}
     >
       {letter.letter}
@@ -113,6 +132,8 @@ type Hoverable = {
 type FilledTileProps = {
   dragged: boolean;
   tileState: TileState;
+  reveal: boolean;
+  theme: TileState;
 };
 
 const TileWrapper = styled.div<TileProps>`
@@ -145,43 +166,49 @@ const Tile = styled.div<Hoverable>`
   align-items: center;
   justify-content: center;
   user-select: none;
-
-  // doesn't work
-  &:before {
-    content: "";
-    display: block;
-    padding-bottom: 100%;
-  }
 `;
 
 // Green   #6aaa64
 // Yellow  #c9b458
 // Grey    #787c7e
 
-const FilledTile = styled(Tile)<FilledTileProps>`
-  background: ${(p) =>
-    p.tileState === TileState.VALID
-      ? "#6aaa64"
-      : p.tileState === TileState.INVALID
-      ? "#787c7e"
-      : p.tileState === TileState.MIXED
-      ? "#c9b458"
-      : "#ffffff"};
-  border-color: ${(p) =>
-    p.tileState === TileState.VALID
-      ? "#6aaa64"
-      : p.tileState === TileState.INVALID
-      ? "#787c7e"
-      : p.tileState === TileState.MIXED
-      ? "#c9b458"
-      : "#787c7e"};
-  color: ${(p) =>
-    p.tileState === TileState.VALID
-      ? "#ffffff"
-      : p.tileState === TileState.INVALID
-      ? "#ffffff"
-      : p.tileState === TileState.MIXED
-      ? "#ffffff"
-      : "#1a1a1b"};
-  opacity: ${(p) => (p.dragged ? 0.5 : 1)};
-`;
+const FilledTile = styled(Tile)<FilledTileProps>(
+  ({ dragged, reveal, theme }) => {
+    let color = "#1a1a1b";
+    let borderColor = "#787c7e";
+    let background = "#ffffff";
+
+    switch (theme) {
+      case TileState.VALID:
+        color = "#ffffff";
+        borderColor = "#6aaa64";
+        background = "#6aaa64";
+        break;
+      case TileState.INVALID:
+        color = "#ffffff";
+        borderColor = "#787c7e";
+        background = "#787c7e";
+        break;
+      case TileState.MIXED:
+        color = "#ffffff";
+        borderColor = "#c9b458";
+        background = "#c9b458";
+        break;
+    }
+
+    return css`
+      color: ${color};
+      border-color: ${borderColor};
+      background: ${background};
+      opacity: ${dragged ? 0.5 : 1};
+
+      animation: ${reveal
+        ? css`
+            ${Reveal} 500ms ease-in
+          `
+        : css`
+            ${PopIn} 100ms
+          `};
+    `;
+  },
+);

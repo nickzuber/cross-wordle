@@ -11,9 +11,9 @@ export const StaticCanvas: FC<StaticCanvasProps> = () => {
   return (
     <Container id="canvas">
       <Board>
-        {board.tiles.map((row) => {
+        {board.tiles.map((row, _xid) => {
           return (
-            <StaticTileRow>
+            <StaticTileRow key={_xid}>
               {row.map((tile) => (
                 <StaticBoardTile
                   key={tile.id}
