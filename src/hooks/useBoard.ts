@@ -4,6 +4,7 @@ import {
   Board,
   Config,
   CursorDirections,
+  decrementCursor,
   incrementCursor,
   Letter,
   TileState,
@@ -14,27 +15,41 @@ type BoardOptions = {
   setLetterOnBoard: (letter: Letter) => void;
   resetBoard: () => void;
   setBoard: (board: Board) => void;
+  updateCursor: (row: number, col: number) => void;
+  flipCursorDirection: () => void;
+  backspaceBoard: () => void;
 };
 
 export const useBoard = (): BoardOptions => {
   const [board, setBoard] = React.useState(initalizeBoard());
 
-  const setLetterOnBoard = useCallback(
-    (letter: Letter) => {
-      setBoard((board) => {
-        const { row, col } = board.cursor;
-        const newCursor = incrementCursor(board);
-        const newTiles = board.tiles.slice();
+  const setLetterOnBoard = useCallback((letter: Letter) => {
+    setBoard((board) => {
+      const { row, col } = board.cursor;
+      const newCursor = incrementCursor(board);
+      const newTiles = board.tiles.slice();
 
-        // Set new tile.
-        newTiles[row][col].letter = letter;
-        newTiles[row][col].state = TileState.IDLE;
+      // Set new tile.
+      newTiles[row][col].letter = letter;
+      newTiles[row][col].state = TileState.IDLE;
 
-        return { cursor: newCursor, tiles: newTiles };
-      });
-    },
-    [board.cursor],
-  );
+      return { cursor: newCursor, tiles: newTiles };
+    });
+  }, []);
+
+  const backspaceBoard = useCallback(() => {
+    setBoard((board) => {
+      const { row, col } = board.cursor;
+      const newCursor = decrementCursor(board);
+      const newTiles = board.tiles.slice();
+
+      // Set new tile.
+      newTiles[row][col].letter = null;
+      newTiles[row][col].state = TileState.IDLE;
+
+      return { cursor: newCursor, tiles: newTiles };
+    });
+  }, []);
 
   const resetBoard = useCallback(() => {
     setBoard((board) => ({
@@ -47,11 +62,56 @@ export const useBoard = (): BoardOptions => {
 
   const publicSetBoard = useCallback((board: Board) => setBoard(board), []);
 
+  const flipCursorDirection = useCallback(() => {
+    setBoard((board) => ({
+      ...board,
+      cursor: {
+        ...board.cursor,
+        direction:
+          board.cursor.direction === CursorDirections.LeftToRight
+            ? CursorDirections.TopToBottom
+            : CursorDirections.LeftToRight,
+      },
+    }));
+  }, [setBoard]);
+
+  const updateCursor = useCallback(
+    (row: number, col: number) => {
+      setBoard((board) => {
+        if (board.cursor.row === row && board.cursor.col === col) {
+          return {
+            ...board,
+            cursor: {
+              ...board.cursor,
+              direction:
+                board.cursor.direction === CursorDirections.LeftToRight
+                  ? CursorDirections.TopToBottom
+                  : CursorDirections.LeftToRight,
+            },
+          };
+        } else {
+          return {
+            ...board,
+            cursor: {
+              ...board.cursor,
+              row,
+              col,
+            },
+          };
+        }
+      });
+    },
+    [setBoard],
+  );
+
   return {
     board,
     setLetterOnBoard,
     resetBoard,
     setBoard: publicSetBoard,
+    updateCursor,
+    flipCursorDirection,
+    backspaceBoard,
   };
 };
 

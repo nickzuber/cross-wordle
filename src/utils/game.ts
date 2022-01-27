@@ -1,5 +1,5 @@
 export const Config = {
-  MaxLetters: 18,
+  MaxLetters: 19,
   TileCount: 6,
   TileSize: 60,
   TileSpacing: 10,
@@ -228,7 +228,7 @@ export function wrapCursor(board: Board, cursor: Cursor): Cursor {
   }
 
   // If only the row is overflowing, increment as needed.
-  if (rowOverflow) {
+  if (rowOverflow > 0) {
     return {
       row: cursor.row % maxRow,
       col: (cursor.col + rowOverflow) % maxCol,
@@ -237,10 +237,27 @@ export function wrapCursor(board: Board, cursor: Cursor): Cursor {
   }
 
   // If only the col is overflowing, increment as needed.
-  if (colOverflow) {
+  if (colOverflow > 0) {
     return {
       row: (cursor.row + colOverflow) % maxRow,
-      col: cursor.col % maxCol,
+      col: (maxCol + cursor.col) % maxCol,
+      direction: cursor.direction,
+    };
+  }
+
+  // If only the row is underflowing, increment as needed.
+  if (rowOverflow < 0) {
+    return {
+      row: (maxRow + cursor.row) % maxRow,
+      col: (maxCol + cursor.col + rowOverflow) % maxCol,
+      direction: cursor.direction,
+    };
+  }
+  // If only the col is underflowing, increment as needed.
+  if (colOverflow < 0) {
+    return {
+      row: (maxRow + cursor.row + colOverflow) % maxRow,
+      col: (maxCol + cursor.col) % maxCol,
       direction: cursor.direction,
     };
   }
@@ -261,6 +278,25 @@ export function incrementCursor(board: Board): Cursor {
     case CursorDirections.TopToBottom:
       return wrapCursor(board, {
         row: cursor.row + 1,
+        col: cursor.col,
+        direction: cursor.direction,
+      });
+  }
+}
+
+export function decrementCursor(board: Board): Cursor {
+  const cursor = board.cursor;
+
+  switch (cursor.direction) {
+    case CursorDirections.LeftToRight:
+      return wrapCursor(board, {
+        row: cursor.row,
+        col: cursor.col - 1,
+        direction: cursor.direction,
+      });
+    case CursorDirections.TopToBottom:
+      return wrapCursor(board, {
+        row: cursor.row - 1,
         col: cursor.col,
         direction: cursor.direction,
       });

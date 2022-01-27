@@ -14,12 +14,23 @@ export type GameOptions = {
   requestFinish: () => void;
   clearBoard: () => void;
   getEmojiBoard: () => void;
+  flipCursorDirection: () => void;
   canFinish: boolean;
+  updateCursor: (row: number, col: number) => void;
+  backspaceBoard: () => void;
 };
 
 export const useGame = (): GameOptions => {
   const { letters, shuffleLetters } = useLetters();
-  const { board, setLetterOnBoard, resetBoard, setBoard } = useBoard();
+  const {
+    board,
+    setLetterOnBoard,
+    resetBoard,
+    setBoard,
+    updateCursor,
+    backspaceBoard,
+    flipCursorDirection,
+  } = useBoard();
 
   const tilesAreConnected = React.useMemo(
     () => validateWordIsland(board),
@@ -63,7 +74,7 @@ export const useGame = (): GameOptions => {
     const [newBoard, isValidBoard] = validateBoard(board);
     setBoard(newBoard);
     if (isValidBoard) {
-      setTimeout(() => alert(getEmojiBoard()), 2000);
+      console.info(getEmojiBoard());
     }
   }, [board, tilesAreConnected, setBoard, getEmojiBoard]);
 
@@ -82,5 +93,8 @@ export const useGame = (): GameOptions => {
     requestFinish,
     clearBoard: resetBoard,
     canFinish,
+    updateCursor,
+    flipCursorDirection,
+    backspaceBoard,
   };
 };
