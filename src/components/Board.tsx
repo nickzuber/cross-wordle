@@ -198,8 +198,17 @@ const TileContents = styled.div<{
       break;
   }
 
-  const backgroundColor = hasCursorHighlight ? "#f5f5f5" : "#ffffff";
-  const borderColor = hasCursor ? "#228be6" : hasLetter ? "#787c7e" : "#d3d6da";
+  const cursorColor = "#51cf66";
+  const backgroundColor = hasCursor
+    ? `${cursorColor}1a`
+    : hasCursorHighlight
+    ? "#f5f5f5"
+    : "#ffffff";
+  const borderColor = hasCursor
+    ? cursorColor
+    : hasLetter
+    ? "#787c7e"
+    : "#d3d6da";
 
   return css`
     background: ${backgroundColor};
