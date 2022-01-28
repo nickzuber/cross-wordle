@@ -40,12 +40,18 @@ export enum TileState {
   MIXED = "mixed",
 }
 
+export enum TileChangeReason {
+  MOVED = "moved",
+  LETTER = "letter",
+}
+
 export type Tile = {
   id: string;
   row: number;
   col: number;
   letter: Letter | null;
   state: TileState;
+  changeReason: TileChangeReason | undefined;
 };
 
 export type Board = {
@@ -380,6 +386,7 @@ function shiftBoardUp(board: Board): Board {
       newTiles[r][c] = {
         ...newTiles[r][c],
         letter: newLetterPositions[r][c],
+        changeReason: TileChangeReason.MOVED,
       };
     }
   }
@@ -406,6 +413,7 @@ function shiftBoardDown(board: Board): Board {
       newTiles[r][c] = {
         ...newTiles[r][c],
         letter: newLetterPositions[r][c],
+        changeReason: TileChangeReason.MOVED,
       };
     }
   }
@@ -441,6 +449,7 @@ function shiftBoardLeft(board: Board): Board {
       newTiles[r][c] = {
         ...newTiles[r][c],
         letter: newLetterPositions[r][c],
+        changeReason: TileChangeReason.MOVED,
       };
     }
   }
@@ -476,6 +485,7 @@ function shiftBoardRight(board: Board): Board {
       newTiles[r][c] = {
         ...newTiles[r][c],
         letter: newLetterPositions[r][c],
+        changeReason: TileChangeReason.MOVED,
       };
     }
   }
@@ -500,6 +510,4 @@ export function moveBoard(board: Board, direction: Directions): Board {
     case Directions.Right:
       return shiftBoardRight(board);
   }
-
-  return board;
 }

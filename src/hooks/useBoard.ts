@@ -9,6 +9,7 @@ import {
   incrementCursor,
   Letter,
   moveBoard,
+  TileChangeReason,
   TileState,
 } from "../utils/game";
 
@@ -39,6 +40,7 @@ export const useBoard = (): BoardOptions => {
       // Set new tile.
       newTiles[row][col].letter = letter;
       newTiles[row][col].state = TileState.IDLE;
+      newTiles[row][col].changeReason = TileChangeReason.LETTER;
 
       return { cursor: newCursor, tiles: newTiles };
     });
@@ -53,6 +55,7 @@ export const useBoard = (): BoardOptions => {
       // Set new tile.
       newTiles[row][col].letter = null;
       newTiles[row][col].state = TileState.IDLE;
+      newTiles[row][col].changeReason = undefined;
 
       return { cursor: newCursor, tiles: newTiles };
     });
@@ -62,7 +65,7 @@ export const useBoard = (): BoardOptions => {
     setBoard((board) => ({
       ...board,
       tiles: board.tiles.map((row) =>
-        row.map((tile) => ({ ...tile, letter: null })),
+        row.map((tile) => ({ ...tile, letter: null, changeReason: undefined })),
       ),
     }));
   }, []);
@@ -137,6 +140,7 @@ function initalizeBoard(): Board {
       col,
       letter: null,
       state: TileState.IDLE,
+      changeReason: undefined,
     })),
   );
 

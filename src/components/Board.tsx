@@ -8,7 +8,13 @@ import {
 } from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import { CursorDirections, Letter, Tile, TileState } from "../utils/game";
+import {
+  CursorDirections,
+  Letter,
+  Tile,
+  TileChangeReason,
+  TileState,
+} from "../utils/game";
 import {
   SuccessReveal,
   PopIn,
@@ -78,6 +84,9 @@ const GridTile: FC<GridTileProps> = ({
   hasCursorHighlight,
 }) => {
   const prevLetter = useRef<Letter | null>(tile.letter);
+  const prevChangeReason = useRef<TileChangeReason | undefined>(
+    tile.changeReason,
+  );
   const [gridTileState, setGridTileState] = useState<GridTileState>(
     GridTileState.Idle,
   );
@@ -91,14 +100,29 @@ const GridTile: FC<GridTileProps> = ({
   }, [hasCursor]);
 
   useEffect(() => {
-    if (!prevLetter.current && tile.letter) {
+    if (
+      !prevChangeReason.current &&
+      tile.changeReason === TileChangeReason.LETTER
+    ) {
       setGridTileState(GridTileState.PopIn);
-    } else if (tile.letter && prevLetter.current !== tile.letter) {
+    } else if (tile.changeReason === TileChangeReason.LETTER) {
+      setGridTileState(GridTileState.PopIn);
+    }
+
+    prevChangeReason.current = tile.changeReason;
+  }, [tile.changeReason]);
+
+  useEffect(() => {
+    if (
+      tile.changeReason === TileChangeReason.LETTER &&
+      tile.letter &&
+      prevLetter.current !== tile.letter
+    ) {
       setGridTileState(GridTileState.PopIn);
     }
 
     prevLetter.current = tile.letter;
-  }, [tile.letter]);
+  }, [tile.letter, tile.changeReason]);
 
   useEffect(() => {
     const state = tile.state;
@@ -191,11 +215,13 @@ const TileContents = styled.div<{
       break;
   }
 
-  const cursorColor = "#51cf66";
+  const cursorColor = "#339af0";
   const backgroundColor = hasCursor
     ? `${cursorColor}1a`
+    : hasLetter
+    ? "#ffffff"
     : hasCursorHighlight
-    ? "#f5f5f5"
+    ? "#f0f0f0"
     : "#ffffff";
   const borderColor = hasCursor
     ? cursorColor
