@@ -350,7 +350,7 @@ function moveBoardCursorToNextEmptyTile(board: Board) {
   }
 }
 
-function getTileAtCursor(board: Board, cursor?: Cursor): Tile {
+export function getTileAtCursor(board: Board, cursor?: Cursor): Tile {
   const c = cursor || board.cursor;
   return board.tiles[c.row][c.col];
 }

@@ -6,6 +6,7 @@ import {
   CursorDirections,
   decrementCursor,
   Directions,
+  getTileAtCursor,
   incrementCursor,
   Letter,
   moveBoard,
@@ -49,13 +50,30 @@ export const useBoard = (): BoardOptions => {
   const backspaceBoard = useCallback(() => {
     setBoard((board) => {
       const { row, col } = board.cursor;
+      const currentTileHasLetter = getTileAtCursor(board);
+
+      // Letter on current tile, just delete it and move backwards like normal.
+      if (currentTileHasLetter.letter) {
+        const newCursor = decrementCursor(board);
+        const newTiles = board.tiles.slice();
+
+        // Set new tile.
+        newTiles[row][col].letter = null;
+        newTiles[row][col].state = TileState.IDLE;
+        newTiles[row][col].changeReason = undefined;
+
+        return { cursor: newCursor, tiles: newTiles };
+      }
+
+      // No letter on current tile, we want to delete the letter before the next
+      // decemented cursor.
       const newCursor = decrementCursor(board);
       const newTiles = board.tiles.slice();
 
       // Set new tile.
-      newTiles[row][col].letter = null;
-      newTiles[row][col].state = TileState.IDLE;
-      newTiles[row][col].changeReason = undefined;
+      newTiles[newCursor.row][newCursor.col].letter = null;
+      newTiles[newCursor.row][newCursor.col].state = TileState.IDLE;
+      newTiles[newCursor.row][newCursor.col].changeReason = undefined;
 
       return { cursor: newCursor, tiles: newTiles };
     });
