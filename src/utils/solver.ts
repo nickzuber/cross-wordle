@@ -113,6 +113,7 @@ export function validateBoard(board: Board): [Board, boolean] {
 
   // Initialize all tiles to be invalid.
   const validatedBoard = {
+    cursor: board.cursor,
     tiles: tiles.map((row) =>
       row.map((tile) =>
         tile.letter

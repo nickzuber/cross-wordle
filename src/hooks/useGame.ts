@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from "react";
-import { Board, Letter } from "../utils/game";
+import { Board, Directions, Letter } from "../utils/game";
 import { validateBoard, validateWordIsland } from "../utils/solver";
 import { useBoard } from "./useBoard";
 import { useLetters } from "./useLetters";
@@ -9,17 +9,30 @@ export type GameOptions = {
   letters: Letter[];
   unusedLetters: Letter[];
   boardLetterIds: Set<string>;
-  setLetterOnBoard: (position: [number, number], letter: Letter | null) => void;
+  setLetterOnBoard: (letter: Letter) => void;
   shuffleLetters: () => void;
   requestFinish: () => void;
   clearBoard: () => void;
   getEmojiBoard: () => void;
+  flipCursorDirection: () => void;
   canFinish: boolean;
+  updateCursor: (row: number, col: number) => void;
+  backspaceBoard: () => void;
+  shiftBoard: (direction: Directions) => void;
 };
 
 export const useGame = (): GameOptions => {
   const { letters, shuffleLetters } = useLetters();
-  const { board, setLetterOnBoard, resetBoard, setBoard } = useBoard();
+  const {
+    board,
+    setLetterOnBoard,
+    resetBoard,
+    setBoard,
+    updateCursor,
+    backspaceBoard,
+    flipCursorDirection,
+    shiftBoard,
+  } = useBoard();
 
   const tilesAreConnected = React.useMemo(
     () => validateWordIsland(board),
@@ -63,7 +76,7 @@ export const useGame = (): GameOptions => {
     const [newBoard, isValidBoard] = validateBoard(board);
     setBoard(newBoard);
     if (isValidBoard) {
-      setTimeout(() => alert(getEmojiBoard()), 2000);
+      console.info(getEmojiBoard());
     }
   }, [board, tilesAreConnected, setBoard, getEmojiBoard]);
 
@@ -82,5 +95,9 @@ export const useGame = (): GameOptions => {
     requestFinish,
     clearBoard: resetBoard,
     canFinish,
+    updateCursor,
+    flipCursorDirection,
+    backspaceBoard,
+    shiftBoard,
   };
 };
