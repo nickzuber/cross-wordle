@@ -4,40 +4,11 @@ body {
   overscroll-behavior: none;
 }
 
-button {
+* {
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
   color: #1a1a1b;
 }
 
-.popIn {
-  animation-duration: 100ms;
-  animation-name: PopIn;
-}
-
-.reveal {
-  animation-duration: 100ms;
-  animation-name: PopIn;
-}
-
-@keyframes PopIn {
-  from {
-    transform: scale(0.8);
-    opacity: 0;
-  }
-
-  40% {
-    transform: scale(1.1);
-    opacity: 1;
-  }
-}
-
-@keyframes Reveal {
-  0% {
-    transform: rotateX(0);
-  }
-  50% {
-    transform: rotateX(-90deg);
-  }
-  100% {
-    transform: rotateX(0);
-  }
+button {
+  color: #1a1a1b;
 }

@@ -1,10 +1,11 @@
-import React, { useCallback, useMemo } from "react";
-import { Board, Directions, Letter } from "../utils/game";
+import React, { useCallback, useMemo, useState } from "react";
+import { Board, Directions, GameState, Letter, TileState } from "../utils/game";
 import { validateBoard, validateWordIsland } from "../utils/solver";
 import { useBoard } from "./useBoard";
 import { useLetters } from "./useLetters";
 
 export type GameOptions = {
+  gameState: GameState;
   board: Board;
   letters: Letter[];
   unusedLetters: Letter[];
@@ -13,7 +14,6 @@ export type GameOptions = {
   shuffleLetters: () => void;
   requestFinish: () => void;
   clearBoard: () => void;
-  getEmojiBoard: () => void;
   flipCursorDirection: () => void;
   canFinish: boolean;
   updateCursor: (row: number, col: number) => void;
@@ -22,6 +22,7 @@ export type GameOptions = {
 };
 
 export const useGame = (): GameOptions => {
+  const [gameState, setGameState] = useState(GameState.Playing);
   const { letters, shuffleLetters } = useLetters();
   const {
     board,
@@ -56,29 +57,19 @@ export const useGame = (): GameOptions => {
     [tilesAreConnected, boardLetterIds],
   );
 
-  const getEmojiBoard = useCallback(() => {
-    const boardString = board.tiles
-      .map((row) => {
-        return row
-          .map((tile) => {
-            return tile.letter ? "🟩" : "⬜";
-          })
-          .join("");
-      })
-      .join("\n");
-
-    return boardString;
-  }, [board]);
-
   const requestFinish = useCallback(() => {
     if (!tilesAreConnected) return;
 
-    const [newBoard, isValidBoard] = validateBoard(board);
+    // Validate the board.
+    const [newBoard] = validateBoard(board);
+
+    // Animate the tiles.
     setBoard(newBoard);
-    if (isValidBoard) {
-      console.info(getEmojiBoard());
-    }
-  }, [board, tilesAreConnected, setBoard, getEmojiBoard]);
+
+    // Print the result.
+    console.info(getEmojiBoard(newBoard));
+    setGameState(GameState.Ended);
+  }, [board, tilesAreConnected, setBoard]);
 
   const unusedLetters = letters.filter(
     (letter) => !boardLetterIds.has(letter.id),
@@ -91,7 +82,6 @@ export const useGame = (): GameOptions => {
     boardLetterIds,
     setLetterOnBoard,
     shuffleLetters,
-    getEmojiBoard,
     requestFinish,
     clearBoard: resetBoard,
     canFinish,
@@ -99,5 +89,31 @@ export const useGame = (): GameOptions => {
     flipCursorDirection,
     backspaceBoard,
     shiftBoard,
+    gameState,
   };
 };
+
+function getEmojiBoard(board: Board) {
+  const boardString = board.tiles
+    .map((row) => {
+      return row
+        .map((tile) => {
+          switch (tile.state) {
+            case TileState.VALID:
+              return "🟩";
+            case TileState.INVALID:
+              return "⬛";
+            case TileState.MIXED:
+              return "🟨";
+            case TileState.IDLE:
+              return "⬜";
+            default:
+              return "";
+          }
+        })
+        .join("");
+    })
+    .join("\n");
+
+  return boardString;
+}

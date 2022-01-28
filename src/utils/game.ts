@@ -5,6 +5,11 @@ export const Config = {
   TileSpacing: 10,
 };
 
+export enum GameState {
+  Playing,
+  Ended,
+}
+
 export enum Directions {
   Up,
   Left,
