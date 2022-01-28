@@ -144,7 +144,7 @@ const LettersRow = styled.div`
 const LetterButton = styled.button`
   height: 56px;
   width: 38px;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 14px;
   border: 0;
   padding: 0;

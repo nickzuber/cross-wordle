@@ -278,22 +278,75 @@ export function wrapCursor(board: Board, cursor: Cursor): Cursor {
 }
 
 export function incrementCursor(board: Board): Cursor {
-  const cursor = board.cursor;
+  return moveBoardCursorToNextEmptyTile(board) || board.cursor;
+}
 
-  switch (cursor.direction) {
-    case CursorDirections.LeftToRight:
-      return wrapCursor(board, {
-        row: cursor.row,
-        col: cursor.col + 1,
-        direction: cursor.direction,
-      });
-    case CursorDirections.TopToBottom:
-      return wrapCursor(board, {
-        row: cursor.row + 1,
-        col: cursor.col,
-        direction: cursor.direction,
-      });
+function moveBoardCursorToNextEmptyTile(board: Board) {
+  const { row, col, direction } = board.cursor;
+
+  switch (direction) {
+    case CursorDirections.LeftToRight: {
+      // If we're on a letter, always just move forward 1.
+      if (getTileAtCursor(board).letter) {
+        return wrapCursor(board, {
+          row,
+          col: col + 1,
+          direction,
+        });
+      }
+
+      // Otherwise, move to next empty square.
+      let nextCursor;
+
+      // Max 36 attempts. Kinda jank but guarentees no infinte loop.
+      for (let i = 1; i < 36; i++) {
+        nextCursor = wrapCursor(board, {
+          row,
+          col: col + i,
+          direction,
+        });
+
+        if (!getTileAtCursor(board, nextCursor).letter) {
+          return nextCursor;
+        }
+      }
+
+      return nextCursor;
+    }
+    case CursorDirections.TopToBottom: {
+      // If we're on a letter, always just move forward 1.
+      if (getTileAtCursor(board).letter) {
+        return wrapCursor(board, {
+          row: row + 1,
+          col,
+          direction,
+        });
+      }
+
+      // Otherwise, move to next empty square.
+      let nextCursor;
+
+      // Max 36 attempts. Kinda jank but guarentees no infinte loop.
+      for (let i = 1; i < 36; i++) {
+        nextCursor = wrapCursor(board, {
+          row: row + i,
+          col,
+          direction,
+        });
+
+        if (!getTileAtCursor(board, nextCursor).letter) {
+          return nextCursor;
+        }
+      }
+
+      return nextCursor;
+    }
   }
+}
+
+function getTileAtCursor(board: Board, cursor?: Cursor): Tile {
+  const c = cursor || board.cursor;
+  return board.tiles[c.row][c.col];
 }
 
 export function decrementCursor(board: Board): Cursor {
