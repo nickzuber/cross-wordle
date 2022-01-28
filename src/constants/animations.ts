@@ -1,26 +1,15 @@
 import { keyframes } from "@emotion/react";
 
-// // animation: ${FlipIn} 250ms ease-in;
-export const FlipIn = keyframes`
-  0% {
-    transform: rotateX(0);
+export const CursorIn = keyframes`
+  from {
+    border-color: #d3d6da;
   }
+
   100% {
-    transform: rotateX(-90deg);
+    border-color: #0078B8;
   }
 `;
 
-// animation: ${FlipOut} 250ms ease-in;
-export const FlipOut = keyframes`
-  0% {
-    transform: rotateX(-90deg);
-  }
-  100% {
-    transform: rotateX(0);
-  }
-`;
-
-// animation: ${PopIn} 100ms;
 export const PopIn = keyframes`
   from {
     transform: scale(0.8);

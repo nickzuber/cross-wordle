@@ -68,6 +68,7 @@ enum GridTileState {
   RevealSuccess,
   RevealMixed,
   RevealFail,
+  CursorTile,
 }
 
 const GridTile: FC<GridTileProps> = ({
@@ -84,6 +85,14 @@ const GridTile: FC<GridTileProps> = ({
 
   // idea -- have an additional property on tiles that represent the finish request uuid
   // this way we can tell if another finish request was made even if the tile state hasn't changed.
+
+  useEffect(() => {
+    if (hasCursor) {
+      setGridTileState(GridTileState.CursorTile);
+    } else {
+      setGridTileState(GridTileState.Idle);
+    }
+  }, [hasCursor]);
 
   useEffect(() => {
     if (!prevLetter.current && tile.letter) {
@@ -113,6 +122,7 @@ const GridTile: FC<GridTileProps> = ({
   return (
     <TileWrapper onClick={() => handleTileClick(tile)}>
       <TileContents
+        hasLetter={!!tile.letter?.letter}
         hasCursor={hasCursor}
         hasCursorHighlight={hasCursorHighlight}
         state={gridTileState}
@@ -153,11 +163,12 @@ const TileWrapper = styled.div`
 `;
 
 const TileContents = styled.div<{
+  hasLetter: boolean;
   hasCursor: boolean;
   hasCursorHighlight: boolean;
   state: GridTileState;
   revealDelay: number;
-}>(({ hasCursor, hasCursorHighlight, state, revealDelay }) => {
+}>(({ hasLetter, hasCursor, hasCursorHighlight, state, revealDelay }) => {
   let animation;
   let animationDelay = "0ms";
 
@@ -187,9 +198,13 @@ const TileContents = styled.div<{
       break;
   }
 
+  const backgroundColor = hasCursorHighlight ? "#f5f5f5" : "#ffffff";
+  const borderColor = hasCursor ? "#228be6" : hasLetter ? "#787c7e" : "#d3d6da";
+
   return css`
-    border: ${hasCursor ? "2px solid #787c7e !important" : "2px solid #d3d6da"};
-    background: ${hasCursorHighlight ? "#eaeaea" : "#ffffff"};
+    background: ${backgroundColor};
+    border: 2px solid ${borderColor};
+    transition: border 50ms ease-in, background 50ms ease-in;
     color: #1a1a1b;
     min-height: 50px;
     min-width: 50px;

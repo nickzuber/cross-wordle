@@ -1,6 +1,11 @@
 body {
   background: #ffffff;
+  color: #1a1a1b;
   overscroll-behavior: none;
+}
+
+button {
+  color: #1a1a1b;
 }
 
 .popIn {
