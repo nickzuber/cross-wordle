@@ -1,6 +1,6 @@
 import { FC, useCallback, useContext } from "react";
 import styled from "@emotion/styled";
-import { Letter } from "../utils/game";
+import { Directions, Letter } from "../utils/game";
 import { GameContext } from "../contexts/game";
 
 export const Controls: FC = () => {
@@ -8,7 +8,7 @@ export const Controls: FC = () => {
     letters,
     boardLetterIds,
     setLetterOnBoard,
-    flipCursorDirection,
+    shiftBoard,
     requestFinish,
     clearBoard,
     backspaceBoard,
@@ -29,11 +29,11 @@ export const Controls: FC = () => {
   return (
     <Container>
       <ButtonsContainer>
-        <button onClick={flipCursorDirection}>Flip</button>
+        <button onClick={() => shiftBoard(Directions.Left)}>left</button>
+        <button onClick={() => shiftBoard(Directions.Up)}>up</button>
+        <button onClick={() => shiftBoard(Directions.Down)}>down</button>
+        <button onClick={() => shiftBoard(Directions.Right)}>right</button>
         <button onClick={clearBoard}>Clear board</button>
-        <button disabled={!canFinish} onClick={requestFinish}>
-          Finish
-        </button>
       </ButtonsContainer>
 
       <LettersContainer>
@@ -145,7 +145,7 @@ const LetterButton = styled.button`
   height: 56px;
   width: 38px;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 14px;
   border: 0;
   padding: 0;
   margin: 0 6px 6px 0;

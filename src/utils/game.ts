@@ -5,6 +5,13 @@ export const Config = {
   TileSpacing: 10,
 };
 
+export enum Directions {
+  Up,
+  Left,
+  Down,
+  Right,
+}
+
 export enum CursorDirections {
   LeftToRight = "left-to-right",
   TopToBottom = "top-to-bottom",
@@ -301,4 +308,140 @@ export function decrementCursor(board: Board): Cursor {
         direction: cursor.direction,
       });
   }
+}
+
+function shiftBoardUp(board: Board): Board {
+  const row = board.tiles[0];
+  const newLetterPositions = [...board.tiles.slice(1), row].map((row) =>
+    row.map((tile) => tile.letter),
+  );
+
+  const newTiles = board.tiles.slice();
+  for (let r = 0; r < board.tiles.length; r++) {
+    for (let c = 0; c < board.tiles[0].length; c++) {
+      newTiles[r][c] = {
+        ...newTiles[r][c],
+        letter: newLetterPositions[r][c],
+      };
+    }
+  }
+
+  return {
+    cursor: {
+      ...board.cursor,
+      row: (board.tiles.length + board.cursor.row - 1) % board.tiles.length,
+    },
+    tiles: newTiles,
+  };
+}
+
+function shiftBoardDown(board: Board): Board {
+  const row = board.tiles[board.tiles.length - 1];
+  const newLetterPositions = [
+    row,
+    ...board.tiles.slice(0, board.tiles.length - 1),
+  ].map((row) => row.map((tile) => tile.letter));
+
+  const newTiles = board.tiles.slice();
+  for (let r = 0; r < board.tiles.length; r++) {
+    for (let c = 0; c < board.tiles[0].length; c++) {
+      newTiles[r][c] = {
+        ...newTiles[r][c],
+        letter: newLetterPositions[r][c],
+      };
+    }
+  }
+
+  return {
+    cursor: {
+      ...board.cursor,
+      row: (board.tiles.length + board.cursor.row + 1) % board.tiles.length,
+    },
+    tiles: newTiles,
+  };
+}
+
+function shiftBoardLeft(board: Board): Board {
+  const maxC = board.tiles[0].length;
+  const prevLetterPositions = board.tiles.map((row) =>
+    row.map((tile) => tile.letter),
+  );
+
+  const newLetterPositions = prevLetterPositions.map(
+    (_) => [],
+  ) as (Letter | null)[][];
+
+  for (let r = 0; r < board.tiles.length; r++) {
+    for (let c = 0; c < board.tiles[0].length; c++) {
+      newLetterPositions[r][c] = prevLetterPositions[r][(maxC + c + 1) % maxC];
+    }
+  }
+
+  const newTiles = board.tiles.slice();
+  for (let r = 0; r < board.tiles.length; r++) {
+    for (let c = 0; c < board.tiles[0].length; c++) {
+      newTiles[r][c] = {
+        ...newTiles[r][c],
+        letter: newLetterPositions[r][c],
+      };
+    }
+  }
+
+  return {
+    cursor: {
+      ...board.cursor,
+      col: (maxC + board.cursor.col - 1) % maxC,
+    },
+    tiles: newTiles,
+  };
+}
+
+function shiftBoardRight(board: Board): Board {
+  const maxC = board.tiles[0].length;
+  const prevLetterPositions = board.tiles.map((row) =>
+    row.map((tile) => tile.letter),
+  );
+
+  const newLetterPositions = prevLetterPositions.map(
+    (_) => [],
+  ) as (Letter | null)[][];
+
+  for (let r = 0; r < board.tiles.length; r++) {
+    for (let c = 0; c < board.tiles[0].length; c++) {
+      newLetterPositions[r][c] = prevLetterPositions[r][(maxC + c - 1) % maxC];
+    }
+  }
+
+  const newTiles = board.tiles.slice();
+  for (let r = 0; r < board.tiles.length; r++) {
+    for (let c = 0; c < board.tiles[0].length; c++) {
+      newTiles[r][c] = {
+        ...newTiles[r][c],
+        letter: newLetterPositions[r][c],
+      };
+    }
+  }
+
+  return {
+    cursor: {
+      ...board.cursor,
+      col: (maxC + board.cursor.col + 1) % maxC,
+    },
+    tiles: newTiles,
+  };
+}
+
+export function moveBoard(board: Board, direction: Directions): Board {
+  switch (direction) {
+    case Directions.Up:
+      return shiftBoardUp(board);
+    case Directions.Down:
+      return shiftBoardDown(board);
+    case Directions.Left:
+      return shiftBoardLeft(board);
+    case Directions.Right:
+      return shiftBoardRight(board);
+  }
+
+  return board;
 }

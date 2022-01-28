@@ -1,15 +1,5 @@
 import { keyframes } from "@emotion/react";
 
-export const CursorIn = keyframes`
-  from {
-    border-color: #d3d6da;
-  }
-
-  100% {
-    border-color: #0078B8;
-  }
-`;
-
 export const PopIn = keyframes`
   from {
     transform: scale(0.8);

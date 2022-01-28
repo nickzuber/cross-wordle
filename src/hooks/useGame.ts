@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from "react";
-import { Board, Letter } from "../utils/game";
+import { Board, Directions, Letter } from "../utils/game";
 import { validateBoard, validateWordIsland } from "../utils/solver";
 import { useBoard } from "./useBoard";
 import { useLetters } from "./useLetters";
@@ -18,6 +18,7 @@ export type GameOptions = {
   canFinish: boolean;
   updateCursor: (row: number, col: number) => void;
   backspaceBoard: () => void;
+  shiftBoard: (direction: Directions) => void;
 };
 
 export const useGame = (): GameOptions => {
@@ -30,6 +31,7 @@ export const useGame = (): GameOptions => {
     updateCursor,
     backspaceBoard,
     flipCursorDirection,
+    shiftBoard,
   } = useBoard();
 
   const tilesAreConnected = React.useMemo(
@@ -96,5 +98,6 @@ export const useGame = (): GameOptions => {
     updateCursor,
     flipCursorDirection,
     backspaceBoard,
+    shiftBoard,
   };
 };

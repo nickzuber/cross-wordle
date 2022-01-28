@@ -77,14 +77,10 @@ const GridTile: FC<GridTileProps> = ({
   handleTileClick,
   hasCursorHighlight,
 }) => {
-  const prevTileState = useRef<TileState>(tile.state);
   const prevLetter = useRef<Letter | null>(tile.letter);
   const [gridTileState, setGridTileState] = useState<GridTileState>(
     GridTileState.Idle,
   );
-
-  // idea -- have an additional property on tiles that represent the finish request uuid
-  // this way we can tell if another finish request was made even if the tile state hasn't changed.
 
   useEffect(() => {
     if (hasCursor) {
@@ -97,7 +93,7 @@ const GridTile: FC<GridTileProps> = ({
   useEffect(() => {
     if (!prevLetter.current && tile.letter) {
       setGridTileState(GridTileState.PopIn);
-    } else if (prevLetter.current !== tile.letter) {
+    } else if (tile.letter && prevLetter.current !== tile.letter) {
       setGridTileState(GridTileState.PopIn);
     }
 
@@ -105,7 +101,6 @@ const GridTile: FC<GridTileProps> = ({
   }, [tile.letter]);
 
   useEffect(() => {
-    // const prevState = prevTileState.current;
     const state = tile.state;
 
     if (state === TileState.VALID) {
@@ -115,8 +110,6 @@ const GridTile: FC<GridTileProps> = ({
     } else if (state === TileState.INVALID) {
       setGridTileState(GridTileState.RevealFail);
     }
-
-    prevTileState.current = tile.state;
   }, [tile.state]);
 
   return (

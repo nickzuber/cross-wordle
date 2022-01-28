@@ -5,8 +5,10 @@ import {
   Config,
   CursorDirections,
   decrementCursor,
+  Directions,
   incrementCursor,
   Letter,
+  moveBoard,
   TileState,
 } from "../utils/game";
 
@@ -18,10 +20,15 @@ type BoardOptions = {
   updateCursor: (row: number, col: number) => void;
   flipCursorDirection: () => void;
   backspaceBoard: () => void;
+  shiftBoard: (direction: Directions) => void;
 };
 
 export const useBoard = (): BoardOptions => {
   const [board, setBoard] = React.useState(initalizeBoard());
+
+  const shiftBoard = useCallback((direction: Directions) => {
+    setBoard((board) => moveBoard(board, direction));
+  }, []);
 
   const setLetterOnBoard = useCallback((letter: Letter) => {
     setBoard((board) => {
@@ -112,6 +119,7 @@ export const useBoard = (): BoardOptions => {
     updateCursor,
     flipCursorDirection,
     backspaceBoard,
+    shiftBoard,
   };
 };
 
