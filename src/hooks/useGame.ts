@@ -5,7 +5,7 @@ import { useBoard } from "./useBoard";
 import { useLetters } from "./useLetters";
 
 export type GameOptions = {
-  gameState: GameState;
+  isGameOver: boolean;
   board: Board;
   letters: Letter[];
   unusedLetters: Letter[];
@@ -89,7 +89,7 @@ export const useGame = (): GameOptions => {
     flipCursorDirection,
     backspaceBoard,
     shiftBoard,
-    gameState,
+    isGameOver: gameState === GameState.Ended,
   };
 };
 

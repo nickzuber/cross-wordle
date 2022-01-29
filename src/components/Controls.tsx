@@ -10,9 +10,11 @@ export const Controls: FC = () => {
     setLetterOnBoard,
     shiftBoard,
     requestFinish,
-    clearBoard,
+    // clearBoard,
     backspaceBoard,
     canFinish,
+    isGameOver,
+    shuffleLetters,
   } = useContext(GameContext);
 
   const onLetterButtonPress = useCallback(
@@ -29,20 +31,159 @@ export const Controls: FC = () => {
   return (
     <Container>
       <ButtonsContainer>
-        <button onClick={() => shiftBoard(Directions.Left)}>left</button>
-        <button onClick={() => shiftBoard(Directions.Up)}>up</button>
-        <button onClick={() => shiftBoard(Directions.Down)}>down</button>
-        <button onClick={() => shiftBoard(Directions.Right)}>right</button>
-        <button onClick={clearBoard}>Clear board</button>
+        <BoardButton
+          disabled={isGameOver}
+          onClick={() => shiftBoard(Directions.Left)}
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19.25 4.75V19.25"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+            <path
+              d="M4.75 12H15.25"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+            <path
+              d="M8.25 8.75L4.75 12L8.25 15.25"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+          </svg>
+        </BoardButton>
+        <BoardButton
+          disabled={isGameOver}
+          onClick={() => shiftBoard(Directions.Up)}
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M4.75 19.25H19.25"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+            <path
+              d="M12 15.25V4.75"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+            <path
+              d="M15.25 8.25L12 4.75L8.75 8.25"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+          </svg>
+        </BoardButton>
+        <BoardButton
+          disabled={isGameOver}
+          onClick={shuffleLetters}
+          style={{ width: 124 }}
+        >
+          Shuffle letters
+        </BoardButton>
+        <BoardButton
+          disabled={isGameOver}
+          onClick={() => shiftBoard(Directions.Down)}
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M4.75 4.75H19.25"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+            <path
+              d="M12 19.25V8.75"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+            <path
+              d="M15.25 15.75L12 19.25L8.75 15.75"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+          </svg>
+        </BoardButton>
+        <BoardButton
+          disabled={isGameOver}
+          onClick={() => shiftBoard(Directions.Right)}
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M4.75 4.75V19.25"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+            <path
+              d="M8.75 12H19.25"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+            <path
+              d="M15.75 8.75L19.25 12L15.75 15.25"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+          </svg>
+        </BoardButton>
       </ButtonsContainer>
 
       <LettersContainer>
         <LettersRow>
           {topLetters.map((letter) =>
             boardLetterIds.has(letter.id) ? (
-              <DisabledLetterButton key={letter.id} />
+              <DisabledLetterButton key={letter.id} disabled={true} />
             ) : (
               <LetterButton
+                disabled={isGameOver}
                 onClick={() => onLetterButtonPress(letter)}
                 key={letter.id}
               >
@@ -55,9 +196,10 @@ export const Controls: FC = () => {
         <LettersRow>
           {middleLetters.map((letter) =>
             boardLetterIds.has(letter.id) ? (
-              <DisabledLetterButton key={letter.id} />
+              <DisabledLetterButton key={letter.id} disabled={true} />
             ) : (
               <LetterButton
+                disabled={isGameOver}
                 onClick={() => onLetterButtonPress(letter)}
                 key={letter.id}
               >
@@ -68,14 +210,18 @@ export const Controls: FC = () => {
         </LettersRow>
 
         <LettersRow>
-          <ActionButton disabled={!canFinish} onClick={requestFinish}>
+          <ActionButton
+            disabled={!canFinish || isGameOver}
+            onClick={requestFinish}
+          >
             {"Enter"}
           </ActionButton>
           {bottomLetters.map((letter) =>
             boardLetterIds.has(letter.id) ? (
-              <DisabledLetterButton key={letter.id} />
+              <DisabledLetterButton key={letter.id} disabled={true} />
             ) : (
               <LetterButton
+                disabled={isGameOver}
                 onClick={() => onLetterButtonPress(letter)}
                 key={letter.id}
               >
@@ -83,7 +229,7 @@ export const Controls: FC = () => {
               </LetterButton>
             ),
           )}
-          <ActionButton onClick={backspaceBoard}>
+          <ActionButton disabled={isGameOver} onClick={backspaceBoard}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               height="24"
@@ -118,8 +264,10 @@ const ButtonsContainer = styled.div`
   align-items: center;
   justify-content: space-evenly;
   background: #fff;
-  width: 360px; // 6 tiles * tile size
+  width: 100%;
   min-height: 50px;
+  padding: 0;
+  margin-bottom: 18px;
 `;
 
 const LettersContainer = styled.div`
@@ -165,4 +313,11 @@ const DisabledLetterButton = styled(LetterButton)`
 
 const ActionButton = styled(LetterButton)`
   width: 72px;
+`;
+
+const BoardButton = styled(LetterButton)`
+  margin: 0;
+  width: 48px;
+  height: 48px;
+  padding: 8px 12px;
 `;

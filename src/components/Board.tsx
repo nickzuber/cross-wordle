@@ -28,10 +28,11 @@ type GridTileProps = {
   hasCursor: boolean;
   hasCursorHighlight: boolean;
   handleTileClick: (tile: Tile) => void;
+  isGameOver: boolean;
 };
 
 export const Board: FC = () => {
-  const { board, updateCursor } = useContext(GameContext);
+  const { board, updateCursor, isGameOver } = useContext(GameContext);
 
   const handleTileClick = useCallback(
     (tile: Tile) => {
@@ -59,6 +60,7 @@ export const Board: FC = () => {
                     ? board.cursor.row === tile.row
                     : board.cursor.col === tile.col
                 }
+                isGameOver={isGameOver}
               />
             ))}
           </Row>
@@ -82,6 +84,7 @@ const GridTile: FC<GridTileProps> = ({
   hasCursor,
   handleTileClick,
   hasCursorHighlight,
+  isGameOver,
 }) => {
   const prevLetter = useRef<Letter | null>(tile.letter);
   const prevChangeReason = useRef<TileChangeReason | undefined>(
@@ -92,14 +95,18 @@ const GridTile: FC<GridTileProps> = ({
   );
 
   useEffect(() => {
+    if (isGameOver) return;
+
     if (hasCursor) {
       setGridTileState(GridTileState.CursorTile);
     } else {
       setGridTileState(GridTileState.Idle);
     }
-  }, [hasCursor]);
+  }, [hasCursor, isGameOver]);
 
   useEffect(() => {
+    if (isGameOver) return;
+
     if (
       !prevChangeReason.current &&
       tile.changeReason === TileChangeReason.LETTER
@@ -110,9 +117,11 @@ const GridTile: FC<GridTileProps> = ({
     }
 
     prevChangeReason.current = tile.changeReason;
-  }, [tile.changeReason]);
+  }, [tile.changeReason, isGameOver]);
 
   useEffect(() => {
+    if (isGameOver) return;
+
     if (
       tile.changeReason === TileChangeReason.LETTER &&
       tile.letter &&
@@ -122,7 +131,7 @@ const GridTile: FC<GridTileProps> = ({
     }
 
     prevLetter.current = tile.letter;
-  }, [tile.letter, tile.changeReason]);
+  }, [tile.letter, tile.changeReason, isGameOver]);
 
   useEffect(() => {
     const state = tile.state;
@@ -140,8 +149,8 @@ const GridTile: FC<GridTileProps> = ({
     <TileWrapper onClick={() => handleTileClick(tile)}>
       <TileContents
         hasLetter={!!tile.letter?.letter}
-        hasCursor={hasCursor}
-        hasCursorHighlight={hasCursorHighlight}
+        hasCursor={hasCursor && !isGameOver}
+        hasCursorHighlight={hasCursorHighlight && !isGameOver}
         state={gridTileState}
         revealDelay={tile.row * 100 + tile.col * 100}
       >
