@@ -1,6 +1,8 @@
 import React, { useCallback } from "react";
-import { v4 as uuidv4 } from "uuid";
-import { Config, getRandomLetters, Letter, shuffle } from "../utils/game";
+import { Letter, shuffle } from "../utils/game";
+import { getTodaysLetters } from "../utils/words";
+
+const todaysLetters = getTodaysLetters();
 
 type LettersOptions = {
   letters: Letter[];
@@ -11,7 +13,7 @@ type LettersOptions = {
 };
 
 export const useLetters = (): LettersOptions => {
-  const [letters, setLetters] = React.useState(getInitialLetters());
+  const [letters, setLetters] = React.useState(todaysLetters);
 
   const addLetter = useCallback((letter: Letter) => {
     setLetters((letters) => letters.concat(letter));
@@ -40,8 +42,3 @@ export const useLetters = (): LettersOptions => {
     shuffleLetters,
   };
 };
-
-function getInitialLetters(): Letter[] {
-  const letters = getRandomLetters(Config.MaxLetters);
-  return letters.map((letter) => ({ id: uuidv4(), letter }));
-}

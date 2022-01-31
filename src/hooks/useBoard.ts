@@ -14,6 +14,8 @@ import {
   TileState,
 } from "../utils/game";
 
+const defaultBoard = initalizeBoard();
+
 type BoardOptions = {
   board: Board;
   setLetterOnBoard: (letter: Letter) => void;
@@ -26,7 +28,7 @@ type BoardOptions = {
 };
 
 export const useBoard = (): BoardOptions => {
-  const [board, setBoard] = React.useState(initalizeBoard());
+  const [board, setBoard] = React.useState(defaultBoard);
 
   const shiftBoard = useCallback((direction: Directions) => {
     setBoard((board) => moveBoard(board, direction));

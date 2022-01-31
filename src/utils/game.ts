@@ -1,5 +1,5 @@
 export const Config = {
-  MaxLetters: 19,
+  MaxLetters: 20,
   TileCount: 6,
   TileSize: 60,
   TileSpacing: 10,
@@ -221,7 +221,7 @@ function getRandom<T>(arr: T[], n: number) {
   return result;
 }
 
-export function shuffle<T>(arr: T[]) {
+export function shuffle<T>(arr: T[]): T[] {
   return getRandom(arr, arr.length);
 }
 

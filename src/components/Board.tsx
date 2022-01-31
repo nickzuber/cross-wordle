@@ -224,7 +224,7 @@ const TileContents = styled.div<{
       break;
   }
 
-  const cursorColor = "#339af0";
+  const cursorColor = "#228be6";
   const backgroundColor = hasCursor
     ? `${cursorColor}1a`
     : hasLetter
@@ -259,5 +259,6 @@ const TileContents = styled.div<{
     ${animation}
     animation-delay: ${animationDelay};
     animation-fill-mode: forwards;
+    text-transform: uppercase;
   `;
 });

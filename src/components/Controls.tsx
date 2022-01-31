@@ -26,7 +26,7 @@ export const Controls: FC = () => {
 
   const topLetters = letters.slice(0, 8);
   const middleLetters = letters.slice(8, 15);
-  const bottomLetters = letters.slice(15, 19);
+  const bottomLetters = letters.slice(15, 20);
 
   return (
     <Container>
@@ -45,23 +45,23 @@ export const Controls: FC = () => {
             <path
               d="M19.25 4.75V19.25"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
             <path
               d="M4.75 12H15.25"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
             <path
               d="M8.25 8.75L4.75 12L8.25 15.25"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
           </svg>
         </BoardButton>
@@ -79,23 +79,23 @@ export const Controls: FC = () => {
             <path
               d="M4.75 19.25H19.25"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
             <path
               d="M12 15.25V4.75"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
             <path
               d="M15.25 8.25L12 4.75L8.75 8.25"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
           </svg>
         </BoardButton>
@@ -120,23 +120,23 @@ export const Controls: FC = () => {
             <path
               d="M4.75 4.75H19.25"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
             <path
               d="M12 19.25V8.75"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
             <path
               d="M15.25 15.75L12 19.25L8.75 15.75"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
           </svg>
         </BoardButton>
@@ -154,23 +154,23 @@ export const Controls: FC = () => {
             <path
               d="M4.75 4.75V19.25"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
             <path
               d="M8.75 12H19.25"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
             <path
               d="M15.75 8.75L19.25 12L15.75 15.25"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
           </svg>
         </BoardButton>
@@ -305,6 +305,7 @@ const LetterButton = styled.button`
   justify-content: center;
   background: #d3d6da;
   user-select: none;
+  text-transform: uppercase;
 `;
 
 const DisabledLetterButton = styled(LetterButton)`
@@ -312,7 +313,8 @@ const DisabledLetterButton = styled(LetterButton)`
 `;
 
 const ActionButton = styled(LetterButton)`
-  width: 72px;
+  width: 64px;
+  text-transform: none;
 `;
 
 const BoardButton = styled(LetterButton)`
@@ -320,4 +322,5 @@ const BoardButton = styled(LetterButton)`
   width: 48px;
   height: 48px;
   padding: 8px 12px;
+  text-transform: none;
 `;
