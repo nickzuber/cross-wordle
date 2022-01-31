@@ -265,10 +265,10 @@ function getWordsAndLetters(): [string[], string[]] {
   // 1. Finding the first word.
   // Get the very first word. This is a special case.
   // We will always pick a longer word that goes across.
-  const firstWordLength = 6; // randomGenerator.intBetween(5, 6);
+  const firstWordLength = randomGenerator.intBetween(5, 6);
   const potentialFirstWords = getWordsOfLength(firstWordLength);
   const firstStartingPosition = {
-    row: 5, //randomGenerator.intBetween(0, 5),
+    row: randomGenerator.intBetween(0, 5),
     col: randomGenerator.intBetween(0, 6 - firstWordLength),
   };
   const firstWord = potentialFirstWords[randomGenerator.range(potentialFirstWords.length)];
@@ -278,7 +278,7 @@ function getWordsAndLetters(): [string[], string[]] {
   const words = [firstWord];
 
   let easyPositions = findEasyPositions(board);
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 4; i++) {
     const [intersection, newDirection] = easyPositions[randomGenerator.range(easyPositions.length)];
     direction = newDirection;
 
@@ -286,14 +286,30 @@ function getWordsAndLetters(): [string[], string[]] {
       const maxLettersBeforeIntersection = intersection.row;
       const maxLettersAfterIntersection = LetterBounds - intersection.row - 1;
 
+      // Get letters that are in this row at the intersection point.
+      const letters = getAllLettersInColumn(intersection, board);
+      const normalizedLetters = letters.map(([letter, position]) => {
+        return [letter, moveY(position, -letters[0][1].row)] as [string, Position];
+      });
+      const minLength =
+        letters.length > 1 ? letters[letters.length - 1][1].row - letters[0][1].row + 1 : 3;
+
       // Special case, if this is the second word, prefer longer words.
-      const length = i === 0 ? randomGenerator.intBetween(5, 6) : randomGenerator.intBetween(3, 6);
+      const length =
+        i === 0 ? randomGenerator.intBetween(5, 6) : randomGenerator.intBetween(minLength, 6);
 
       const candidateWords = getWordsOfLength(length).filter((word) => {
-        const pos = word.indexOf(board[intersection.row][intersection.col]);
-        if (pos < 0) return false;
-        const lettersBeforeIntersetion = pos;
-        const lettersAfterIntersetion = word.length - 1 - pos;
+        const positionOfFirstLetter = word.indexOf(normalizedLetters[0][0]);
+        if (positionOfFirstLetter < 0) return false;
+        const allLettersFitInWord = normalizedLetters.every(([letter, position]) => {
+          return word.indexOf(letter) - positionOfFirstLetter === position.row;
+        });
+        if (!allLettersFitInWord) return false;
+
+        // Use the row because we're going downwards.
+        const positions = letters.map(([letter]) => word.indexOf(letter));
+        const lettersBeforeIntersetion = Math.min(...positions);
+        const lettersAfterIntersetion = word.length - 1 - Math.max(...positions);
 
         return (
           lettersBeforeIntersetion <= maxLettersBeforeIntersection &&
@@ -302,7 +318,7 @@ function getWordsAndLetters(): [string[], string[]] {
       });
 
       if (candidateWords.length === 0) {
-        console.info("NO WORDS FIT WITH THIS CRITERIA", intersection, length);
+        console.info("(down) NO WORDS FIT WITH THIS CRITERIA", intersection, length);
         continue;
       }
 
@@ -312,19 +328,98 @@ function getWordsAndLetters(): [string[], string[]] {
           intersection,
           -word.indexOf(board[intersection.row][intersection.col]),
         );
-        const newBoard = writeWordToBoard(word, startingPosition, direction, board);
 
-        if (validateBoard(newBoard)) {
-          board = newBoard;
-          words.push(word);
-          break;
-        } else {
-          console.info(word, "failed to fit at", startingPosition, intersection);
+        try {
+          const newBoard = writeWordToBoard(word, startingPosition, direction, board);
+
+          if (validateBoard(newBoard)) {
+            board = newBoard;
+            words.push(word);
+            break;
+          } else {
+            console.info(word, "failed to fit at", startingPosition, intersection);
+          }
+        } catch (e) {
+          // @TODO
+          // Do I need to actually handle this or just let the error resolve itself
+          // by ignoring it and trying a new word?
+          // Issue here seems like the word doesn't fit to begin with, but the
+          // starting position is still off by a suspect amount.
+          console.info("Error while writing", word, startingPosition, intersection);
+          printBoard(board);
         }
       }
     } else if (direction === Direction.Right) {
-      // @todo
-      console.info("SKIPPING");
+      console.info("Going towards right", i);
+      const maxLettersBeforeIntersection = intersection.col;
+      const maxLettersAfterIntersection = LetterBounds - intersection.col - 1;
+
+      // Get letters that are in this row at the intersection point.
+      const letters = getAllLettersInRow(intersection, board);
+      const normalizedLetters = letters.map(([letter, position]) => {
+        return [letter, moveX(position, -letters[0][1].col)] as [string, Position];
+      });
+      const minLength =
+        letters.length > 1 ? letters[letters.length - 1][1].col - letters[0][1].col + 1 : 3;
+
+      // Special case, if this is the second word, prefer longer words.
+      // Adding this for good measure in case we change the direction of the starting word
+      // for some reason. When the starting word starts across, `i === 0` should not be reached here.
+      const length =
+        i === 0 ? randomGenerator.intBetween(5, 6) : randomGenerator.intBetween(minLength, 6);
+
+      // @todo finish this. ONLY trying all letters is bound to fail.
+      // Try all letters.
+      const candidateWords = getWordsOfLength(length).filter((word) => {
+        const positionOfFirstLetter = word.indexOf(normalizedLetters[0][0]);
+        if (positionOfFirstLetter < 0) return false;
+        const allLettersFitInWord = normalizedLetters.every(([letter, position]) => {
+          return word.indexOf(letter) - positionOfFirstLetter === position.col;
+        });
+        if (!allLettersFitInWord) return false;
+
+        // Use the column because we're going towards the right.
+        const positions = letters.map(([letter]) => word.indexOf(letter));
+        const lettersBeforeIntersetion = Math.min(...positions);
+        const lettersAfterIntersetion = word.length - 1 - Math.max(...positions);
+
+        return (
+          lettersBeforeIntersetion <= maxLettersBeforeIntersection &&
+          lettersAfterIntersetion <= maxLettersAfterIntersection
+        );
+      });
+
+      if (candidateWords.length === 0) {
+        console.info("(left) NO WORDS FIT WITH THIS CRITERIA", intersection, length);
+        continue;
+      }
+
+      for (let tries = 0; tries < candidateWords.length; tries++) {
+        const word = candidateWords[randomGenerator.range(candidateWords.length)];
+        const startingPosition = moveX(
+          intersection,
+          -word.indexOf(board[intersection.row][intersection.col]),
+        );
+        try {
+          const newBoard = writeWordToBoard(word, startingPosition, direction, board);
+
+          if (validateBoard(newBoard)) {
+            board = newBoard;
+            words.push(word);
+            break;
+          } else {
+            console.info(word, "failed to fit at", startingPosition, intersection);
+          }
+        } catch (e) {
+          // @TODO
+          // Do I need to actually handle this or just let the error resolve itself
+          // by ignoring it and trying a new word?
+          // Issue here seems like the word doesn't fit to begin with, but the
+          // starting position is still off by a suspect amount.
+          console.info("Error while writing", word, startingPosition, intersection);
+          printBoard(board);
+        }
+      }
     }
 
     easyPositions = findEasyPositions(board);
@@ -451,7 +546,7 @@ export function getTodaysLetters(): Letter[] {
   return shuffle(letters).map((letter) => ({ id: uuidv4(), letter }));
 }
 
-function printBoard(board: SolutionBoard, highlights: Position[]) {
+function printBoard(board: SolutionBoard, highlights: Position[] = []) {
   console.info("    0 1 2 3 4 5");
   for (let r = 0; r < LetterBounds; r++) {
     let parts = [];
