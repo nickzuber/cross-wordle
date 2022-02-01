@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
 import { Letter, shuffle } from "../utils/game";
-// import { getTodaysLetters } from "../utils/words";
 import { getTodaysLetters } from "../utils/generator";
 
 const todaysLetters = getTodaysLetters();

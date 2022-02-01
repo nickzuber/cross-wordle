@@ -1,10 +1,11 @@
 import { v4 as uuidv4 } from "uuid";
-import { Letter, shuffle } from "../utils/game";
+import { Config, Letter, shuffle } from "../utils/game";
 import {
+  countLettersonBoard,
   createBoard,
-  createTestingBoard,
   Direction,
   fillRandomEasyPosition,
+  fillRandomEmptyPositions,
   findEasyPositions,
   getLettersFromBoard,
   getWordsOfLength,
@@ -12,7 +13,7 @@ import {
   randomGenerator,
   SolutionBoard,
   writeWordToBoard,
-} from "./solution";
+} from "./words-helper";
 
 export function createCompleteBoard(): SolutionBoard {
   console.clear();
@@ -47,6 +48,12 @@ export function createCompleteBoard(): SolutionBoard {
     else break; // We're not able to add any more word normally.
   }
 
+  const currentLetters = countLettersonBoard(board);
+  const lettersRemaining = Config.MaxLetters - currentLetters;
+  for (let i = 0; i < lettersRemaining; i++) {
+    board = fillRandomEmptyPositions(board) || board;
+  }
+
   printBoard(
     board,
     findEasyPositions(board).map(([pos, _]) => pos),
@@ -59,5 +66,5 @@ export function getTodaysLetters(): Letter[] {
   const board = createCompleteBoard();
   const letters = getLettersFromBoard(board);
   console.info(letters);
-  return shuffle(letters).map((letter) => ({ id: uuidv4(), letter }));
+  return letters.map((letter) => ({ id: uuidv4(), letter }));
 }

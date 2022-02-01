@@ -249,6 +249,35 @@ export function none<T>(vals: T[]): boolean {
   return vals.every((val) => !val);
 }
 
+// Positions are "empty" when they contain no letters and connects to the
+// existing board. We don't care about direction here since it's
+// just a single character.
+export function findEmptyPositions(board: SolutionBoard): Position[] {
+  const positions: Position[] = [];
+  const at = boardAt(board);
+
+  for (let r = 0; r < LetterBounds; r++) {
+    for (let c = 0; c < LetterBounds; c++) {
+      const letter = board[r][c];
+      if (letter) continue;
+
+      // - X -
+      // X O X
+      // - X -
+      const n = at(r - 1, c);
+      const e = at(r, c + 1);
+      const s = at(r + 1, c);
+      const w = at(r, c - 1);
+
+      if (n || e || s || w) {
+        positions.push({ row: r, col: c });
+      }
+    }
+  }
+
+  return positions;
+}
+
 // Positions of "easy" letters on the board that will give us the least amount
 // of issues when trying to add another word to the board.
 // The direction paired with the position is the direction which a word
@@ -343,6 +372,38 @@ export function findEasyPositions(board: SolutionBoard): [Position, Direction][]
   return positions;
 }
 
+export function fillRandomEmptyPositions(board: SolutionBoard): SolutionBoard | null {
+  let emptyPositions = findEmptyPositions(board);
+
+  // @TODO
+  // Try all letters randomly, not just vowels.
+  const vowels = ["a", "e", "i", "o", "u"];
+
+  // Attempt to fill each empty position with a letter until we find one
+  // that fits into the board validly.
+  const start = randomGenerator.range(emptyPositions.length);
+  for (let i = 0; i < emptyPositions.length; i++) {
+    const index = (start + i) % emptyPositions.length;
+    const position = emptyPositions[index];
+
+    console.info(`[fillRandomEmptyPositions #${i + 1}]`, position);
+
+    for (let j = 0; j < vowels.length; j++) {
+      const index = (start + j) % vowels.length;
+      const letter = vowels[index];
+
+      const newBoard = writeWordToBoard(letter, position, Direction.Right, board);
+      if (validateSolutionBoard(newBoard)) {
+        console.info("new letter added:", letter, position);
+        return newBoard;
+      }
+    }
+  }
+
+  console.info("Unable to find any valid empty positions to fill.");
+  return null;
+}
+
 export function fillRandomEasyPosition(
   board: SolutionBoard,
   preferLongWord = false,
@@ -356,7 +417,7 @@ export function fillRandomEasyPosition(
     const index = (start + i) % easyPositions.length;
     const [intersection, direction] = easyPositions[index];
 
-    console.info(`[fillRandomEasyPosition #${i}]`, intersection, direction);
+    console.info(`[fillRandomEasyPosition #${i + 1}]`, intersection, direction);
 
     switch (direction) {
       case Direction.Down:
