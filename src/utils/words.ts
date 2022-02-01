@@ -1,12 +1,12 @@
 import { v4 as uuidv4 } from "uuid";
 import generator from "random-seed";
 import { Letter, shuffle } from "../utils/game";
-import { words as TwoCharWords } from "../constants/words/two";
-import { words as ThreeCharWords } from "../constants/words/three";
-import { words as FourCharWords } from "../constants/words/four";
-import { words as FiveCharWords } from "../constants/words/five";
-import { words as SixCharWords } from "../constants/words/six";
-import { words as dictionary } from "../constants/words";
+import { words as TwoCharWords } from "../constants/words/extra-words/two";
+import { words as ThreeCharWords } from "../constants/words/extra-words/three";
+import { words as FourCharWords } from "../constants/words/extra-words/four";
+import { words as FiveCharWords } from "../constants/words/extra-words/five";
+import { words as SixCharWords } from "../constants/words/extra-words/six";
+import { words as dictionary } from "../constants/words/extra-words";
 
 // 2D board of letters being used.
 type SolutionBoard = string[][];
@@ -386,7 +386,6 @@ function getWordsAndLetters(): [string[], string[]] {
         });
         if (!allLettersFitInWord) return false;
 
-        // Use the column because we're going towards the right.
         const positions = letters.map(([letter]) => word.indexOf(letter));
         const lettersBeforeIntersetion = Math.min(...positions);
         const lettersAfterIntersetion = word.length - 1 - Math.max(...positions);

@@ -1,12 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import generator from "random-seed";
 import { Letter, shuffle } from "../utils/game";
-import { words as TwoCharWords } from "../constants/words/two";
-import { words as ThreeCharWords } from "../constants/words/three";
-import { words as FourCharWords } from "../constants/words/four";
-import { words as FiveCharWords } from "../constants/words/five";
-import { words as SixCharWords } from "../constants/words/six";
-import { words as dictionary } from "../constants/words";
 import {
   createBoard,
   createTestingBoard,
@@ -41,11 +34,18 @@ export function createCompleteBoard(): SolutionBoard {
   board = writeWordToBoard(firstWord, firstStartingPosition, direction, board);
 
   // 2. General Word Insertion Algorithm for adding new words to an existing board.
+  // Do one pass that prefers longer words.
+  // This helps ensure a healthy board is made.
   board = fillRandomEasyPosition(board, true) || board;
-  board = fillRandomEasyPosition(board) || board;
-  board = fillRandomEasyPosition(board) || board;
-  board = fillRandomEasyPosition(board) || board;
-  board = fillRandomEasyPosition(board) || board;
+
+  // Try a few times to fill out the board as much as we can.
+  // It should never take more than 10 tries before we fill up.
+  // This is just a safe arbitrary buffer.
+  for (let pass = 0; pass < 10; pass++) {
+    const newBoard = fillRandomEasyPosition(board) || board;
+    if (newBoard) board = newBoard;
+    else break; // We're not able to add any more word normally.
+  }
 
   printBoard(
     board,

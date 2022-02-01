@@ -35,10 +35,7 @@ export const useGame = (): GameOptions => {
     shiftBoard,
   } = useBoard();
 
-  const tilesAreConnected = React.useMemo(
-    () => validateWordIsland(board),
-    [board],
-  );
+  const tilesAreConnected = React.useMemo(() => validateWordIsland(board), [board]);
 
   const boardLetterIds = React.useMemo(
     () =>
@@ -71,9 +68,7 @@ export const useGame = (): GameOptions => {
     setGameState(GameState.Ended);
   }, [board, tilesAreConnected, setBoard]);
 
-  const unusedLetters = letters.filter(
-    (letter) => !boardLetterIds.has(letter.id),
-  );
+  const unusedLetters = letters.filter((letter) => !boardLetterIds.has(letter.id));
 
   return {
     board,

@@ -211,8 +211,7 @@ function getRandom<T>(arr: T[], n: number) {
   var result = new Array(n),
     len = arr.length,
     taken = new Array(len);
-  if (n > len)
-    throw new RangeError("getRandom: more elements taken than available");
+  if (n > len) throw new RangeError("getRandom: more elements taken than available");
   while (n--) {
     var x = Math.floor(Math.random() * len);
     result[n] = arr[x in taken ? taken[x] : x];
@@ -402,10 +401,9 @@ function shiftBoardUp(board: Board): Board {
 
 function shiftBoardDown(board: Board): Board {
   const row = board.tiles[board.tiles.length - 1];
-  const newLetterPositions = [
-    row,
-    ...board.tiles.slice(0, board.tiles.length - 1),
-  ].map((row) => row.map((tile) => tile.letter));
+  const newLetterPositions = [row, ...board.tiles.slice(0, board.tiles.length - 1)].map((row) =>
+    row.map((tile) => tile.letter),
+  );
 
   const newTiles = board.tiles.slice();
   for (let r = 0; r < board.tiles.length; r++) {
@@ -429,13 +427,9 @@ function shiftBoardDown(board: Board): Board {
 
 function shiftBoardLeft(board: Board): Board {
   const maxC = board.tiles[0].length;
-  const prevLetterPositions = board.tiles.map((row) =>
-    row.map((tile) => tile.letter),
-  );
+  const prevLetterPositions = board.tiles.map((row) => row.map((tile) => tile.letter));
 
-  const newLetterPositions = prevLetterPositions.map(
-    (_) => [],
-  ) as (Letter | null)[][];
+  const newLetterPositions = prevLetterPositions.map((_) => []) as (Letter | null)[][];
 
   for (let r = 0; r < board.tiles.length; r++) {
     for (let c = 0; c < board.tiles[0].length; c++) {
@@ -465,13 +459,9 @@ function shiftBoardLeft(board: Board): Board {
 
 function shiftBoardRight(board: Board): Board {
   const maxC = board.tiles[0].length;
-  const prevLetterPositions = board.tiles.map((row) =>
-    row.map((tile) => tile.letter),
-  );
+  const prevLetterPositions = board.tiles.map((row) => row.map((tile) => tile.letter));
 
-  const newLetterPositions = prevLetterPositions.map(
-    (_) => [],
-  ) as (Letter | null)[][];
+  const newLetterPositions = prevLetterPositions.map((_) => []) as (Letter | null)[][];
 
   for (let r = 0; r < board.tiles.length; r++) {
     for (let c = 0; c < board.tiles[0].length; c++) {

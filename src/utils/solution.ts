@@ -1,10 +1,11 @@
 import generator from "random-seed";
-import { words as TwoCharWords } from "../constants/words/two";
-import { words as ThreeCharWords } from "../constants/words/three";
-import { words as FourCharWords } from "../constants/words/four";
-import { words as FiveCharWords } from "../constants/words/five";
-import { words as SixCharWords } from "../constants/words/six";
+import { words as TwoCharWords } from "../constants/words/good-words/two";
+import { words as ThreeCharWords } from "../constants/words/good-words/three";
+import { words as FourCharWords } from "../constants/words/good-words/four";
+import { words as FiveCharWords } from "../constants/words/good-words/five";
+import { words as SixCharWords } from "../constants/words/good-words/six";
 import { words as dictionary } from "../constants/words";
+import { Config } from "./game";
 
 // 2D board of letters being used.
 export type SolutionBoard = string[][];
@@ -22,10 +23,10 @@ export enum Direction {
 }
 
 // Board is restricted to 6x6 grid.
-export const LetterBounds = 6;
+export const LetterBounds = Config.TileCount;
 
 // Max amount of letters we want on the board.
-export const MaxLetters = 20;
+export const MaxLetters = Config.MaxLetters;
 
 // Create the seeded random number generator for the day.
 const date = new Date();
