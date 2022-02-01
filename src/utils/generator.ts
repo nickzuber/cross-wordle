@@ -9,8 +9,10 @@ import { words as SixCharWords } from "../constants/words/six";
 import { words as dictionary } from "../constants/words";
 import {
   createBoard,
+  createTestingBoard,
   Direction,
   fillRandomEasyPosition,
+  findEasyPositions,
   getLettersFromBoard,
   getWordsOfLength,
   printBoard,
@@ -39,10 +41,16 @@ export function createCompleteBoard(): SolutionBoard {
   board = writeWordToBoard(firstWord, firstStartingPosition, direction, board);
 
   // 2. General Word Insertion Algorithm for adding new words to an existing board.
+  board = fillRandomEasyPosition(board, true) || board;
+  board = fillRandomEasyPosition(board) || board;
+  board = fillRandomEasyPosition(board) || board;
   board = fillRandomEasyPosition(board) || board;
   board = fillRandomEasyPosition(board) || board;
 
-  printBoard(board);
+  printBoard(
+    board,
+    findEasyPositions(board).map(([pos, _]) => pos),
+  );
 
   return board;
 }
