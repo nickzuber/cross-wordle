@@ -275,6 +275,7 @@ function getWordsAndLetters(): [string[], string[]] {
   board = writeWordToBoard(firstWord, firstStartingPosition, direction, board);
 
   // 2. General Word Insertion Algorithm for adding new words to an existing board.
+  let lettersCount = firstWord.length;
   const words = [firstWord];
 
   let easyPositions = findEasyPositions(board);
@@ -291,8 +292,15 @@ function getWordsAndLetters(): [string[], string[]] {
       const normalizedLetters = letters.map(([letter, position]) => {
         return [letter, moveY(position, -letters[0][1].row)] as [string, Position];
       });
+
+      // Min length of a word is either 3 (2 is too boring) or the length required
+      // to fit all letters in the column.
       const minLength =
         letters.length > 1 ? letters[letters.length - 1][1].row - letters[0][1].row + 1 : 3;
+
+      // // Max length of a word is either 6 or the amount of letters we have left
+      // // to fill the board, assuming its more than 1.
+      // const maxLength =
 
       // Special case, if this is the second word, prefer longer words.
       const length =
@@ -547,19 +555,25 @@ export function getTodaysLetters(): Letter[] {
 }
 
 function printBoard(board: SolutionBoard, highlights: Position[] = []) {
-  console.info("    0 1 2 3 4 5");
+  console.info("");
+  const lines = ["\x1b[37m    0 1 2 3 4 5", "\x1b[37m  ┏━━━━━━━━━━━━━┓"];
   for (let r = 0; r < LetterBounds; r++) {
     let parts = [];
     for (let c = 0; c < LetterBounds; c++) {
       const highlight = highlights.find((p) => p.row === r && p.col === c);
-      const letter = board[r][c]?.toUpperCase() || "-";
+      const letter = board[r][c]?.toUpperCase();
       if (highlight && letter) {
         parts.push(`\x1b[31m${letter}`);
-      } else {
+      } else if (letter) {
         parts.push(`\x1b[30m${letter}`);
+      } else {
+        parts.push(`\x1b[37m🬀`);
       }
     }
-    parts.push(`\x1b[30m|`);
-    console.info(`${r} | ${parts.join(" ")}`);
+    parts.push(`\x1b[37m┃`);
+    lines.push(`\x1b[37m${r} ┃ ${parts.join(" ")}`);
   }
+  lines.push("\x1b[37m  ┗━━━━━━━━━━━━━┛");
+  console.info(lines.join("\n"));
+  console.info("");
 }

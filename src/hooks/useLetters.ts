@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import { Letter, shuffle } from "../utils/game";
-import { getTodaysLetters } from "../utils/words";
+// import { getTodaysLetters } from "../utils/words";
+import { getTodaysLetters } from "../utils/generator";
 
 const todaysLetters = getTodaysLetters();
 
@@ -23,12 +24,9 @@ export const useLetters = (): LettersOptions => {
     setLetters((letters) => letters.filter((letter) => letter.id !== id));
   }, []);
 
-  const publicSetLetters = useCallback(
-    (fn: (letters: Letter[]) => Letter[]) => {
-      setLetters((letters) => fn(letters));
-    },
-    [],
-  );
+  const publicSetLetters = useCallback((fn: (letters: Letter[]) => Letter[]) => {
+    setLetters((letters) => fn(letters));
+  }, []);
 
   const shuffleLetters = useCallback(() => {
     setLetters((letters) => shuffle(letters));
