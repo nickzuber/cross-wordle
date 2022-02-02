@@ -1,1 +1,1 @@
-export * from "./StaticCanvas";
+export * from "./Canvas";

@@ -15,8 +15,6 @@ import {
 } from "./words-helper";
 
 export function createCompleteBoard(): SolutionBoard {
-  // console.clear();
-
   // Initialize scene.
   let board = createBoard();
   let direction = Direction.Right;
@@ -53,16 +51,36 @@ export function createCompleteBoard(): SolutionBoard {
     board = fillRandomEmptyPositions(board) || board;
   }
 
+  // @TODO
+  // Stop printing this to the console.
   printBoard(board);
 
   return board;
 }
 
 export function getTodaysLetters(): Letter[] {
-  console.clear();
-  const board = createCompleteBoard();
-  const letters = getLettersFromBoard(board);
-  console.info(letters);
+  // @TODO
+  // Keep this board somewhere for reference later.
+  // We'll want to show this answer at the end
+  // Maybe only if people fail?
+  let board = createCompleteBoard();
+  let letters = getLettersFromBoard(board);
+
+  // There is a ~99.72% chance that any board we build will have all 20 letters.
+  // When that low chance hits where we have fewer letters than 20, that board
+  // can be discarded and we can just try again.
+  // The odds of the board having fewer than 20 letters more than 10 times in
+  // a row is like a really small number, so let's imagine its not possible.
+  // If you're interested, it's around:
+  //
+  //   2.96e-26 or 1/50,000,000,000,000,000,000,000,000
+  //
+  for (let tries = 0; tries < 10; tries++) {
+    if (letters.length === 20) break;
+    board = createCompleteBoard();
+    letters = getLettersFromBoard(board);
+  }
+
   return shuffle(letters).map((letter) => ({ id: uuidv4(), letter }));
 }
 

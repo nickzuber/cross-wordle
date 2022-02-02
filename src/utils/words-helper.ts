@@ -35,8 +35,12 @@ export const MaxLetters = Config.MaxLetters;
 // Create the seeded random number generator for the day.
 const date = new Date();
 const seed = `${date.getMonth()}${date.getDate()}${date.getFullYear()}`;
-// export const randomGenerator = generator.create(seed);
-export const randomGenerator = generator.create();
+export const randomGenerator = generator.create(seed);
+
+// @DEBUGGING
+// This is a random generator.
+// Just used for testing purposes.
+// export const randomGenerator = generator.create();
 
 export function createBoard(): SolutionBoard {
   return [[], [], [], [], [], []];

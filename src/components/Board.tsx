@@ -16,9 +16,12 @@ type GridTileProps = {
 export const Board: FC = () => {
   const { board, updateCursor, isGameOver } = useContext(GameContext);
 
-  const handleTileClick = (tile: Tile) => {
-    updateCursor(tile.row, tile.col);
-  };
+  const handleTileClick = useCallback(
+    (tile: Tile) => {
+      updateCursor(tile.row, tile.col);
+    },
+    [updateCursor],
+  );
 
   return (
     <Container>
@@ -195,8 +198,15 @@ const TileContents = styled.div<{
   }
 
   const cursorColor = "#228be6";
+  // const cursorColor = "#f03e3e";
+  // const cursorColor = "#be4bdb";
+  // const cursorColor = "#845ef7";
+  // const cursorColor = "#40c057";
+  // const cursorColor = "#f59f00";
+  // const cursorColor = "#343a40";
+
   const backgroundColor = hasCursor
-    ? `${cursorColor}1a`
+    ? `${cursorColor}22`
     : hasLetter
     ? "#ffffff"
     : hasCursorHighlight

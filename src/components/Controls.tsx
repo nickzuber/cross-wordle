@@ -10,7 +10,6 @@ export const Controls: FC = () => {
     setLetterOnBoard,
     shiftBoard,
     requestFinish,
-    board,
     backspaceBoard,
     canFinish,
     isGameOver,
