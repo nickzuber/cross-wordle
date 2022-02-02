@@ -10,7 +10,6 @@ export const Controls: FC = () => {
     setLetterOnBoard,
     shiftBoard,
     requestFinish,
-    // clearBoard,
     backspaceBoard,
     canFinish,
     isGameOver,
@@ -26,15 +25,12 @@ export const Controls: FC = () => {
 
   const topLetters = letters.slice(0, 8);
   const middleLetters = letters.slice(8, 15);
-  const bottomLetters = letters.slice(15, 19);
+  const bottomLetters = letters.slice(15, 20);
 
   return (
     <Container>
       <ButtonsContainer>
-        <BoardButton
-          disabled={isGameOver}
-          onClick={() => shiftBoard(Directions.Left)}
-        >
+        <BoardButton disabled={isGameOver} onClick={() => shiftBoard(Directions.Left)}>
           <svg
             width="24"
             height="24"
@@ -45,30 +41,27 @@ export const Controls: FC = () => {
             <path
               d="M19.25 4.75V19.25"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
             <path
               d="M4.75 12H15.25"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
             <path
               d="M8.25 8.75L4.75 12L8.25 15.25"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
           </svg>
         </BoardButton>
-        <BoardButton
-          disabled={isGameOver}
-          onClick={() => shiftBoard(Directions.Up)}
-        >
+        <BoardButton disabled={isGameOver} onClick={() => shiftBoard(Directions.Up)}>
           <svg
             width="24"
             height="24"
@@ -79,37 +72,30 @@ export const Controls: FC = () => {
             <path
               d="M4.75 19.25H19.25"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
             <path
               d="M12 15.25V4.75"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
             <path
               d="M15.25 8.25L12 4.75L8.75 8.25"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
           </svg>
         </BoardButton>
-        <BoardButton
-          disabled={isGameOver}
-          onClick={shuffleLetters}
-          style={{ width: 124 }}
-        >
+        <BoardButton disabled={isGameOver} onClick={shuffleLetters} style={{ width: 124 }}>
           Shuffle letters
         </BoardButton>
-        <BoardButton
-          disabled={isGameOver}
-          onClick={() => shiftBoard(Directions.Down)}
-        >
+        <BoardButton disabled={isGameOver} onClick={() => shiftBoard(Directions.Down)}>
           <svg
             width="24"
             height="24"
@@ -120,30 +106,27 @@ export const Controls: FC = () => {
             <path
               d="M4.75 4.75H19.25"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
             <path
               d="M12 19.25V8.75"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
             <path
               d="M15.25 15.75L12 19.25L8.75 15.75"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
           </svg>
         </BoardButton>
-        <BoardButton
-          disabled={isGameOver}
-          onClick={() => shiftBoard(Directions.Right)}
-        >
+        <BoardButton disabled={isGameOver} onClick={() => shiftBoard(Directions.Right)}>
           <svg
             width="24"
             height="24"
@@ -154,23 +137,23 @@ export const Controls: FC = () => {
             <path
               d="M4.75 4.75V19.25"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
             <path
               d="M8.75 12H19.25"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
             <path
               d="M15.75 8.75L19.25 12L15.75 15.25"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
           </svg>
         </BoardButton>
@@ -210,10 +193,7 @@ export const Controls: FC = () => {
         </LettersRow>
 
         <LettersRow>
-          <ActionButton
-            disabled={!canFinish || isGameOver}
-            onClick={requestFinish}
-          >
+          <ActionButton disabled={!canFinish || isGameOver} onClick={requestFinish}>
             {"Enter"}
           </ActionButton>
           {bottomLetters.map((letter) =>
@@ -230,12 +210,7 @@ export const Controls: FC = () => {
             ),
           )}
           <ActionButton disabled={isGameOver} onClick={backspaceBoard}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24"
-              viewBox="0 0 24 24"
-              width="24"
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
               <path
                 fill="var(--color-tone-1)"
                 d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H7.07L2.4 12l4.66-7H22v14zm-11.59-2L14 13.41 17.59 17 19 15.59 15.41 12 19 8.41 17.59 7 14 10.59 10.41 7 9 8.41 12.59 12 9 15.59z"
@@ -266,8 +241,9 @@ const ButtonsContainer = styled.div`
   background: #fff;
   width: 100%;
   min-height: 50px;
+  max-width: 360px;
   padding: 0;
-  margin-bottom: 18px;
+  margin-bottom: 6px;
 `;
 
 const LettersContainer = styled.div`
@@ -296,7 +272,7 @@ const LetterButton = styled.button`
   font-size: 14px;
   border: 0;
   padding: 0;
-  margin: 0 6px 6px 0;
+  margin: 3px;
   border-radius: 4px;
   cursor: pointer;
   user-select: none;
@@ -305,6 +281,7 @@ const LetterButton = styled.button`
   justify-content: center;
   background: #d3d6da;
   user-select: none;
+  text-transform: uppercase;
 `;
 
 const DisabledLetterButton = styled(LetterButton)`
@@ -312,7 +289,8 @@ const DisabledLetterButton = styled(LetterButton)`
 `;
 
 const ActionButton = styled(LetterButton)`
-  width: 72px;
+  width: 64px;
+  text-transform: none;
 `;
 
 const BoardButton = styled(LetterButton)`
@@ -320,4 +298,5 @@ const BoardButton = styled(LetterButton)`
   width: 48px;
   height: 48px;
   padding: 8px 12px;
+  text-transform: none;
 `;

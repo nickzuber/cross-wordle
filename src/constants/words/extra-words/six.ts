@@ -1,6 +1,5 @@
 export const words = [
   "aahing",
-  "aaliis",
   "aarrgh",
   "abacas",
   "abacus",

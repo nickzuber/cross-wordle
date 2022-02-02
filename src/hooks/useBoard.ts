@@ -14,6 +14,8 @@ import {
   TileState,
 } from "../utils/game";
 
+const defaultBoard = initalizeBoard();
+
 type BoardOptions = {
   board: Board;
   setLetterOnBoard: (letter: Letter) => void;
@@ -26,14 +28,14 @@ type BoardOptions = {
 };
 
 export const useBoard = (): BoardOptions => {
-  const [board, setBoard] = React.useState(initalizeBoard());
+  const [board, setBoard] = React.useState(defaultBoard);
 
   const shiftBoard = useCallback((direction: Directions) => {
     setBoard((board) => moveBoard(board, direction));
   }, []);
 
-  const setLetterOnBoard = useCallback((letter: Letter) => {
-    setBoard((board) => {
+  const setLetterOnBoard = useCallback(
+    (letter: Letter) => {
       const { row, col } = board.cursor;
       const newCursor = incrementCursor(board);
       const newTiles = board.tiles.slice();
@@ -43,41 +45,40 @@ export const useBoard = (): BoardOptions => {
       newTiles[row][col].state = TileState.IDLE;
       newTiles[row][col].changeReason = TileChangeReason.LETTER;
 
-      return { cursor: newCursor, tiles: newTiles };
-    });
-  }, []);
+      setBoard({ cursor: newCursor, tiles: newTiles });
+    },
+    [board],
+  );
 
   const backspaceBoard = useCallback(() => {
-    setBoard((board) => {
-      const { row, col } = board.cursor;
-      const currentTileHasLetter = getTileAtCursor(board);
+    const { row, col } = board.cursor;
+    const currentTileHasLetter = getTileAtCursor(board);
 
-      // Letter on current tile, just delete it and move backwards like normal.
-      if (currentTileHasLetter.letter) {
-        const newCursor = decrementCursor(board);
-        const newTiles = board.tiles.slice();
-
-        // Set new tile.
-        newTiles[row][col].letter = null;
-        newTiles[row][col].state = TileState.IDLE;
-        newTiles[row][col].changeReason = undefined;
-
-        return { cursor: newCursor, tiles: newTiles };
-      }
-
-      // No letter on current tile, we want to delete the letter before the next
-      // decemented cursor.
+    // Letter on current tile, just delete it and move backwards like normal.
+    if (currentTileHasLetter.letter) {
       const newCursor = decrementCursor(board);
       const newTiles = board.tiles.slice();
 
       // Set new tile.
-      newTiles[newCursor.row][newCursor.col].letter = null;
-      newTiles[newCursor.row][newCursor.col].state = TileState.IDLE;
-      newTiles[newCursor.row][newCursor.col].changeReason = undefined;
+      newTiles[row][col].letter = null;
+      newTiles[row][col].state = TileState.IDLE;
+      newTiles[row][col].changeReason = undefined;
 
       return { cursor: newCursor, tiles: newTiles };
-    });
-  }, []);
+    }
+
+    // No letter on current tile, we want to delete the letter before the next
+    // decemented cursor.
+    const newCursor = decrementCursor(board);
+    const newTiles = board.tiles.slice();
+
+    // Set new tile.
+    newTiles[newCursor.row][newCursor.col].letter = null;
+    newTiles[newCursor.row][newCursor.col].state = TileState.IDLE;
+    newTiles[newCursor.row][newCursor.col].changeReason = undefined;
+
+    setBoard({ cursor: newCursor, tiles: newTiles });
+  }, [board]);
 
   const resetBoard = useCallback(() => {
     setBoard((board) => ({
@@ -91,7 +92,7 @@ export const useBoard = (): BoardOptions => {
   const publicSetBoard = useCallback((board: Board) => setBoard(board), []);
 
   const flipCursorDirection = useCallback(() => {
-    setBoard((board) => ({
+    setBoard({
       ...board,
       cursor: {
         ...board.cursor,
@@ -100,36 +101,34 @@ export const useBoard = (): BoardOptions => {
             ? CursorDirections.TopToBottom
             : CursorDirections.LeftToRight,
       },
-    }));
-  }, [setBoard]);
+    });
+  }, [board]);
 
   const updateCursor = useCallback(
     (row: number, col: number) => {
-      setBoard((board) => {
-        if (board.cursor.row === row && board.cursor.col === col) {
-          return {
-            ...board,
-            cursor: {
-              ...board.cursor,
-              direction:
-                board.cursor.direction === CursorDirections.LeftToRight
-                  ? CursorDirections.TopToBottom
-                  : CursorDirections.LeftToRight,
-            },
-          };
-        } else {
-          return {
-            ...board,
-            cursor: {
-              ...board.cursor,
-              row,
-              col,
-            },
-          };
-        }
-      });
+      if (board.cursor.row === row && board.cursor.col === col) {
+        setBoard({
+          ...board,
+          cursor: {
+            ...board.cursor,
+            direction:
+              board.cursor.direction === CursorDirections.LeftToRight
+                ? CursorDirections.TopToBottom
+                : CursorDirections.LeftToRight,
+          },
+        });
+      } else {
+        setBoard({
+          ...board,
+          cursor: {
+            ...board.cursor,
+            row,
+            col,
+          },
+        });
+      }
     },
-    [setBoard],
+    [board],
   );
 
   return {

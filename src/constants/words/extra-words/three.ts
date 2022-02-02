@@ -1,7 +1,5 @@
 export const words = [
   "aah",
-  "aal",
-  "aas",
   "aba",
   "abo",
   "abs",
@@ -246,7 +244,6 @@ export const words = [
   "ewe",
   "eye",
   "fad",
-  "fag",
   "fan",
   "far",
   "fas",

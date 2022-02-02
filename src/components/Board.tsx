@@ -1,26 +1,8 @@
-import {
-  FC,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { FC, useCallback, useContext, useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import {
-  CursorDirections,
-  Letter,
-  Tile,
-  TileChangeReason,
-  TileState,
-} from "../utils/game";
-import {
-  SuccessReveal,
-  PopIn,
-  MixedReveal,
-  InvalidReveal,
-} from "../constants/animations";
+import { CursorDirections, Letter, Tile, TileChangeReason, TileState } from "../utils/game";
+import { SuccessReveal, PopIn, MixedReveal, InvalidReveal } from "../constants/animations";
 import { GameContext } from "../contexts/game";
 
 type GridTileProps = {
@@ -52,9 +34,7 @@ export const Board: FC = () => {
                 key={tile.id}
                 tile={tile}
                 handleTileClick={handleTileClick}
-                hasCursor={
-                  board.cursor.row === tile.row && board.cursor.col === tile.col
-                }
+                hasCursor={board.cursor.row === tile.row && board.cursor.col === tile.col}
                 hasCursorHighlight={
                   board.cursor.direction === CursorDirections.LeftToRight
                     ? board.cursor.row === tile.row
@@ -87,12 +67,8 @@ const GridTile: FC<GridTileProps> = ({
   isGameOver,
 }) => {
   const prevLetter = useRef<Letter | null>(tile.letter);
-  const prevChangeReason = useRef<TileChangeReason | undefined>(
-    tile.changeReason,
-  );
-  const [gridTileState, setGridTileState] = useState<GridTileState>(
-    GridTileState.Idle,
-  );
+  const prevChangeReason = useRef<TileChangeReason | undefined>(tile.changeReason);
+  const [gridTileState, setGridTileState] = useState<GridTileState>(GridTileState.Idle);
 
   useEffect(() => {
     if (isGameOver) return;
@@ -107,10 +83,7 @@ const GridTile: FC<GridTileProps> = ({
   useEffect(() => {
     if (isGameOver) return;
 
-    if (
-      !prevChangeReason.current &&
-      tile.changeReason === TileChangeReason.LETTER
-    ) {
+    if (!prevChangeReason.current && tile.changeReason === TileChangeReason.LETTER) {
       setGridTileState(GridTileState.PopIn);
     } else if (tile.changeReason === TileChangeReason.LETTER) {
       setGridTileState(GridTileState.PopIn);
@@ -224,19 +197,22 @@ const TileContents = styled.div<{
       break;
   }
 
-  const cursorColor = "#339af0";
+  const cursorColor = "#228be6";
+  // const cursorColor = "#f03e3e";
+  // const cursorColor = "#be4bdb";
+  // const cursorColor = "#845ef7";
+  // const cursorColor = "#40c057";
+  // const cursorColor = "#f59f00";
+  // const cursorColor = "#343a40";
+
   const backgroundColor = hasCursor
-    ? `${cursorColor}1a`
+    ? `${cursorColor}22`
     : hasLetter
     ? "#ffffff"
     : hasCursorHighlight
     ? "#f0f0f0"
     : "#ffffff";
-  const borderColor = hasCursor
-    ? cursorColor
-    : hasLetter
-    ? "#787c7e"
-    : "#d3d6da";
+  const borderColor = hasCursor ? cursorColor : hasLetter ? "#787c7e" : "#d3d6da";
 
   return css`
     background: ${backgroundColor};
@@ -259,5 +235,6 @@ const TileContents = styled.div<{
     ${animation}
     animation-delay: ${animationDelay};
     animation-fill-mode: forwards;
+    text-transform: uppercase;
   `;
 });
