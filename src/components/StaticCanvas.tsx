@@ -20,7 +20,7 @@ const Container = styled.div`
   flex: 1;
   width: 100%;
   min-height: 360px; // 6 tiles * tile size
-  margin: 12px auto;
+  margin: 1% auto;
   overflow: hidden;
   touch-action: none;
 `;

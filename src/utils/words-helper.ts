@@ -40,12 +40,12 @@ export function createBoard(): SolutionBoard {
 
 export function createTestingBoard(): SolutionBoard {
   return [
-    [undefined, "c", "h", "a", "f", "f"] as unknown as string[],
-    [undefined, "i", undefined, undefined, "l", "i"] as unknown as string[],
-    [undefined, "r", undefined, undefined, "y", "e"] as unknown as string[],
-    [undefined, "c"] as unknown as string[],
-    [undefined, "a"] as unknown as string[],
-    [],
+    [undefined, undefined, undefined, "s"] as unknown as string[],
+    [undefined, undefined, undefined, "i", undefined, "b"] as unknown as string[],
+    [undefined, undefined, undefined, "l", undefined, "o"] as unknown as string[],
+    [undefined, undefined, undefined, "e", undefined, "x"] as unknown as string[],
+    [undefined, undefined, undefined, "n", undefined, "e"] as unknown as string[],
+    ["l", "i", "s", "t", "e", "d"] as unknown as string[],
   ];
 }
 
@@ -164,6 +164,20 @@ export function writeWordToBoard(
   board: SolutionBoard,
 ): SolutionBoard {
   const newBoard = createBoard();
+
+  if (word === "isbn") {
+    console.warn("isbn", position);
+  }
+
+  const willBoardOverflow =
+    direction === Direction.Right
+      ? position.col + word.length - 1 >= LetterBounds
+      : position.row + word.length - 1 >= LetterBounds;
+
+  const willBoardUnderflow = direction === Direction.Right ? position.col < 0 : position.row < 0;
+
+  // Make sure writing to this board is valid.
+  if (willBoardOverflow || willBoardUnderflow) throw new Error("Invalid board.");
 
   for (let r = 0; r < LetterBounds; r++) {
     for (let c = 0; c < LetterBounds; c++) {
@@ -392,10 +406,14 @@ export function fillRandomEmptyPositions(board: SolutionBoard): SolutionBoard | 
       const index = (start + j) % vowels.length;
       const letter = vowels[index];
 
-      const newBoard = writeWordToBoard(letter, position, Direction.Right, board);
-      if (validateSolutionBoard(newBoard)) {
-        console.info("new letter added:", letter, position);
-        return newBoard;
+      try {
+        const newBoard = writeWordToBoard(letter, position, Direction.Right, board);
+        if (validateSolutionBoard(newBoard)) {
+          console.info("new letter added:", letter, position);
+          return newBoard;
+        }
+      } catch (error) {
+        console.error("[Filling empty positions]", letter, position);
       }
     }
   }
@@ -464,34 +482,51 @@ export function placeWordDownwardsAt(
 
   if (lettersRemaining < 3) {
     console.info(`Only ${lettersRemaining} letters left, skipping any placements`);
-    return board;
+    return null;
   }
-
-  const maxLettersBeforeIntersection = intersection.row;
-  const maxLettersAfterIntersection = LetterBounds - intersection.row - 1;
 
   // Get letters that are in this row at the intersection point.
   const originalLetters = getAllLettersInColumn(intersection, board);
-  const normalizedLetters = originalLetters.map(([letter, position]) => {
-    return [letter, moveDown(position, -originalLetters[0][1].row)] as [string, Position];
-  });
 
   // We're going to attempt to fit a word with all permutations of the avaiabile
   // letters in the column.
   const lettersBFS = [originalLetters];
+  let __i = 0;
 
-  while (lettersBFS.filter((letters) => letters.length > 0).length > 0) {
+  while (lettersBFS.length > 0) {
     // Guarenteed to exist because of this loop's condition
     const letters = lettersBFS.pop() as [string, Position][];
-    console.info("Attempting to fit letters", letters);
+    const normalizedLetters = originalLetters.map(([letter, position]) => {
+      return [letter, moveDown(position, -originalLetters[0][1].row)] as [string, Position];
+    });
+
+    // Active intersection refers to the "pivot" letter currently on the board
+    // that we're building this word around.
+    // Initially, the intersection is the starting input to the function `intersection`
+    // but once we start to try to fit the word to different combinations of letters
+    // within this column, the "active intersection" will always just be the top-most
+    // letter.
+    const activeIntersection = letters[0][1];
+
+    const maxLettersBeforeIntersection = intersection.row;
+    const maxLettersAfterIntersection = LetterBounds - intersection.row - 1;
+
+    console.info(`\t${++__i} Attempting to fit letters`, letters, normalizedLetters);
 
     // How long would the word be if we fit all the letters on the column.
     const lengthOfFittingAllLetters =
       letters.length > 1 ? letters[letters.length - 1][1].row - letters[0][1].row + 1 : 1;
 
+    // Always try to find solutions for omitting edge letters.
+    // If we find a solution before then we'll have exited early.
+    const leftBranch = removeLeftItem(letters);
+    const rightBranch = removeRightItem(letters);
+    if (leftBranch.length > 0) lettersBFS.push(leftBranch);
+    if (rightBranch.length > 0) lettersBFS.push(rightBranch);
+
+    // If the length of fitting all these letters is longer than how many letters
+    // we have remaining, we know already that this won't work, so we can skip.
     if (lengthOfFittingAllLetters > lettersRemaining) {
-      lettersBFS.push(removeLeftItem(letters));
-      lettersBFS.push(removeRightItem(letters));
       continue;
     }
 
@@ -533,7 +568,7 @@ export function placeWordDownwardsAt(
       });
 
       if (candidateWords.length === 0) {
-        console.info("[down] No words fit this criteria", intersection, wordLengthAttempt);
+        console.info("[down] No words fit this criteria", activeIntersection, wordLengthAttempt);
         continue;
       }
 
@@ -541,8 +576,8 @@ export function placeWordDownwardsAt(
       for (let offset = 0; offset < candidateWords.length; offset++) {
         const word = candidateWords[(candidateWordOffset + offset) % candidateWords.length];
         const startingPosition = moveDown(
-          intersection,
-          -word.indexOf(board[intersection.row][intersection.col]),
+          activeIntersection,
+          -word.indexOf(board[activeIntersection.row][activeIntersection.col]),
         );
 
         try {
@@ -552,7 +587,8 @@ export function placeWordDownwardsAt(
             console.info("new word added:", word);
             return newBoard;
           }
-        } catch (e) {
+        } catch (error) {
+          console.error("[Filling easy Down]", word, startingPosition);
           // Skip
           // This is because the word when placed in its starting position
           // spills outside of the board.
@@ -575,11 +611,8 @@ export function placeWordRightwardsAt(
 
   if (lettersRemaining < 3) {
     console.info(`Only ${lettersRemaining} letters left, skipping any placements`);
-    return board;
+    return null;
   }
-
-  const maxLettersBeforeIntersection = intersection.col;
-  const maxLettersAfterIntersection = LetterBounds - intersection.col - 1;
 
   // Get letters that are in this col at the intersection point.
   const originalLetters = getAllLettersInRow(intersection, board);
@@ -587,22 +620,42 @@ export function placeWordRightwardsAt(
   // We're going to attempt to fit a word with all permutations of the avaiabile
   // letters in the column.
   const lettersBFS = [originalLetters];
+  let __i = 0;
 
-  while (lettersBFS.filter((letters) => letters.length > 0).length > 0) {
+  while (lettersBFS.length > 0) {
     // Guarenteed to exist because of this loop's condition
     const letters = lettersBFS.pop() as [string, Position][];
     const normalizedLetters = letters.map(([letter, position]) => {
       return [letter, moveRight(position, -letters[0][1].col)] as [string, Position];
     });
-    console.info("Attempting to fit letters", letters, normalizedLetters);
+
+    // Active intersection refers to the "pivot" letter currently on the board
+    // that we're building this word around.
+    // Initially, the intersection is the starting input to the function `intersection`
+    // but once we start to try to fit the word to different combinations of letters
+    // within this row, the "active intersection" will always just be the left-most
+    // letter.
+    const activeIntersection = letters[0][1];
+
+    const maxLettersBeforeIntersection = activeIntersection.col;
+    const maxLettersAfterIntersection = LetterBounds - activeIntersection.col - 1;
+
+    console.info(`\t${++__i} Attempting to fit letters`, letters, normalizedLetters);
 
     // How long would the word be if we fit all the letters on the column.
     const lengthOfFittingAllLetters =
       letters.length > 1 ? letters[letters.length - 1][1].col - letters[0][1].col + 1 : 1;
 
+    // Always try to find solutions for omitting edge letters.
+    // If we find a solution before then we'll have exited early.
+    const leftBranch = removeLeftItem(letters);
+    const rightBranch = removeRightItem(letters);
+    if (leftBranch.length > 0) lettersBFS.push(leftBranch);
+    if (rightBranch.length > 0) lettersBFS.push(rightBranch);
+
+    // If the length of fitting all these letters is longer than how many letters
+    // we have remaining, we know already that this won't work, so we can skip.
     if (lengthOfFittingAllLetters > lettersRemaining) {
-      lettersBFS.push(removeLeftItem(letters));
-      lettersBFS.push(removeRightItem(letters));
       continue;
     }
 
@@ -646,7 +699,7 @@ export function placeWordRightwardsAt(
       });
 
       if (candidateWords.length === 0) {
-        console.info("[right] No words fit this criteria", intersection, wordLengthAttempt);
+        console.info("[right] No words fit this criteria", activeIntersection, wordLengthAttempt);
         continue;
       }
 
@@ -654,8 +707,8 @@ export function placeWordRightwardsAt(
       for (let offset = 0; offset < candidateWords.length; offset++) {
         const word = candidateWords[(candidateWordOffset + offset) % candidateWords.length];
         const startingPosition = moveRight(
-          intersection,
-          -word.indexOf(board[intersection.row][intersection.col]),
+          activeIntersection,
+          -word.indexOf(board[activeIntersection.row][activeIntersection.col]),
         );
 
         try {
@@ -665,7 +718,8 @@ export function placeWordRightwardsAt(
             console.info("new word added:", word);
             return newBoard;
           }
-        } catch (e) {
+        } catch (error) {
+          console.error("[Filling easy Right]", word, startingPosition);
           // Skip
           // This is because the word when placed in its starting position
           // spills outside of the board.

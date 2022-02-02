@@ -243,7 +243,7 @@ const ButtonsContainer = styled.div`
   width: 100%;
   min-height: 50px;
   padding: 0;
-  margin-bottom: 18px;
+  margin-bottom: 6px;
 `;
 
 const LettersContainer = styled.div`

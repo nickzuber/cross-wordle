@@ -6,7 +6,6 @@ import {
   Direction,
   fillRandomEasyPosition,
   fillRandomEmptyPositions,
-  findEasyPositions,
   getLettersFromBoard,
   getWordsOfLength,
   printBoard,
@@ -50,14 +49,17 @@ export function createCompleteBoard(): SolutionBoard {
 
   const currentLetters = countLettersonBoard(board);
   const lettersRemaining = Config.MaxLetters - currentLetters;
+  console.info(
+    "trying to fill single letters w/",
+    Config.MaxLetters,
+    currentLetters,
+    lettersRemaining,
+  );
   for (let i = 0; i < lettersRemaining; i++) {
     board = fillRandomEmptyPositions(board) || board;
   }
 
-  printBoard(
-    board,
-    findEasyPositions(board).map(([pos, _]) => pos),
-  );
+  printBoard(board);
 
   return board;
 }

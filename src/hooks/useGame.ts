@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { Board, Directions, GameState, Letter, TileState } from "../utils/game";
-import { validateBoard, validateWordIsland } from "../utils/solver";
+import { validateBoard, validateWordIsland } from "../utils/board-validator";
 import { useBoard } from "./useBoard";
 import { useLetters } from "./useLetters";
 
