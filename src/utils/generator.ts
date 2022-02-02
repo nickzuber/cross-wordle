@@ -34,6 +34,9 @@ export function createCompleteBoard(): SolutionBoard {
   // 2. General Word Insertion Algorithm for adding new words to an existing board.
   // Do one pass that prefers longer words.
   // This helps ensure a healthy board is made.
+  //
+  // This raises the success rate of building a board w/ all 20 characters
+  // by a whopping ~3%
   board = fillRandomEasyPosition(board, true) || board;
 
   // Try a few times to fill out the board as much as we can.
@@ -85,13 +88,15 @@ export function getTodaysLetters(): Letter[] {
 }
 
 export function analyzeBoardBuildingPerformance(iters = 1000) {
-  console.info("%cRunning board building performance...", "color: #ccc");
+  console.info("%cRunning board building performance...", "color: #aaa");
+  const start = Date.now();
   const results = new Array(30).fill(0);
   for (let i = 0; i < iters; i++) {
     const b = createCompleteBoard();
     const letters = getLettersFromBoard(b);
     results[letters.length]++;
   }
+  const end = Date.now();
 
   console.info(
     `%cLetter Frequency / ${iters} iterations`,
@@ -105,5 +110,5 @@ export function analyzeBoardBuildingPerformance(iters = 1000) {
     }
   }
 
-  console.info("%cComplete.", "color: #ccc");
+  console.info(`%cDone in ${((end - start) / 1000).toFixed(2)}s`, "color: #aaa");
 }
