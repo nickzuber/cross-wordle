@@ -242,6 +242,7 @@ const ButtonsContainer = styled.div`
   background: #fff;
   width: 100%;
   min-height: 50px;
+  max-width: 360px;
   padding: 0;
   margin-bottom: 6px;
 `;
@@ -272,7 +273,7 @@ const LetterButton = styled.button`
   font-size: 14px;
   border: 0;
   padding: 0;
-  margin: 0 6px 6px 0;
+  margin: 3px;
   border-radius: 4px;
   cursor: pointer;
   user-select: none;

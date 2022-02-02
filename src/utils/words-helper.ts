@@ -7,6 +7,10 @@ import { words as SixCharWords } from "../constants/words/good-words/six";
 import { words as dictionary } from "../constants/words";
 import { Config } from "./game";
 
+const debug = false;
+const log = debug ? console.info : (args: any[]): void => {};
+const logError = debug ? console.error : (args: any[]): void => {};
+
 // 2D board of letters being used.
 export type SolutionBoard = string[][];
 
@@ -38,6 +42,12 @@ export function createBoard(): SolutionBoard {
   return [[], [], [], [], [], []];
 }
 
+// @DEBUGGING
+// This function is used debugging. It easily allows us to start with a board
+// that we might have seen issues with before.
+//
+// 02/01/2022
+// The last usage of this was for that evil "isbn" bug... *shivers*
 export function createTestingBoard(): SolutionBoard {
   return [
     [undefined, undefined, undefined, "s"] as unknown as string[],
@@ -164,10 +174,6 @@ export function writeWordToBoard(
   board: SolutionBoard,
 ): SolutionBoard {
   const newBoard = createBoard();
-
-  if (word === "isbn") {
-    console.warn("isbn", position);
-  }
 
   const willBoardOverflow =
     direction === Direction.Right
@@ -400,7 +406,7 @@ export function fillRandomEmptyPositions(board: SolutionBoard): SolutionBoard | 
     const index = (start + i) % emptyPositions.length;
     const position = emptyPositions[index];
 
-    console.info(`[fillRandomEmptyPositions #${i + 1}]`, position);
+    log(`[fillRandomEmptyPositions #${i + 1}]`, position);
 
     for (let j = 0; j < vowels.length; j++) {
       const index = (start + j) % vowels.length;
@@ -409,16 +415,16 @@ export function fillRandomEmptyPositions(board: SolutionBoard): SolutionBoard | 
       try {
         const newBoard = writeWordToBoard(letter, position, Direction.Right, board);
         if (validateSolutionBoard(newBoard)) {
-          console.info("new letter added:", letter, position);
+          log("new letter added:", letter, position);
           return newBoard;
         }
       } catch (error) {
-        console.error("[Filling empty positions]", letter, position);
+        logError("[Filling empty positions]", letter, position);
       }
     }
   }
 
-  console.info("Unable to find any valid empty positions to fill.");
+  log("Unable to find any valid empty positions to fill.");
   return null;
 }
 
@@ -435,7 +441,7 @@ export function fillRandomEasyPosition(
     const index = (start + i) % easyPositions.length;
     const [intersection, direction] = easyPositions[index];
 
-    console.info(`[fillRandomEasyPosition #${i + 1}]`, intersection, direction);
+    log(`[fillRandomEasyPosition #${i + 1}]`, intersection, direction);
 
     switch (direction) {
       case Direction.Down:
@@ -452,7 +458,7 @@ export function fillRandomEasyPosition(
     }
   }
 
-  console.info("Unable to find any valid easy positions to fill.");
+  log("Unable to find any valid easy positions to fill.");
   return null;
 }
 
@@ -481,7 +487,7 @@ export function placeWordDownwardsAt(
   const lettersRemaining = MaxLetters - currentLetters;
 
   if (lettersRemaining < 3) {
-    console.info(`Only ${lettersRemaining} letters left, skipping any placements`);
+    log(`Only ${lettersRemaining} letters left, skipping any placements`);
     return null;
   }
 
@@ -511,7 +517,7 @@ export function placeWordDownwardsAt(
     const maxLettersBeforeIntersection = intersection.row;
     const maxLettersAfterIntersection = LetterBounds - intersection.row - 1;
 
-    console.info(`\t${++__i} Attempting to fit letters`, letters, normalizedLetters);
+    log(`\t${++__i} Attempting to fit letters`, letters, normalizedLetters);
 
     // How long would the word be if we fit all the letters on the column.
     const lengthOfFittingAllLetters =
@@ -568,7 +574,7 @@ export function placeWordDownwardsAt(
       });
 
       if (candidateWords.length === 0) {
-        console.info("[down] No words fit this criteria", activeIntersection, wordLengthAttempt);
+        log("[down] No words fit this criteria", activeIntersection, wordLengthAttempt);
         continue;
       }
 
@@ -584,11 +590,11 @@ export function placeWordDownwardsAt(
           const newBoard = writeWordToBoard(word, startingPosition, Direction.Down, board);
 
           if (validateSolutionBoard(newBoard)) {
-            console.info("new word added:", word);
+            log("new word added:", word);
             return newBoard;
           }
         } catch (error) {
-          console.error("[Filling easy Down]", word, startingPosition);
+          logError("[Filling easy Down]", word, startingPosition);
           // Skip
           // This is because the word when placed in its starting position
           // spills outside of the board.
@@ -610,7 +616,7 @@ export function placeWordRightwardsAt(
   const lettersRemaining = MaxLetters - currentLetters;
 
   if (lettersRemaining < 3) {
-    console.info(`Only ${lettersRemaining} letters left, skipping any placements`);
+    log(`Only ${lettersRemaining} letters left, skipping any placements`);
     return null;
   }
 
@@ -640,7 +646,7 @@ export function placeWordRightwardsAt(
     const maxLettersBeforeIntersection = activeIntersection.col;
     const maxLettersAfterIntersection = LetterBounds - activeIntersection.col - 1;
 
-    console.info(`\t${++__i} Attempting to fit letters`, letters, normalizedLetters);
+    log(`\t${++__i} Attempting to fit letters`, letters, normalizedLetters);
 
     // How long would the word be if we fit all the letters on the column.
     const lengthOfFittingAllLetters =
@@ -699,7 +705,7 @@ export function placeWordRightwardsAt(
       });
 
       if (candidateWords.length === 0) {
-        console.info("[right] No words fit this criteria", activeIntersection, wordLengthAttempt);
+        log("[right] No words fit this criteria", activeIntersection, wordLengthAttempt);
         continue;
       }
 
@@ -715,11 +721,11 @@ export function placeWordRightwardsAt(
           const newBoard = writeWordToBoard(word, startingPosition, Direction.Right, board);
 
           if (validateSolutionBoard(newBoard)) {
-            console.info("new word added:", word);
+            log("new word added:", word);
             return newBoard;
           }
         } catch (error) {
-          console.error("[Filling easy Right]", word, startingPosition);
+          logError("[Filling easy Right]", word, startingPosition);
           // Skip
           // This is because the word when placed in its starting position
           // spills outside of the board.

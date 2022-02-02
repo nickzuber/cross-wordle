@@ -15,7 +15,7 @@ import {
 } from "./words-helper";
 
 export function createCompleteBoard(): SolutionBoard {
-  console.clear();
+  // console.clear();
 
   // Initialize scene.
   let board = createBoard();
@@ -49,12 +49,6 @@ export function createCompleteBoard(): SolutionBoard {
 
   const currentLetters = countLettersonBoard(board);
   const lettersRemaining = Config.MaxLetters - currentLetters;
-  console.info(
-    "trying to fill single letters w/",
-    Config.MaxLetters,
-    currentLetters,
-    lettersRemaining,
-  );
   for (let i = 0; i < lettersRemaining; i++) {
     board = fillRandomEmptyPositions(board) || board;
   }
@@ -65,8 +59,33 @@ export function createCompleteBoard(): SolutionBoard {
 }
 
 export function getTodaysLetters(): Letter[] {
+  console.clear();
   const board = createCompleteBoard();
   const letters = getLettersFromBoard(board);
   console.info(letters);
-  return letters.map((letter) => ({ id: uuidv4(), letter }));
+  return shuffle(letters).map((letter) => ({ id: uuidv4(), letter }));
+}
+
+export function analyzeBoardBuildingPerformance(iters = 1000) {
+  console.info("%cRunning board building performance...", "color: #ccc");
+  const results = new Array(30).fill(0);
+  for (let i = 0; i < iters; i++) {
+    const b = createCompleteBoard();
+    const letters = getLettersFromBoard(b);
+    results[letters.length]++;
+  }
+
+  console.info(
+    `%cLetter Frequency / ${iters} iterations`,
+    "font-weight: 600; text-decoration: underline",
+  );
+
+  for (let i = 0; i < results.length; i++) {
+    const freq = results[i];
+    if (freq > 0) {
+      console.info(`\t${i} →\t${((freq / iters) * 100).toFixed(2)}%`);
+    }
+  }
+
+  console.info("%cComplete.", "color: #ccc");
 }
