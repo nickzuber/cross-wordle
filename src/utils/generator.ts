@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { Config, Letter, shuffle } from "../utils/game";
 import {
-  countLettersonBoard,
+  countLettersOnBoard,
   createBoard,
   Direction,
   fillRandomEasyPosition,
@@ -48,7 +48,7 @@ export function createCompleteBoard(): SolutionBoard {
     else break; // We're not able to add any more word normally.
   }
 
-  const currentLetters = countLettersonBoard(board);
+  const currentLetters = countLettersOnBoard(board);
   const lettersRemaining = Config.MaxLetters - currentLetters;
   for (let i = 0; i < lettersRemaining; i++) {
     board = fillRandomEmptyPositions(board) || board;

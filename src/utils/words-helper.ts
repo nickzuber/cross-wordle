@@ -238,7 +238,7 @@ export function getLettersFromBoard(board: SolutionBoard) {
   return board.flat().flat().filter(Boolean);
 }
 
-export function countLettersonBoard(board: SolutionBoard) {
+export function countLettersOnBoard(board: SolutionBoard) {
   return board.flat().flat().filter(Boolean).length;
 }
 
@@ -487,7 +487,7 @@ export function placeWordDownwardsAt(
   board: SolutionBoard,
   preferLongWord = false,
 ): SolutionBoard | null {
-  const currentLetters = countLettersonBoard(board);
+  const currentLetters = countLettersOnBoard(board);
   const lettersRemaining = MaxLetters - currentLetters;
 
   if (lettersRemaining < 3) {
@@ -616,7 +616,7 @@ export function placeWordRightwardsAt(
   board: SolutionBoard,
   preferLongWord = false,
 ): SolutionBoard | null {
-  const currentLetters = countLettersonBoard(board);
+  const currentLetters = countLettersOnBoard(board);
   const lettersRemaining = MaxLetters - currentLetters;
 
   if (lettersRemaining < 3) {

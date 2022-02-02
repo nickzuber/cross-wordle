@@ -270,6 +270,10 @@ function getWordsFromTilesTTB(tiles: Tile[][]): WordFromTile[] {
     }));
 }
 
+export function countLettersOnBoard(board: Board): number {
+  return countFilledTiles(board.tiles);
+}
+
 function countFilledTiles(tiles: Tile[][]) {
   return new Set(
     tiles
