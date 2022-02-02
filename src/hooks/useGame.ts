@@ -65,8 +65,7 @@ export const useGame = (): GameOptions => {
 
     // Print the result.
     const shareString = [
-      "Cross Wordle",
-      `142 ${countLettersOnBoard(newBoard)}/20`,
+      `Cross Wordle 142 ${countLettersOnBoard(newBoard)}/20`,
       "",
       getEmojiBoard(newBoard),
     ].join("\n");
