@@ -119,7 +119,13 @@ const GridTile: FC<GridTileProps> = ({
   }, [tile.state]);
 
   return (
-    <TileWrapper onClick={() => handleTileClick(tile)}>
+    <TileWrapper
+      onTouchStart={() => handleTileClick(tile)}
+      onClick={() => handleTileClick(tile)}
+      // This prevents `onClick` from being fired if `onTouchStart` was fired.
+      // https://stackoverflow.com/a/56970849/5055063
+      onTouchEnd={(e) => e.preventDefault()}
+    >
       <TileContents
         hasLetter={!!tile.letter?.letter}
         hasCursor={hasCursor && !isGameOver}

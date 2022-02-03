@@ -233,7 +233,6 @@ const Container = styled.div`
   margin: 0;
 
   @media (max-height: 670px) {
-    background: red;
     flex: 0 0 140px;
   }
 `;
