@@ -30,8 +30,6 @@ export const Controls: FC = () => {
     function listenForKeyboard(event: KeyboardEvent) {
       const key = event.key.toLowerCase();
 
-      console.info(key);
-
       switch (key) {
         case "enter":
           requestFinish();
