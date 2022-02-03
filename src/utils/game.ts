@@ -391,10 +391,7 @@ function shiftBoardUp(board: Board): Board {
   }
 
   return {
-    cursor: {
-      ...board.cursor,
-      row: (board.tiles.length + board.cursor.row - 1) % board.tiles.length,
-    },
+    ...board,
     tiles: newTiles,
   };
 }
@@ -417,10 +414,7 @@ function shiftBoardDown(board: Board): Board {
   }
 
   return {
-    cursor: {
-      ...board.cursor,
-      row: (board.tiles.length + board.cursor.row + 1) % board.tiles.length,
-    },
+    ...board,
     tiles: newTiles,
   };
 }
@@ -449,10 +443,7 @@ function shiftBoardLeft(board: Board): Board {
   }
 
   return {
-    cursor: {
-      ...board.cursor,
-      col: (maxC + board.cursor.col - 1) % maxC,
-    },
+    ...board,
     tiles: newTiles,
   };
 }
@@ -481,10 +472,7 @@ function shiftBoardRight(board: Board): Board {
   }
 
   return {
-    cursor: {
-      ...board.cursor,
-      col: (maxC + board.cursor.col + 1) % maxC,
-    },
+    ...board,
     tiles: newTiles,
   };
 }

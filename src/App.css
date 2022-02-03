@@ -1,12 +1,25 @@
+html {
+  height: 100%;
+}
+
 body {
   background: #ffffff;
   color: #1a1a1b;
   overscroll-behavior: none;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-y: hidden;
+}
+
+#root {
+  height: 100%;
 }
 
 * {
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
   color: #1a1a1b;
+  user-select: none;
 }
 
 button {

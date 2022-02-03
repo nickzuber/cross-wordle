@@ -23,4 +23,12 @@ const Container = styled.div`
   margin: 1% auto;
   overflow: hidden;
   touch-action: none;
+
+  @media (max-height: 620px), (max-width: 370px) {
+    min-height: 315px; // 6 tiles * tile size
+  }
+
+  @media (max-height: 570px) {
+    min-height: 290px; // 6 tiles * tile size
+  }
 `;

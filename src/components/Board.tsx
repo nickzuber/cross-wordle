@@ -138,6 +138,16 @@ const Container = styled.div`
   background: #ffffff;
   width: 360px; // 6 tiles * tile size
   height: 360px;
+
+  @media (max-height: 620px), (max-width: 370px) {
+    width: 320px; // 6 tiles * tile size
+    height: 320px;
+  }
+
+  @media (max-height: 570px) {
+    width: 290px; // 6 tiles * tile size
+    height: 290px;
+  }
 `;
 
 const Row = styled.div`
@@ -159,6 +169,20 @@ const TileWrapper = styled.div`
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
+  @media (max-height: 620px), (max-width: 370px) {
+    min-height: 54px;
+    min-width: 54px;
+    max-height: 54px;
+    max-width: 54px;
+  }
+
+  @media (max-height: 570px) {
+    min-height: 48px;
+    min-width: 48px;
+    max-height: 48px;
+    max-width: 48px;
+  }
 `;
 
 const TileContents = styled.div<{
@@ -236,5 +260,19 @@ const TileContents = styled.div<{
     animation-delay: ${animationDelay};
     animation-fill-mode: forwards;
     text-transform: uppercase;
+
+    @media (max-height: 620px), (max-width: 370px) {
+      min-height: 45px;
+      min-width: 45px;
+      max-height: 45px;
+      max-width: 45px;
+    }
+
+    @media (max-height: 570px) {
+      min-height: 40px;
+      min-width: 40px;
+      max-height: 40px;
+      max-width: 40px;
+    }
   `;
 });

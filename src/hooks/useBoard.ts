@@ -30,9 +30,12 @@ type BoardOptions = {
 export const useBoard = (): BoardOptions => {
   const [board, setBoard] = React.useState(defaultBoard);
 
-  const shiftBoard = useCallback((direction: Directions) => {
-    setBoard((board) => moveBoard(board, direction));
-  }, []);
+  const shiftBoard = useCallback(
+    (direction: Directions) => {
+      setBoard(moveBoard(board, direction));
+    },
+    [board],
+  );
 
   const setLetterOnBoard = useCallback(
     (letter: Letter) => {

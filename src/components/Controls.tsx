@@ -231,6 +231,11 @@ const Container = styled.div`
   flex-wrap: wrap;
   flex: 0 0 200px;
   margin: 0;
+
+  @media (max-height: 670px) {
+    background: red;
+    flex: 0 0 140px;
+  }
 `;
 
 const ButtonsContainer = styled.div`
@@ -244,6 +249,10 @@ const ButtonsContainer = styled.div`
   max-width: 360px;
   padding: 0;
   margin-bottom: 6px;
+
+  @media (max-height: 670px) {
+    min-height: 40px;
+  }
 `;
 
 const LettersContainer = styled.div`
@@ -282,6 +291,28 @@ const LetterButton = styled.button`
   background: #d3d6da;
   user-select: none;
   text-transform: uppercase;
+  transition: all 50ms ease-in, height: 200ms ease-in;
+
+  &:active:not([disabled]) {
+    background: #c0c4ca;
+    transform: translateY(2px);
+  }
+
+  @media (max-height: 670px) {
+    height: 52px;
+  }
+
+  @media (max-height: 646px) {
+    height: 48px;
+  }
+
+  @media (max-height: 630px) {
+    height: 44px;
+  }
+
+  @media (max-width: 370px) {
+    width: 34px;
+  }
 `;
 
 const DisabledLetterButton = styled(LetterButton)`
@@ -291,6 +322,10 @@ const DisabledLetterButton = styled(LetterButton)`
 const ActionButton = styled(LetterButton)`
   width: 64px;
   text-transform: none;
+
+  @media (max-width: 370px) {
+    width: 60px;
+  }
 `;
 
 const BoardButton = styled(LetterButton)`
@@ -299,4 +334,20 @@ const BoardButton = styled(LetterButton)`
   height: 48px;
   padding: 8px 12px;
   text-transform: none;
+
+  @media (max-height: 670px) {
+    height: 44px;
+  }
+
+  @media (max-height: 646px) {
+    height: 40px;
+  }
+
+  @media (max-height: 630px) {
+    height: 36px;
+  }
+
+  @media (max-width: 370px) {
+    width: 44px;
+  }
 `;
