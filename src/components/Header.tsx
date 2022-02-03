@@ -139,6 +139,7 @@ const Button = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
   transition: all 50ms ease-in;
 
   &:active {

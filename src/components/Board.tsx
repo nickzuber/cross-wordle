@@ -175,6 +175,7 @@ const TileWrapper = styled.div`
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 
   @media (max-height: 620px), (max-width: 370px) {
     min-height: 54px;

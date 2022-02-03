@@ -1,7 +1,8 @@
-import { FC, useCallback, useContext } from "react";
+import { FC, useCallback, useContext, useEffect } from "react";
 import styled from "@emotion/styled";
 import { Directions, Letter } from "../utils/game";
 import { GameContext } from "../contexts/game";
+import { PopIn } from "../constants/animations";
 
 export const Controls: FC = () => {
   const {
@@ -9,11 +10,13 @@ export const Controls: FC = () => {
     boardLetterIds,
     setLetterOnBoard,
     shiftBoard,
+    moveCursorInDirection,
     requestFinish,
     backspaceBoard,
     canFinish,
     isGameOver,
     shuffleLetters,
+    flipCursorDirection,
   } = useContext(GameContext);
 
   const onLetterButtonPress = useCallback(
@@ -22,6 +25,57 @@ export const Controls: FC = () => {
     },
     [setLetterOnBoard],
   );
+
+  useEffect(() => {
+    function listenForKeyboard(event: KeyboardEvent) {
+      const key = event.key.toLowerCase();
+
+      console.info(key);
+
+      switch (key) {
+        case "enter":
+          requestFinish();
+          break;
+        case "backspace":
+          backspaceBoard();
+          break;
+        case " ":
+          flipCursorDirection();
+          break;
+        case "arrowdown":
+          moveCursorInDirection(Directions.Down);
+          break;
+        case "arrowup":
+          moveCursorInDirection(Directions.Up);
+          break;
+        case "arrowleft":
+          moveCursorInDirection(Directions.Left);
+          break;
+        case "arrowright":
+          moveCursorInDirection(Directions.Right);
+          break;
+        default:
+          const letterForKeypress = letters.find(
+            (letter) => letter.letter.toLowerCase() === key && !boardLetterIds.has(letter.id),
+          );
+          if (letterForKeypress) {
+            setLetterOnBoard(letterForKeypress);
+          }
+          break;
+      }
+    }
+
+    document.addEventListener("keydown", listenForKeyboard);
+    return () => document.removeEventListener("keydown", listenForKeyboard);
+  }, [
+    letters,
+    boardLetterIds,
+    backspaceBoard,
+    setLetterOnBoard,
+    flipCursorDirection,
+    moveCursorInDirection,
+    requestFinish,
+  ]);
 
   const topLetters = letters.slice(0, 8);
   const middleLetters = letters.slice(8, 15);
@@ -291,6 +345,7 @@ const LetterButton = styled.button`
   user-select: none;
   text-transform: uppercase;
   transition: all 50ms ease-in, height: 200ms ease-in;
+  animation: ${PopIn} 150ms;
 
   &:active:not([disabled]) {
     background: #c0c4ca;

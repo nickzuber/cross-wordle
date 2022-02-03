@@ -12,6 +12,7 @@ import {
   moveBoard,
   TileChangeReason,
   TileState,
+  updateCursorInDirection,
 } from "../utils/game";
 
 const defaultBoard = initalizeBoard();
@@ -25,6 +26,7 @@ type BoardOptions = {
   flipCursorDirection: () => void;
   backspaceBoard: () => void;
   shiftBoard: (direction: Directions) => void;
+  moveCursorInDirection: (direction: Directions) => void;
 };
 
 export const useBoard = (): BoardOptions => {
@@ -33,6 +35,13 @@ export const useBoard = (): BoardOptions => {
   const shiftBoard = useCallback(
     (direction: Directions) => {
       setBoard(moveBoard(board, direction));
+    },
+    [board],
+  );
+
+  const moveCursorInDirection = useCallback(
+    (direction: Directions) => {
+      setBoard(updateCursorInDirection(board, direction));
     },
     [board],
   );
@@ -143,6 +152,7 @@ export const useBoard = (): BoardOptions => {
     flipCursorDirection,
     backspaceBoard,
     shiftBoard,
+    moveCursorInDirection,
   };
 };
 

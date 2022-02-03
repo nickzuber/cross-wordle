@@ -354,6 +354,47 @@ export function getTileAtCursor(board: Board, cursor?: Cursor): Tile {
   return board.tiles[c.row][c.col];
 }
 
+export function updateCursorInDirection(board: Board, direction: Directions): Board {
+  switch (direction) {
+    case Directions.Down:
+      return {
+        ...board,
+        cursor: wrapCursor(board, {
+          row: board.cursor.row + 1,
+          col: board.cursor.col,
+          direction: board.cursor.direction,
+        }),
+      };
+    case Directions.Up:
+      return {
+        ...board,
+        cursor: wrapCursor(board, {
+          row: board.cursor.row - 1,
+          col: board.cursor.col,
+          direction: board.cursor.direction,
+        }),
+      };
+    case Directions.Left:
+      return {
+        ...board,
+        cursor: wrapCursor(board, {
+          row: board.cursor.row,
+          col: board.cursor.col - 1,
+          direction: board.cursor.direction,
+        }),
+      };
+    case Directions.Right:
+      return {
+        ...board,
+        cursor: wrapCursor(board, {
+          row: board.cursor.row,
+          col: board.cursor.col + 1,
+          direction: board.cursor.direction,
+        }),
+      };
+  }
+}
+
 export function decrementCursor(board: Board): Cursor {
   const cursor = board.cursor;
 

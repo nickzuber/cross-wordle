@@ -19,6 +19,7 @@ export type GameOptions = {
   updateCursor: (row: number, col: number) => void;
   backspaceBoard: () => void;
   shiftBoard: (direction: Directions) => void;
+  moveCursorInDirection: (direction: Directions) => void;
 };
 
 export const useGame = (): GameOptions => {
@@ -33,6 +34,7 @@ export const useGame = (): GameOptions => {
     backspaceBoard,
     flipCursorDirection,
     shiftBoard,
+    moveCursorInDirection,
   } = useBoard();
 
   const tilesAreConnected = React.useMemo(() => validateWordIsland(board), [board]);
@@ -89,6 +91,7 @@ export const useGame = (): GameOptions => {
     flipCursorDirection,
     backspaceBoard,
     shiftBoard,
+    moveCursorInDirection,
     isGameOver: gameState === GameState.Ended,
   };
 };
