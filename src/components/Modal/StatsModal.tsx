@@ -1,8 +1,13 @@
-import { FC } from "react";
+import { FC, useContext } from "react";
 import styled from "@emotion/styled";
 import { Modal } from "./Modal";
+import { GameContext } from "../../contexts/game";
 
 export const StatsModal: FC = () => {
+  const { solutionBoard } = useContext(GameContext);
+
+  console.info(solutionBoard);
+
   return (
     <Modal>
       <Title>Statistics</Title>

@@ -277,7 +277,7 @@ const MiniTileContentsShift = styled(MiniTileContents)<{
   s4: string;
 }>`
   &:after {
-    animation: ${({ s1, s2, s3, s4 }) => createLetterBlink(s1, s2, s3, s4)} 5000ms ease-in;
+    animation: ${({ s1, s2, s3, s4 }) => createLetterBlink(s1, s2, s3, s4)} 6000ms ease-in;
     animation-delay: ${(p) => (p.animationDelay ? BaseDelay + p.animationDelay : 0)}ms;
     animation-fill-mode: forwards;
     animation-iteration-count: infinite;

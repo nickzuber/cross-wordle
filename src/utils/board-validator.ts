@@ -116,7 +116,9 @@ export function validateBoard(board: Board): [Board, boolean] {
     cursor: board.cursor,
     tiles: tiles.map((row) =>
       row.map((tile) =>
-        tile.letter ? { ...tile, state: TileState.INVALID } : { ...tile, state: TileState.IDLE },
+        tile.letter
+          ? { ...tile, state: TileState.INVALID }
+          : { ...tile, state: TileState.IDLE },
       ),
     ),
   };
@@ -274,10 +276,23 @@ export function countLettersOnBoard(board: Board): number {
   return countFilledTiles(board.tiles);
 }
 
+export function countValidLettersOnBoard(board: Board): number {
+  return countValidTiles(board.tiles);
+}
+
 function countFilledTiles(tiles: Tile[][]) {
   return new Set(
     tiles
       .map((row) => row.map((tile) => tile.letter))
+      .flat()
+      .filter((letter) => letter !== null),
+  ).size;
+}
+
+function countValidTiles(tiles: Tile[][]) {
+  return new Set(
+    tiles
+      .map((row) => row.map((tile) => tile.state === TileState.VALID || TileState.MIXED))
       .flat()
       .filter((letter) => letter !== null),
   ).size;

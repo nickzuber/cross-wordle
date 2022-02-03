@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { PersistedStates } from "../constants/state";
 import {
   Board,
   Config,
@@ -14,7 +15,9 @@ import {
   TileState,
   updateCursorInDirection,
 } from "../utils/game";
+import createPersistedState from "use-persisted-state";
 
+const usePersistedBoard = createPersistedState(PersistedStates.Board);
 const defaultBoard = initalizeBoard();
 
 type BoardOptions = {
@@ -30,20 +33,20 @@ type BoardOptions = {
 };
 
 export const useBoard = (): BoardOptions => {
-  const [board, setBoard] = React.useState(defaultBoard);
+  const [board, setBoard] = usePersistedBoard(defaultBoard) as [Board, React.Dispatch<Board>];
 
   const shiftBoard = useCallback(
     (direction: Directions) => {
       setBoard(moveBoard(board, direction));
     },
-    [board],
+    [board], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   const moveCursorInDirection = useCallback(
     (direction: Directions) => {
       setBoard(updateCursorInDirection(board, direction));
     },
-    [board],
+    [board], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   const setLetterOnBoard = useCallback(
@@ -59,7 +62,7 @@ export const useBoard = (): BoardOptions => {
 
       setBoard({ cursor: newCursor, tiles: newTiles });
     },
-    [board],
+    [board], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   const backspaceBoard = useCallback(() => {
@@ -90,18 +93,21 @@ export const useBoard = (): BoardOptions => {
     newTiles[newCursor.row][newCursor.col].changeReason = undefined;
 
     setBoard({ cursor: newCursor, tiles: newTiles });
-  }, [board]);
+  }, [board]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const resetBoard = useCallback(() => {
-    setBoard((board) => ({
+    setBoard({
       ...board,
       tiles: board.tiles.map((row) =>
         row.map((tile) => ({ ...tile, letter: null, changeReason: undefined })),
       ),
-    }));
-  }, []);
+    });
+  }, [board]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const publicSetBoard = useCallback((board: Board) => setBoard(board), []);
+  const publicSetBoard = useCallback(
+    (board: Board) => setBoard(board),
+    [], // eslint-disable-line react-hooks/exhaustive-deps
+  );
 
   const flipCursorDirection = useCallback(() => {
     setBoard({
@@ -114,7 +120,7 @@ export const useBoard = (): BoardOptions => {
             : CursorDirections.LeftToRight,
       },
     });
-  }, [board]);
+  }, [board]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const updateCursor = useCallback(
     (row: number, col: number) => {
@@ -140,7 +146,7 @@ export const useBoard = (): BoardOptions => {
         });
       }
     },
-    [board],
+    [board], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   return {

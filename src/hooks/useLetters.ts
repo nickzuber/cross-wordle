@@ -1,41 +1,39 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Letter, shuffle } from "../utils/game";
 import { getTodaysLetters } from "../utils/generator";
+import { SolutionBoard } from "../utils/words-helper";
+import createPersistedState from "use-persisted-state";
+import { PersistedStates } from "../constants/state";
 
-const todaysLetters = getTodaysLetters();
+const usePersistedLetters = createPersistedState(PersistedStates.Letters);
+const [todaysBoard, todaysLetters] = getTodaysLetters();
 
 type LettersOptions = {
+  solutionBoard: SolutionBoard;
   letters: Letter[];
-  addLetter: (letter: Letter) => void;
-  removeLetter: (id: string) => void;
-  setLetters: (fn: (letters: Letter[]) => Letter[]) => void;
   shuffleLetters: () => void;
 };
 
 export const useLetters = (): LettersOptions => {
-  const [letters, setLetters] = React.useState(todaysLetters);
-
-  const addLetter = useCallback((letter: Letter) => {
-    setLetters((letters) => letters.concat(letter));
-  }, []);
-
-  const removeLetter = useCallback((id: string) => {
-    setLetters((letters) => letters.filter((letter) => letter.id !== id));
-  }, []);
-
-  const publicSetLetters = useCallback((fn: (letters: Letter[]) => Letter[]) => {
-    setLetters((letters) => fn(letters));
-  }, []);
+  const [letters, setLetters] = usePersistedLetters(todaysLetters) as [
+    Letter[],
+    React.Dispatch<Letter[]>,
+  ];
 
   const shuffleLetters = useCallback(() => {
-    setLetters((letters) => shuffle(letters));
-  }, []);
+    setLetters(shuffle(letters));
+  }, [letters]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // This shuffles the letters when the page loads which is nice,
+  // but more importantly it sets the letters into our persisted state.
+  // This makes sure the board is synced up with
+  useEffect(() => {
+    shuffleLetters();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return {
+    solutionBoard: todaysBoard,
     letters,
-    addLetter,
-    removeLetter,
-    setLetters: publicSetLetters,
     shuffleLetters,
   };
 };

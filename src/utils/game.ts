@@ -5,11 +5,6 @@ export const Config = {
   TileSpacing: 10,
 };
 
-export enum GameState {
-  Playing,
-  Ended,
-}
-
 export enum Directions {
   Up,
   Left,
@@ -439,8 +434,8 @@ function shiftBoardUp(board: Board): Board {
 
 function shiftBoardDown(board: Board): Board {
   const row = board.tiles[board.tiles.length - 1];
-  const newLetterPositions = [row, ...board.tiles.slice(0, board.tiles.length - 1)].map((row) =>
-    row.map((tile) => tile.letter),
+  const newLetterPositions = [row, ...board.tiles.slice(0, board.tiles.length - 1)].map(
+    (row) => row.map((tile) => tile.letter),
   );
 
   const newTiles = board.tiles.slice();
@@ -529,4 +524,13 @@ export function moveBoard(board: Board, direction: Directions): Board {
     case Directions.Right:
       return shiftBoardRight(board);
   }
+}
+
+export function getPuzzleNumber() {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const diff = now.getTime() - start.getTime();
+  const oneDay = 1000 * 60 * 60 * 24;
+  const day = Math.floor(diff / oneDay);
+  return day;
 }

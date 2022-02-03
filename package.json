@@ -26,6 +26,7 @@
     "rko": "^0.6.5",
     "svg-path-bounds": "^1.0.2",
     "typescript": "^4.5.5",
+    "use-persisted-state": "^0.3.3",
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.4"
   },
@@ -55,6 +56,7 @@
   },
   "devDependencies": {
     "@types/hammerjs": "^2.0.41",
-    "@types/random-seed": "^0.3.3"
+    "@types/random-seed": "^0.3.3",
+    "@types/use-persisted-state": "^0.3.1"
   }
 }

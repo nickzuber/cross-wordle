@@ -1,10 +1,21 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { Board, Directions, GameState, Letter, TileState } from "../utils/game";
-import { countLettersOnBoard, validateBoard, validateWordIsland } from "../utils/board-validator";
+import React, { useCallback, useContext, useMemo } from "react";
+import { Board, Config, Directions, getPuzzleNumber, Letter, TileState } from "../utils/game";
+import {
+  countValidLettersOnBoard,
+  validateBoard,
+  validateWordIsland,
+} from "../utils/board-validator";
 import { useBoard } from "./useBoard";
 import { useLetters } from "./useLetters";
+import { SolutionBoard } from "../utils/words-helper";
+import createPersistedState from "use-persisted-state";
+import { PersistedStates } from "../constants/state";
+import { ModalsContext } from "../contexts/modals";
+
+const useIsGameOver = createPersistedState(PersistedStates.GameOver);
 
 export type GameOptions = {
+  solutionBoard: SolutionBoard;
   isGameOver: boolean;
   board: Board;
   letters: Letter[];
@@ -23,8 +34,9 @@ export type GameOptions = {
 };
 
 export const useGame = (): GameOptions => {
-  const [gameState, setGameState] = useState(GameState.Playing);
-  const { letters, shuffleLetters } = useLetters();
+  const { openStats } = useContext(ModalsContext);
+  const [isGameOver, setIsGameOver] = useIsGameOver(false);
+  const { letters, solutionBoard, shuffleLetters } = useLetters();
   const {
     board,
     setLetterOnBoard,
@@ -57,7 +69,7 @@ export const useGame = (): GameOptions => {
   );
 
   const requestFinish = useCallback(() => {
-    if (!tilesAreConnected) return;
+    if (!canFinish) return;
 
     // Validate the board.
     const [newBoard] = validateBoard(board);
@@ -67,17 +79,21 @@ export const useGame = (): GameOptions => {
 
     // Print the result.
     const shareString = [
-      `Cross Wordle 142 ${countLettersOnBoard(newBoard)}/20`,
+      `Cross Wordle ${getPuzzleNumber()} ${countValidLettersOnBoard(newBoard)}/${
+        Config.MaxLetters
+      }`,
       "",
       getEmojiBoard(newBoard),
     ].join("\n");
     console.info(shareString);
-    setGameState(GameState.Ended);
-  }, [board, tilesAreConnected, setBoard]);
+    setIsGameOver(true);
+    setTimeout(openStats, 1600);
+  }, [board, canFinish]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const unusedLetters = letters.filter((letter) => !boardLetterIds.has(letter.id));
 
   return {
+    solutionBoard,
     board,
     letters,
     unusedLetters,
@@ -92,7 +108,7 @@ export const useGame = (): GameOptions => {
     backspaceBoard,
     shiftBoard,
     moveCursorInDirection,
-    isGameOver: gameState === GameState.Ended,
+    isGameOver: isGameOver as boolean,
   };
 };
 

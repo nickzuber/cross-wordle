@@ -61,7 +61,7 @@ export function createCompleteBoard(): SolutionBoard {
   return board;
 }
 
-export function getTodaysLetters(): Letter[] {
+export function getTodaysLetters(): [SolutionBoard, Letter[]] {
   // @TODO
   // Keep this board somewhere for reference later.
   // We'll want to show this answer at the end
@@ -84,7 +84,8 @@ export function getTodaysLetters(): Letter[] {
     letters = getLettersFromBoard(board);
   }
 
-  return shuffle(letters).map((letter) => ({ id: uuidv4(), letter }));
+  const shuffledLetters = shuffle(letters).map((letter) => ({ id: uuidv4(), letter }));
+  return [board, shuffledLetters];
 }
 
 export function analyzeBoardBuildingPerformance(iters = 1000) {

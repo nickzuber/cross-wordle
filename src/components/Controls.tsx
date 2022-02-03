@@ -27,6 +27,8 @@ export const Controls: FC = () => {
   );
 
   useEffect(() => {
+    if (isGameOver) return;
+
     function listenForKeyboard(event: KeyboardEvent) {
       const key = event.key.toLowerCase();
 
@@ -73,6 +75,7 @@ export const Controls: FC = () => {
     flipCursorDirection,
     moveCursorInDirection,
     requestFinish,
+    isGameOver,
   ]);
 
   const topLetters = letters.slice(0, 8);

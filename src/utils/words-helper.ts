@@ -34,7 +34,7 @@ export const MaxLetters = Config.MaxLetters;
 
 // Create the seeded random number generator for the day.
 const date = new Date();
-const seed = `${date.getMonth()}${date.getDate()}${date.getFullYear()}`;
+export const seed = `${date.getMonth()}${date.getDate()}${date.getFullYear()}`;
 export const randomGenerator = generator.create(seed);
 
 // @DEBUGGING
@@ -184,7 +184,8 @@ export function writeWordToBoard(
       ? position.col + word.length - 1 >= LetterBounds
       : position.row + word.length - 1 >= LetterBounds;
 
-  const willBoardUnderflow = direction === Direction.Right ? position.col < 0 : position.row < 0;
+  const willBoardUnderflow =
+    direction === Direction.Right ? position.col < 0 : position.row < 0;
 
   // Make sure writing to this board is valid.
   if (willBoardOverflow || willBoardUnderflow) throw new Error("Invalid board.");
@@ -207,7 +208,10 @@ export function writeWordToBoard(
   return newBoard;
 }
 
-export function getAllLettersInRow(position: Position, board: SolutionBoard): [string, Position][] {
+export function getAllLettersInRow(
+  position: Position,
+  board: SolutionBoard,
+): [string, Position][] {
   const letters = [];
   for (let c = 0; c < LetterBounds; c++) {
     const letter = board[position.row][c];
