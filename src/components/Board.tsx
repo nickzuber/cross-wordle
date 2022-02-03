@@ -150,7 +150,7 @@ const Container = styled.div`
     height: 320px;
   }
 
-  @media (max-height: 570px) {
+  @media (max-height: 580px) {
     width: 290px; // 6 tiles * tile size
     height: 290px;
   }
@@ -183,7 +183,7 @@ const TileWrapper = styled.div`
     max-width: 54px;
   }
 
-  @media (max-height: 570px) {
+  @media (max-height: 580px) {
     min-height: 48px;
     min-width: 48px;
     max-height: 48px;
@@ -274,7 +274,7 @@ const TileContents = styled.div<{
       max-width: 45px;
     }
 
-    @media (max-height: 570px) {
+    @media (max-height: 580px) {
       min-height: 40px;
       min-width: 40px;
       max-height: 40px;

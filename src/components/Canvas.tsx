@@ -28,7 +28,7 @@ const Container = styled.div`
     min-height: 315px; // 6 tiles * tile size
   }
 
-  @media (max-height: 570px) {
+  @media (max-height: 580px) {
     min-height: 290px; // 6 tiles * tile size
   }
 `;
