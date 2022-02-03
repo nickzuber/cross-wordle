@@ -1,11 +1,19 @@
-import { FC } from "react";
+import { FC, useContext, useEffect } from "react";
 import styled from "@emotion/styled";
 import { Canvas } from "./components";
 import { Controls } from "./components/Controls";
 import { Header } from "./components/Header";
 import { Modal } from "./components/Modal";
+import { ModalsContext } from "./contexts/modals";
 
 export const Scene: FC = () => {
+  const { openInstructions } = useContext(ModalsContext);
+
+  useEffect(() => {
+    const ts = setTimeout(openInstructions, 100);
+    return () => clearTimeout(ts);
+  }, []);
+
   return (
     <Container>
       <Header />

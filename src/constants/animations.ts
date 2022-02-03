@@ -1,5 +1,47 @@
 import { keyframes } from "@emotion/react";
 
+export const HighlightBlink = keyframes`
+  0% {
+    background: #ffffff;
+  }
+
+  46% {
+    background: #ffffff;
+  }
+  50% {
+    background: #f0f0f0;
+  }
+
+
+  96% {
+    background: #f0f0f0;
+  }
+  100% {
+    background: #ffffff;
+  }
+`;
+
+export const HighlightBlinkInverted = keyframes`
+  0% {
+    background: #f0f0f0;
+  }
+
+  46% {
+    background: #f0f0f0;
+  }
+  50% {
+    background: #ffffff;
+  }
+
+
+  96% {
+    background: #ffffff;
+  }
+  100% {
+    background: #f0f0f0;
+  }
+`;
+
 export const SlideIn = keyframes`
   from {
     transform: translateY(40px);

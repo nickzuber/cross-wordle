@@ -1,7 +1,13 @@
 import { FC } from "react";
 import styled from "@emotion/styled";
 import { Modal } from "./Modal";
-import { SuccessReveal } from "../../constants/animations";
+import {
+  HighlightBlink,
+  HighlightBlinkInverted,
+  InvalidReveal,
+  MixedReveal,
+  SuccessReveal,
+} from "../../constants/animations";
 
 const BaseDelay = 500;
 
@@ -25,14 +31,20 @@ export const InstructionsModal: FC = () => {
         <ExampleSection>
           <MiniBoardTyping />
         </ExampleSection>
-        <ExampleSection>Create words that are connected together.</ExampleSection>
+        <ExampleSection>
+          Create words that are connected together. Tiles will be colored at the end based on
+          validity.
+        </ExampleSection>
       </Example>
 
       <Example>
         <ExampleSection>
-          <MiniBoardTyping />
+          <MiniBoardCursor />
         </ExampleSection>
-        <ExampleSection>Create words that are connected together.</ExampleSection>
+        <ExampleSection>
+          Tap on the grid to change the cursor position. Tap on the cursor to switch the
+          direction you type.
+        </ExampleSection>
       </Example>
     </Modal>
   );
@@ -60,7 +72,7 @@ function MiniBoardTyping() {
           <MiniTileContentsSuccess animationDelay={200}>C</MiniTileContentsSuccess>
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContentsSuccess animationDelay={300}>T</MiniTileContentsSuccess>
+          <MiniTileContentsMixed animationDelay={300}>T</MiniTileContentsMixed>
         </MiniTileWrapper>
       </MiniRow>
       <MiniRow>
@@ -71,7 +83,51 @@ function MiniBoardTyping() {
           <MiniTileContents></MiniTileContents>
         </MiniTileWrapper>
         <MiniTileWrapper>
+          <MiniTileContentsFail animationDelay={300}>K</MiniTileContentsFail>
+        </MiniTileWrapper>
+      </MiniRow>
+    </MiniBoard>
+  );
+}
+
+function MiniBoardCursor() {
+  return (
+    <MiniBoard>
+      <MiniRow>
+        <MiniTileWrapper>
           <MiniTileContents></MiniTileContents>
+        </MiniTileWrapper>
+        <MiniTileWrapper>
+          <MiniTileContentsHighlighted invert animationDelay={0}>
+            A
+          </MiniTileContentsHighlighted>
+        </MiniTileWrapper>
+        <MiniTileWrapper>
+          <MiniTileContents></MiniTileContents>
+        </MiniTileWrapper>
+      </MiniRow>
+      <MiniRow>
+        <MiniTileWrapper>
+          <MiniTileContentsHighlighted animationDelay={0}></MiniTileContentsHighlighted>
+        </MiniTileWrapper>
+        <MiniTileWrapper>
+          <MiniTileContentsCursor>G</MiniTileContentsCursor>
+        </MiniTileWrapper>
+        <MiniTileWrapper>
+          <MiniTileContentsHighlighted animationDelay={0}></MiniTileContentsHighlighted>
+        </MiniTileWrapper>
+      </MiniRow>
+      <MiniRow>
+        <MiniTileWrapper>
+          <MiniTileContents>R</MiniTileContents>
+        </MiniTileWrapper>
+        <MiniTileWrapper>
+          <MiniTileContentsHighlighted invert animationDelay={0}>
+            E
+          </MiniTileContentsHighlighted>
+        </MiniTileWrapper>
+        <MiniTileWrapper>
+          <MiniTileContents>D</MiniTileContents>
         </MiniTileWrapper>
       </MiniRow>
     </MiniBoard>
@@ -127,27 +183,37 @@ const MiniTileContents = styled.div`
   user-select: none;
 `;
 
-const MiniTileContentsSuccess = styled.div<{ animationDelay: number }>`
-  background: #ffffff;
-  border: 2px solid #d3d6da;
-  transition: border 50ms ease-in, background 50ms ease-in;
-  color: #1a1a1b;
-  min-height: 25px;
-  min-width: 25px;
-  max-height: 25px;
-  max-width: 25px;
-  height: calc(100% - 10px);
-  width: calc(100% - 10px);
-  opacity: 1;
-  font-weight: 600;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  user-select: none;
+const MiniTileContentsCursor = styled(MiniTileContents)`
+  background: #228be622;
+  border-color: #228be6;
+`;
+
+const MiniTileContentsSuccess = styled(MiniTileContents)<{ animationDelay: number }>`
   animation: ${SuccessReveal} 500ms ease-in;
   animation-delay: ${(p) => BaseDelay + p.animationDelay}ms;
   animation-fill-mode: forwards;
+`;
+
+const MiniTileContentsMixed = styled(MiniTileContentsSuccess)<{ animationDelay: number }>`
+  animation: ${MixedReveal} 500ms ease-in;
+  animation-delay: ${(p) => BaseDelay + p.animationDelay}ms;
+  animation-fill-mode: forwards;
+`;
+
+const MiniTileContentsFail = styled(MiniTileContentsSuccess)<{ animationDelay: number }>`
+  animation: ${InvalidReveal} 500ms ease-in;
+  animation-delay: ${(p) => BaseDelay + p.animationDelay}ms;
+  animation-fill-mode: forwards;
+`;
+
+const MiniTileContentsHighlighted = styled(MiniTileContentsSuccess)<{
+  animationDelay: number;
+  invert?: boolean;
+}>`
+  animation: ${(p) => (p.invert ? HighlightBlinkInverted : HighlightBlink)} 4000ms ease-in;
+  animation-delay: ${(p) => (p.animationDelay ? BaseDelay + p.animationDelay : 0)}ms;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
 `;
 
 // ====================================================
@@ -165,7 +231,7 @@ const Paragraph = styled.p`
   margin: 0;
   margin-bottom: 18px;
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 0.9rem;
   text-align: left;
 `;
 
@@ -180,7 +246,7 @@ const Example = styled.div`
   min-height: 50px;
   display: flex;
   justify-content: center;
-  align-items: baseline;
+  align-items: flex-start;
   margin-bottom: 12px;
 `;
 
@@ -189,5 +255,6 @@ const ExampleSection = styled.div`
   min-height: 50px;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  font-size: 0.9rem;
 `;
