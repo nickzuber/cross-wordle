@@ -1,11 +1,15 @@
-import { FC } from "react";
+import { FC, useContext } from "react";
 import styled from "@emotion/styled";
+import { ModalsContext } from "../contexts/modals";
 
 export const Header: FC = () => {
+  const { openInstructions, openStats, openSettings } = useContext(ModalsContext);
+
   return (
     <Container>
       <ButtonContainer>
-        <Button>
+        {/* Instructions */}
+        <Button onClick={openInstructions}>
           <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
             <path
               stroke="currentColor"
@@ -32,7 +36,8 @@ export const Header: FC = () => {
       </ButtonContainer>
       <Title>Cross Wordle</Title>
       <ButtonContainer>
-        <Button>
+        {/* Stats */}
+        <Button onClick={openStats}>
           <svg
             width="24"
             height="24"
@@ -83,7 +88,9 @@ export const Header: FC = () => {
             ></path>
           </svg>
         </Button>
-        <Button>
+
+        {/* Settings */}
+        <Button onClick={openSettings}>
           <svg
             width="24"
             height="24"

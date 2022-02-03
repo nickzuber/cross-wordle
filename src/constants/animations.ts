@@ -1,5 +1,31 @@
 import { keyframes } from "@emotion/react";
 
+export const SlideIn = keyframes`
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+`;
+
+export const FadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+`;
+
 export const PopIn = keyframes`
   from {
     transform: scale(0.8);
