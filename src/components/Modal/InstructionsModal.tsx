@@ -5,11 +5,12 @@ import {
   HighlightBlink,
   HighlightBlinkInverted,
   InvalidReveal,
+  createLetterBlink,
   MixedReveal,
   SuccessReveal,
 } from "../../constants/animations";
 
-const BaseDelay = 500;
+const BaseDelay = 250;
 
 export const InstructionsModal: FC = () => {
   return (
@@ -17,12 +18,14 @@ export const InstructionsModal: FC = () => {
       <Title>How to play</Title>
       <Paragraph>Build a crossword by connecting the letters on the board.</Paragraph>
       <Paragraph>
-        Each word must be a real english word. Every word must be connected to another word —
-        like a crossword.
+        Each word must be a real english word. Words must be connected to each other.
       </Paragraph>
       <Paragraph>
-        Try to use as many letters as you can! There will always be at least one way to use
-        every letter, so give it your best shot!
+        When you've done as best you can, hit enter to submit. You can only do this <b>once</b>{" "}
+        per day.
+      </Paragraph>
+      <Paragraph>
+        It will <b>always</b> be possible to use all 20 letters. Have fun!
       </Paragraph>
 
       <Divider />
@@ -42,8 +45,18 @@ export const InstructionsModal: FC = () => {
           <MiniBoardCursor />
         </ExampleSection>
         <ExampleSection>
-          Tap on the grid to change the cursor position. Tap on the cursor to switch the
+          Tap on any tile to change the cursor's position. Tap on the cursor to switch the
           direction you type.
+        </ExampleSection>
+      </Example>
+
+      <Example>
+        <ExampleSection>
+          <MiniBoardShift />
+        </ExampleSection>
+        <ExampleSection>
+          Shift the board to make room for new letters — use the arrow buttons above the
+          keyboard.
         </ExampleSection>
       </Example>
     </Modal>
@@ -134,6 +147,46 @@ function MiniBoardCursor() {
   );
 }
 
+function MiniBoardShift() {
+  return (
+    <MiniBoard>
+      <MiniRow>
+        <MiniTileWrapper>
+          <MiniTileContentsShift s1="P" s2=" " s3="P" s4="A" animationDelay={0} />
+        </MiniTileWrapper>
+        <MiniTileWrapper>
+          <MiniTileContentsShift s1="A" s2="P" s3="A" s4=" " animationDelay={0} />
+        </MiniTileWrapper>
+        <MiniTileWrapper>
+          <MiniTileContentsShift s1=" " s2="A" s3="" s4=" " animationDelay={0} />
+        </MiniTileWrapper>
+      </MiniRow>
+      <MiniRow>
+        <MiniTileWrapper>
+          <MiniTileContentsShift s1=" " s2=" " s3=" " s4="G" animationDelay={0} />
+        </MiniTileWrapper>
+        <MiniTileWrapper>
+          <MiniTileContentsShift s1="G" s2=" " s3="G" s4=" " animationDelay={0} />
+        </MiniTileWrapper>
+        <MiniTileWrapper>
+          <MiniTileContentsShift s1=" " s2="G" s3=" " s4=" " animationDelay={0} />
+        </MiniTileWrapper>
+      </MiniRow>
+      <MiniRow>
+        <MiniTileWrapper>
+          <MiniTileContentsShift s1="R" s2=" " s3="R" s4="E" animationDelay={0} />
+        </MiniTileWrapper>
+        <MiniTileWrapper>
+          <MiniTileContentsShift s1="E" s2="R" s3="E" s4="D" animationDelay={0} />
+        </MiniTileWrapper>
+        <MiniTileWrapper>
+          <MiniTileContentsShift s1="D" s2="E" s3="D" s4=" " animationDelay={0} />
+        </MiniTileWrapper>
+      </MiniRow>
+    </MiniBoard>
+  );
+}
+
 const MiniBoard = styled.div`
   position: relative;
   background: #ffffff;
@@ -216,6 +269,22 @@ const MiniTileContentsHighlighted = styled(MiniTileContentsSuccess)<{
   animation-iteration-count: infinite;
 `;
 
+const MiniTileContentsShift = styled(MiniTileContents)<{
+  animationDelay: number;
+  s1: string;
+  s2: string;
+  s3: string;
+  s4: string;
+}>`
+  &:after {
+    animation: ${({ s1, s2, s3, s4 }) => createLetterBlink(s1, s2, s3, s4)} 5000ms ease-in;
+    animation-delay: ${(p) => (p.animationDelay ? BaseDelay + p.animationDelay : 0)}ms;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    content: "${(p) => p.s1}";
+  }
+`;
+
 // ====================================================
 
 const Title = styled.h1`
@@ -229,7 +298,7 @@ const Title = styled.h1`
 
 const Paragraph = styled.p`
   margin: 0;
-  margin-bottom: 18px;
+  margin-bottom: 12px;
   font-weight: 500;
   font-size: 0.9rem;
   text-align: left;

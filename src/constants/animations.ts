@@ -1,5 +1,39 @@
 import { keyframes } from "@emotion/react";
 
+export const createLetterBlink = (s1: string, s2: string, s3: string, s4: string) => keyframes`
+  0% {
+    content: "${s1}";
+  }
+
+  24% {
+    content: "${s1}";
+  }
+  25% {
+    content: "${s2}";
+  }
+
+  49% {
+    content: "${s2}";
+  }
+  50% {
+    content: "${s3}";
+  }
+
+  74% {
+    content: "${s3}";
+  }
+  75% {
+    content: "${s4}";
+  }
+
+  98% {
+    content: "${s4}";
+  }
+  100% {
+    content: "${s1}";
+  }
+`;
+
 export const HighlightBlink = keyframes`
   0% {
     background: #ffffff;
