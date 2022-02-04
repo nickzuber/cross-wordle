@@ -292,8 +292,11 @@ function countFilledTiles(tiles: Tile[][]) {
 function countValidTiles(tiles: Tile[][]) {
   return new Set(
     tiles
-      .map((row) => row.map((tile) => tile.state === TileState.VALID || TileState.MIXED))
-      .flat()
-      .filter((letter) => letter !== null),
+      .map((row) =>
+        row
+          .filter((tile) => tile.state === TileState.VALID || tile.state === TileState.MIXED)
+          .map((letter) => letter.id),
+      )
+      .flat(),
   ).size;
 }
