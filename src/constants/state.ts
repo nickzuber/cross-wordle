@@ -4,7 +4,8 @@ const Prefix = "_cross-wordle-game__";
 
 export const PersistedStates = {
   FirstTime: `${Prefix}first-time`,
-  GameOver: `${Prefix}${seed}_game-over`,
-  Board: `${Prefix}${seed}_todays-board`,
-  Letters: `${Prefix}${seed}_todays-letters`,
+  GameOver: `${Prefix}${seed}game-over`,
+  Board: `${Prefix}${seed}todays-board`,
+  Letters: `${Prefix}${seed}todays-letters`,
+  Stats: `${Prefix}stats`,
 };

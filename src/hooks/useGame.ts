@@ -29,6 +29,7 @@ export type GameOptions = {
   canFinish: boolean;
   updateCursor: (row: number, col: number) => void;
   backspaceBoard: () => void;
+  getShareLink: () => string;
   shiftBoard: (direction: Directions) => void;
   moveCursorInDirection: (direction: Directions) => void;
 };
@@ -77,20 +78,26 @@ export const useGame = (): GameOptions => {
     // Animate the tiles.
     setBoard(newBoard);
 
-    // Print the result.
-    const shareString = [
-      `Cross Wordle ${getPuzzleNumber()} ${countValidLettersOnBoard(newBoard)}/${
-        Config.MaxLetters
-      }`,
-      "",
-      getEmojiBoard(newBoard),
-    ].join("\n");
-    console.info(shareString);
+    // End the game.
     setIsGameOver(true);
+
+    // Show the stats modal.
     setTimeout(openStats, 1600);
   }, [board, canFinish]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const unusedLetters = letters.filter((letter) => !boardLetterIds.has(letter.id));
+
+  const getShareLink = useCallback(() => {
+    return [
+      `Crosswordle ${getPuzzleNumber()} ${countValidLettersOnBoard(board)}/${
+        Config.MaxLetters
+      }`,
+      "",
+      getEmojiBoard(board),
+      "",
+      "https://cross-wordle-nickzuber.vercel.app/",
+    ].join("\n");
+  }, [board]);
 
   return {
     solutionBoard,
@@ -109,6 +116,7 @@ export const useGame = (): GameOptions => {
     shiftBoard,
     moveCursorInDirection,
     isGameOver: isGameOver as boolean,
+    getShareLink,
   };
 };
 
