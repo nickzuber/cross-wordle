@@ -380,6 +380,11 @@ const DisabledLetterButton = styled(LetterButton)`
 const ActionButton = styled(LetterButton)`
   width: 64px;
   text-transform: none;
+  transition: opacity 100ms ease-in;
+
+  &:disabled {
+    opacity: 0.5;
+  }
 
   @media (max-width: 370px) {
     width: 60px;
