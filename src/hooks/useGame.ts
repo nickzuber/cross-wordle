@@ -94,8 +94,6 @@ export const useGame = (): GameOptions => {
       }`,
       "",
       getEmojiBoard(board),
-      "",
-      "https://cross-wordle-nickzuber.vercel.app/",
     ].join("\n");
   }, [board]);
 
