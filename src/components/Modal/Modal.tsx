@@ -39,7 +39,7 @@ const Container = styled.div<{ fullscreen: boolean }>`
   max-width: 600px;
   height: ${(p) => (p.fullscreen ? "100%" : "auto")};
   width: ${(p) => (p.fullscreen ? "100%" : "95%")};
-  margin: 0 auto;
+  margin: auto;
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
@@ -49,13 +49,13 @@ const Container = styled.div<{ fullscreen: boolean }>`
   animation-fill-mode: forwards;
   box-sizing: border-box;
   z-index: 6;
-  margin-top: ${(p) => (p.fullscreen ? "0" : "24px")};
   border-radius: ${(p) => (p.fullscreen ? "0" : "8px")};
   box-shadow: ${(p) => (p.fullscreen ? "none" : "rgb(99 99 99 / 46%) 0px 2px 8px 2px")};
 `;
 
 const Content = styled.div`
   width: 80%;
+  height: fit-content;
   margin: 0 auto;
 
   @media (max-width: 480px) {

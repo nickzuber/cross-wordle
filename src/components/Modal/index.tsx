@@ -37,4 +37,9 @@ const Container = styled.div`
   background: rgba(100, 100, 100, 0.5);
   animation: ${FadeIn} 250ms;
   animation-fill-mode: forwards;
+  overflow-y: auto;
+  padding: 24px 0 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
