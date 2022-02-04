@@ -6,8 +6,6 @@ import { SuccessReveal } from "../../constants/animations";
 import { countValidLettersOnBoard } from "../../utils/board-validator";
 import { Config } from "../../utils/game";
 
-const BaseDelay = 250;
-
 function zeroPad(num: number, places: number) {
   return String(num).padStart(places, "0");
 }
@@ -92,6 +90,7 @@ export const StatsModal: FC = () => {
         <MiniBoard
           hidePreview={true}
           message="You must submit your board before you can see today's original solution"
+          isGameOver={isGameOver}
         >
           <MiniBoardEmptyRows />
         </MiniBoard>
@@ -99,6 +98,7 @@ export const StatsModal: FC = () => {
         <MiniBoard
           hidePreview={!showPreview}
           message="Tap to see today's original solution"
+          isGameOver={isGameOver}
           onClick={() => setShowPreview(true)}
         >
           {solutionBoard.map((row, r) => {
@@ -121,58 +121,62 @@ export const StatsModal: FC = () => {
         </MiniBoard>
       )}
 
-      <ShareContainer>
-        <ShareSection>
-          <Clock>{timeLeft}</Clock>
-        </ShareSection>
-        <ShareSection>
-          <ShareButton onClick={onShareResults}>
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M19.25 7C19.25 8.24264 18.2426 9.25 17 9.25C15.7574 9.25 14.75 8.24264 14.75 7C14.75 5.75736 15.7574 4.75 17 4.75C18.2426 4.75 19.25 5.75736 19.25 7Z"
-                stroke="#ffffff"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              ></path>
-              <path
-                d="M9.25 12C9.25 13.2426 8.24264 14.25 7 14.25C5.75736 14.25 4.75 13.2426 4.75 12C4.75 10.7574 5.75736 9.75 7 9.75C8.24264 9.75 9.25 10.7574 9.25 12Z"
-                stroke="#ffffff"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              ></path>
-              <path
-                d="M19.25 17C19.25 18.2426 18.2426 19.25 17 19.25C15.7574 19.25 14.75 18.2426 14.75 17C14.75 15.7574 15.7574 14.75 17 14.75C18.2426 14.75 19.25 15.7574 19.25 17Z"
-                stroke="#ffffff"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              ></path>
-              <path
-                d="M14.5 16L9 13.5"
-                stroke="#ffffff"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              ></path>
-              <path
-                d="M14.5 8.5L9 11"
-                stroke="#ffffff"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              ></path>
-            </svg>
-          </ShareButton>
-        </ShareSection>
-      </ShareContainer>
+      {isGameOver ? (
+        <ShareContainer>
+          <ShareSection>
+            <Clock>{timeLeft}</Clock>
+          </ShareSection>
+          <ShareSection>
+            <ShareButton onClick={onShareResults}>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M19.25 7C19.25 8.24264 18.2426 9.25 17 9.25C15.7574 9.25 14.75 8.24264 14.75 7C14.75 5.75736 15.7574 4.75 17 4.75C18.2426 4.75 19.25 5.75736 19.25 7Z"
+                  stroke="#ffffff"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                ></path>
+                <path
+                  d="M9.25 12C9.25 13.2426 8.24264 14.25 7 14.25C5.75736 14.25 4.75 13.2426 4.75 12C4.75 10.7574 5.75736 9.75 7 9.75C8.24264 9.75 9.25 10.7574 9.25 12Z"
+                  stroke="#ffffff"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                ></path>
+                <path
+                  d="M19.25 17C19.25 18.2426 18.2426 19.25 17 19.25C15.7574 19.25 14.75 18.2426 14.75 17C14.75 15.7574 15.7574 14.75 17 14.75C18.2426 14.75 19.25 15.7574 19.25 17Z"
+                  stroke="#ffffff"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                ></path>
+                <path
+                  d="M14.5 16L9 13.5"
+                  stroke="#ffffff"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                ></path>
+                <path
+                  d="M14.5 8.5L9 11"
+                  stroke="#ffffff"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                ></path>
+              </svg>
+            </ShareButton>
+          </ShareSection>
+        </ShareContainer>
+      ) : (
+        <SpacingContainer />
+      )}
     </Modal>
   );
 };
@@ -304,7 +308,7 @@ const MiniBoardEmptyRows = () => {
   );
 };
 
-const MiniBoard = styled.div<{ hidePreview?: boolean; message?: string }>`
+const MiniBoard = styled.div<{ isGameOver: boolean; hidePreview?: boolean; message?: string }>`
   position: relative;
   background: #ffffff;
   width: 240px; // 6 tiles * tile size
@@ -331,7 +335,7 @@ const MiniBoard = styled.div<{ hidePreview?: boolean; message?: string }>`
             font-weight: 600;
             padding: 12px 24px;
             text-shadow: 0px 0px 2px #5b5b5b2b;
-            cursor: pointer;
+            cursor: ${p.isGameOver ? "pointer" : "default"};
         }
           }
         `
@@ -383,7 +387,7 @@ const MiniTileContents = styled.div`
 
 const MiniTileContentsSuccess = styled(MiniTileContents)<{ animationDelay: number }>`
   animation: ${SuccessReveal} 500ms ease-in;
-  animation-delay: ${(p) => BaseDelay + p.animationDelay}ms;
+  animation-delay: ${(p) => p.animationDelay}ms;
   animation-fill-mode: forwards;
 `;
 
@@ -415,13 +419,22 @@ const Result = styled.span`
   display: block;
 `;
 
+const SpacingContainer = styled.div`
+  width: 100%;
+  min-height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 12px auto 0;
+`;
+
 const ShareContainer = styled.div`
   width: 100%;
   min-height: 50px;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  margin: 24px auto;
+  margin: 36px auto 24px;
 `;
 
 const Clock = styled.div`

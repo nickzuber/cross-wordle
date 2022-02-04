@@ -19,7 +19,7 @@ export const useLocalStorageGC = () => {
           key.indexOf(PersistedStorage.SeedDivider) > -1,
       )
       .filter((key) => {
-        const [seed, _] = key.split(PersistedStorage.SeedDivider);
+        const [seed] = key.split(PersistedStorage.SeedDivider);
         return seed !== todaySeed;
       });
 
@@ -28,7 +28,7 @@ export const useLocalStorageGC = () => {
     }
   }, []);
 
-  useEffect(() => clean(), []);
+  useEffect(() => clean(), []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return null;
 };

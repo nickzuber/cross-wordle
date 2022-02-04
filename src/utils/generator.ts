@@ -8,7 +8,6 @@ import {
   fillRandomEmptyPositions,
   getLettersFromBoard,
   getWordsOfLength,
-  printBoard,
   randomGenerator,
   SolutionBoard,
   writeWordToBoard,

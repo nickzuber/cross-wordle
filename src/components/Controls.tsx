@@ -15,7 +15,6 @@ export const Controls: FC = () => {
     backspaceBoard,
     canFinish,
     isGameOver,
-    shuffleLetters,
     flipCursorDirection,
   } = useContext(GameContext);
 
@@ -147,8 +146,12 @@ export const Controls: FC = () => {
             ></path>
           </svg>
         </BoardButton>
-        <BoardButton disabled={isGameOver} onClick={shuffleLetters} style={{ width: 124 }}>
-          Shuffle letters
+        <BoardButton
+          disabled={isGameOver}
+          onClick={flipCursorDirection}
+          style={{ width: 142 }}
+        >
+          Change direction
         </BoardButton>
         <BoardButton disabled={isGameOver} onClick={() => shiftBoard(Directions.Down)}>
           <svg
