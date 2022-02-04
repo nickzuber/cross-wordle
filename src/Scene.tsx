@@ -8,6 +8,7 @@ import { ModalsContext } from "./contexts/modals";
 import createPersistedState from "use-persisted-state";
 import { PersistedStates } from "./constants/state";
 import { GameContext } from "./contexts/game";
+import { useLocalStorageGC } from "./hooks/useLocalStorageGC";
 
 const useFirstTime = createPersistedState(PersistedStates.FirstTime);
 
@@ -15,6 +16,9 @@ export const Scene: FC = () => {
   const { openInstructions, openStats } = useContext(ModalsContext);
   const { isGameOver } = useContext(GameContext);
   const [isFirstTime, setFirstTime] = useFirstTime(true);
+
+  // Clean up old keys.
+  useLocalStorageGC();
 
   useEffect(() => {
     let ts: ReturnType<typeof setTimeout>;

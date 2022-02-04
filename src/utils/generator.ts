@@ -54,10 +54,6 @@ export function createCompleteBoard(): SolutionBoard {
     board = fillRandomEmptyPositions(board) || board;
   }
 
-  // @TODO
-  // Stop printing this to the console.
-  printBoard(board);
-
   return board;
 }
 

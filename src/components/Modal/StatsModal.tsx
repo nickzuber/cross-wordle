@@ -31,18 +31,21 @@ function getTimeLeftInDay() {
 
 function scoreToCompliment(score: number) {
   if (score < 5) {
-    return "Decent start.";
+    return "Better luck next time!";
   }
   if (score < 10) {
-    return "Not bad.";
+    return "Not too shabby!";
   }
   if (score < 14) {
-    return "Great.";
+    return "Nice.";
   }
   if (score < 18) {
-    return "Amazing!";
+    return "Awesome!";
   }
-  return "Perfect - awesome job!";
+  if (score >= 20) {
+    return "Perfect — you're amazing!";
+  }
+  return "";
 }
 
 export const StatsModal: FC = () => {

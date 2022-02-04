@@ -1,11 +1,14 @@
 import { seed } from "../utils/words-helper";
 
-const Prefix = "_cross-wordle-game__";
+export const PersistedStorage = {
+  Stamp: "_cross-wordle-game__",
+  SeedDivider: "_.-sEeD-dIvIdEr-._",
+};
 
 export const PersistedStates = {
-  FirstTime: `${Prefix}first-time`,
-  GameOver: `${Prefix}${seed}game-over`,
-  Board: `${Prefix}${seed}todays-board`,
-  Letters: `${Prefix}${seed}todays-letters`,
-  Stats: `${Prefix}stats`,
+  FirstTime: PersistedStorage.Stamp + "first-time",
+  GameOver: seed + PersistedStorage.SeedDivider + PersistedStorage.Stamp + "game-over",
+  Board: seed + PersistedStorage.SeedDivider + PersistedStorage.Stamp + "todays-board",
+  Letters: seed + PersistedStorage.SeedDivider + PersistedStorage.Stamp + "todays-letters",
+  Stats: PersistedStorage.Stamp + "stats",
 };
