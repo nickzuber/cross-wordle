@@ -3,6 +3,8 @@ import styled from "@emotion/styled";
 import { Modal } from "./Modal";
 import { GameContext } from "../../contexts/game";
 import { SuccessReveal } from "../../constants/animations";
+import { countValidLettersOnBoard } from "../../utils/board-validator";
+import { Config } from "../../utils/game";
 
 const BaseDelay = 250;
 
@@ -21,7 +23,7 @@ function getTimeLeftInDay() {
 }
 
 export const StatsModal: FC = () => {
-  const { solutionBoard, getShareLink } = useContext(GameContext);
+  const { board, solutionBoard, getShareLink } = useContext(GameContext);
   const [timeLeft, setTimeLeft] = useState("unknown");
 
   useEffect(() => {
@@ -46,7 +48,13 @@ export const StatsModal: FC = () => {
   return (
     <Modal>
       <Title>Statistics</Title>
-      <Paragraph>You were able to place </Paragraph>
+      <Paragraph>
+        You were able to place{" "}
+        <b>
+          {countValidLettersOnBoard(board)}/{Config.MaxLetters}
+        </b>
+        . Nice!
+      </Paragraph>
       <MiniBoard>
         {solutionBoard.map((row, r) => {
           return (
@@ -193,10 +201,10 @@ const Title = styled.h1`
 
 const Paragraph = styled.p`
   margin: 0;
-  margin-bottom: 12px;
+  margin-bottom: 24px;
   font-weight: 500;
   font-size: 0.9rem;
-  text-align: left;
+  text-align: center;
 `;
 
 const ShareContainer = styled.div`
