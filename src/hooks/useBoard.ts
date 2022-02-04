@@ -79,7 +79,7 @@ export const useBoard = (): BoardOptions => {
       newTiles[row][col].state = TileState.IDLE;
       newTiles[row][col].changeReason = undefined;
 
-      return { cursor: newCursor, tiles: newTiles };
+      return setBoard({ cursor: newCursor, tiles: newTiles });
     }
 
     // No letter on current tile, we want to delete the letter before the next
