@@ -24,7 +24,7 @@ function getTimeLeftInDay() {
 
 export const StatsModal: FC = () => {
   const { board, solutionBoard, getShareLink } = useContext(GameContext);
-  const [timeLeft, setTimeLeft] = useState("unknown");
+  const [timeLeft, setTimeLeft] = useState(getTimeLeftInDay());
 
   useEffect(() => {
     const ts = setInterval(() => setTimeLeft(getTimeLeftInDay()), 1000);
@@ -219,7 +219,7 @@ const ShareContainer = styled.div`
 const Clock = styled.div`
   font-size: 18px;
   font-weight: 600;
-  font-family: "SF Mono";
+  font-family: "SF Mono", monospace;
 `;
 
 const ShareSection = styled.div`
