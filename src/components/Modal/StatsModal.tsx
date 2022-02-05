@@ -5,6 +5,7 @@ import { GameContext } from "../../contexts/game";
 import { SuccessReveal } from "../../constants/animations";
 import { countValidLettersOnBoard } from "../../utils/board-validator";
 import { Config } from "../../utils/game";
+import { ToastContext } from "../../contexts/toast";
 
 function zeroPad(num: number, places: number) {
   return String(num).padStart(places, "0");
@@ -48,6 +49,7 @@ function scoreToCompliment(score: number) {
 
 export const StatsModal: FC = () => {
   const { board, solutionBoard, getShareLink, isGameOver } = useContext(GameContext);
+  const { sendToast } = useContext(ToastContext);
   const [timeLeft, setTimeLeft] = useState(getTimeLeftInDay());
   const [showPreview, setShowPreview] = useState(false);
 
@@ -64,10 +66,19 @@ export const StatsModal: FC = () => {
           text: getShareLink(),
           url: window.location.href,
         })
-        .catch((err) => console.info(err));
+        .catch(() =>
+          navigator.clipboard
+            .writeText(getShareLink())
+            .then(() => sendToast("Copied to clipboard!"))
+            .catch(() => sendToast("Something went wrong.")),
+        );
     } else if (navigator.clipboard) {
-      navigator.clipboard.writeText(getShareLink()).catch((err) => console.info(err));
+      navigator.clipboard
+        .writeText(getShareLink())
+        .then(() => sendToast("Copied to clipboard!"))
+        .catch(() => sendToast("Something went wrong."));
     }
+    sendToast("Something went wrong.");
   }
 
   return (
@@ -76,11 +87,11 @@ export const StatsModal: FC = () => {
       {isGameOver ? (
         <Fragment>
           <Paragraph>
-            You were able to place
+            You were able to correctly use
             <Result>
               {countValidLettersOnBoard(board)}/{Config.MaxLetters}
             </Result>
-            letters on the board.
+            letters on your board.
             <br />
             <b>{scoreToCompliment(countValidLettersOnBoard(board))}</b>
           </Paragraph>

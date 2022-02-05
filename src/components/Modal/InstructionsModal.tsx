@@ -16,13 +16,13 @@ export const InstructionsModal: FC = () => {
   return (
     <Modal>
       <Title>How to play</Title>
-      <Paragraph>Build a crossword by connecting the letters on the board.</Paragraph>
+      <Paragraph>Build a crossword by connecting all the letters on the board.</Paragraph>
       <Paragraph>
-        Each word must be a real english word. Words must be connected to each other.
+        Each word must be a real English word. Words must be connected to each other.
       </Paragraph>
       <Paragraph>
-        When you've done as best you can, hit enter to submit. You can only do this <b>once</b>{" "}
-        per day.
+        When you've placed all the letters, hit enter to submit. You can only do this{" "}
+        <b>once</b> per day.
       </Paragraph>
       <Paragraph>
         It will <b>always</b> be possible to use all 20 letters. Have fun!
@@ -35,8 +35,8 @@ export const InstructionsModal: FC = () => {
           <MiniBoardTyping />
         </ExampleSection>
         <ExampleSection>
-          Create words that are connected together. Tiles will be colored at the end based on
-          validity.
+          Create words that are connected together. Green tiles are parts of real words. Gray
+          tiles are part of invalid words.
         </ExampleSection>
       </Example>
 
@@ -326,4 +326,5 @@ const ExampleSection = styled.div`
   justify-content: center;
   align-items: flex-start;
   font-size: 0.9rem;
+  font-weight: 500;
 `;

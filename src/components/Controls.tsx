@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import { Directions, Letter } from "../utils/game";
 import { GameContext } from "../contexts/game";
 import { PopIn } from "../constants/animations";
+import { ToastContext } from "../contexts/toast";
 
 export const Controls: FC = () => {
   const {
@@ -16,7 +17,25 @@ export const Controls: FC = () => {
     canFinish,
     isGameOver,
     flipCursorDirection,
+    unusedLetters,
   } = useContext(GameContext);
+  const { sendToast } = useContext(ToastContext);
+
+  const disableEnterButton = !canFinish || isGameOver;
+
+  const onEnterPress = useCallback(() => {
+    if (disableEnterButton) {
+      const message =
+        unusedLetters.length > 0
+          ? `You still have to place ${unusedLetters.length} letter${
+              unusedLetters.length !== 1 ? "s" : ""
+            } on the board.`
+          : "All words must be connected like a crossword.";
+      sendToast(message);
+    } else {
+      requestFinish();
+    }
+  }, [sendToast, disableEnterButton, unusedLetters, requestFinish]);
 
   const onLetterButtonPress = useCallback(
     (letter: Letter) => {
@@ -251,9 +270,7 @@ export const Controls: FC = () => {
         </LettersRow>
 
         <LettersRow>
-          <ActionButton disabled={!canFinish || isGameOver} onClick={requestFinish}>
-            {"Enter"}
-          </ActionButton>
+          <ActionButton onClick={() => onEnterPress()}>{"Enter"}</ActionButton>
           {bottomLetters.map((letter) =>
             boardLetterIds.has(letter.id) ? (
               <DisabledLetterButton key={letter.id} disabled={true} />

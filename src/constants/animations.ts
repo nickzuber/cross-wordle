@@ -148,14 +148,14 @@ export const MixedReveal = keyframes`
   }
   50% {
     color: #ffffff;
-    border-color: #c9b458;
-    background: #c9b458;
+    border-color: #6aaa64;
+    background: #6aaa64;
     transform: rotateX(-90deg);
   }
   100% {
     color: #ffffff;
-    border-color: #c9b458;
-    background: #c9b458;
+    border-color: #6aaa64;
+    background: #6aaa64;
     transform: rotateX(0);
   }
 `;

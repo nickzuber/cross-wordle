@@ -25,3 +25,36 @@ body {
 button {
   color: #1a1a1b;
 }
+
+.__toast-styles__ {
+  position: fixed;
+  z-index: 9999;
+  width: fit-content;
+  margin: 0 24px;
+  top: 5%;
+  left: calc(50% - 24px);
+  user-select: none;
+  transform: translate(-50%, 0);
+  background: #ffffff;
+  text-align: center;
+  box-shadow: rgb(99 99 99 / 20%) 0px 2px 8px 0px;
+  border-radius: 4px;
+  padding: 24px 36px;
+  font-weight: 500;
+  font-size: 1rem;
+  animation: slideIn 200ms ease-in;
+  animation-fill-mode: forwards;
+  animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}

@@ -11,6 +11,7 @@ import { SolutionBoard } from "../utils/words-helper";
 import createPersistedState from "use-persisted-state";
 import { PersistedStates } from "../constants/state";
 import { ModalsContext } from "../contexts/modals";
+import { ToastContext } from "../contexts/toast";
 
 const useIsGameOver = createPersistedState(PersistedStates.GameOver);
 
@@ -36,6 +37,7 @@ export type GameOptions = {
 
 export const useGame = (): GameOptions => {
   const { openStats } = useContext(ModalsContext);
+  const { clearToast } = useContext(ToastContext);
   const [isGameOver, setIsGameOver] = useIsGameOver(false);
   const { letters, solutionBoard, shuffleLetters } = useLetters();
   const {
@@ -65,12 +67,13 @@ export const useGame = (): GameOptions => {
   );
 
   const canFinish = useMemo(
-    () => tilesAreConnected && boardLetterIds.size > 1,
+    () => tilesAreConnected && boardLetterIds.size === Config.MaxLetters,
     [tilesAreConnected, boardLetterIds],
   );
 
   const requestFinish = useCallback(() => {
     if (!canFinish) return;
+    clearToast();
 
     // Validate the board.
     const [newBoard] = validateBoard(board);
@@ -82,8 +85,8 @@ export const useGame = (): GameOptions => {
     setIsGameOver(true);
 
     // Show the stats modal.
-    setTimeout(openStats, 1600);
-  }, [board, canFinish]); // eslint-disable-line react-hooks/exhaustive-deps
+    setTimeout(openStats, 2000);
+  }, [board, canFinish, clearToast]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const unusedLetters = letters.filter((letter) => !boardLetterIds.has(letter.id));
 
@@ -129,7 +132,7 @@ function getEmojiBoard(board: Board) {
             case TileState.INVALID:
               return "⬛";
             case TileState.MIXED:
-              return "🟨";
+              return "🟩";
             case TileState.IDLE:
               return "⬜";
             default:
