@@ -270,7 +270,9 @@ export const Controls: FC = () => {
         </LettersRow>
 
         <LettersRow>
-          <ActionButton onClick={() => onEnterPress()}>{"Enter"}</ActionButton>
+          <ActionButton disabled={isGameOver} onClick={() => onEnterPress()}>
+            {"Enter"}
+          </ActionButton>
           {bottomLetters.map((letter) =>
             boardLetterIds.has(letter.id) ? (
               <DisabledLetterButton key={letter.id} disabled={true} />
