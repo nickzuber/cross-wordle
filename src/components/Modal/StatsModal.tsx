@@ -77,8 +77,9 @@ export const StatsModal: FC = () => {
         .writeText(getShareLink())
         .then(() => sendToast("Copied to clipboard!"))
         .catch(() => sendToast("Something went wrong."));
+    } else {
+      sendToast("Something went wrong.");
     }
-    sendToast("Something went wrong.");
   }
 
   return (
