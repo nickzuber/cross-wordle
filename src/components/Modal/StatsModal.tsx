@@ -450,8 +450,8 @@ const ShareContainer = styled.div`
 
 const Clock = styled.div`
   font-size: 18px;
-  font-weight: 600;
-  font-family: "SF Mono", monospace;
+  font-weight: 500;
+  font-family: "IBM Plex Mono", monospace;
 `;
 
 const ShareSection = styled.div`
