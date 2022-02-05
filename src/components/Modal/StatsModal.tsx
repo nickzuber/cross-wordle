@@ -64,7 +64,6 @@ export const StatsModal: FC = () => {
         .share({
           title: document.title,
           text: getShareLink(),
-          url: window.location.href,
         })
         .catch(() =>
           navigator.clipboard
