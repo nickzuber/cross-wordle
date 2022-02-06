@@ -37,11 +37,12 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "build-hash": "echo \"window.crosswordle = window.crosswordle || {};\nwindow.crosswordle.hash = '$(git rev-parse --short HEAD)';\" > public/hash.js"
+    "build-hash": "echo \"window.crosswordle = window.crosswordle || {};\nwindow.crosswordle.hash = '$(git rev-parse --short HEAD)';\" > public/hash.js",
+    "prepare": "husky install"
   },
   "husky": {
     "hooks": {
-      "post-commit": "echo \"test\""
+      "post-commit": "npm run build-hash"
     }
   },
   "eslintConfig": {
