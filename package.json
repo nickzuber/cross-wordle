@@ -41,7 +41,7 @@
   },
   "husky": {
     "hooks": {
-      "post-commit": "npm run build-hash"
+      "post-commit": "echo \"test\""
     }
   },
   "eslintConfig": {
