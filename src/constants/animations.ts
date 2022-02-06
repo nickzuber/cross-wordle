@@ -34,45 +34,48 @@ export const createLetterBlink = (s1: string, s2: string, s3: string, s4: string
   }
 `;
 
-export const HighlightBlink = keyframes`
+export const createHighlightBlink = (background: string, highlight: string) => keyframes`
   0% {
-    background: #ffffff;
+    background: ${background};
   }
 
   46% {
-    background: #ffffff;
+    background: ${background};
   }
   50% {
-    background: #f0f0f0;
+    background: ${highlight};
   }
 
 
   96% {
-    background: #f0f0f0;
+    background: ${highlight};
   }
   100% {
-    background: #ffffff;
+    background: ${background};
   }
 `;
 
-export const HighlightBlinkInverted = keyframes`
+export const createHighlightBlinkInverted = (
+  background: string,
+  highlight: string,
+) => keyframes`
   0% {
-    background: #f0f0f0;
+    background: ${highlight};
   }
 
   46% {
-    background: #f0f0f0;
+    background: ${highlight};
   }
   50% {
-    background: #ffffff;
+    background: ${background};
   }
 
 
   96% {
-    background: #ffffff;
+    background: ${background};
   }
   100% {
-    background: #f0f0f0;
+    background: ${highlight};
   }
 `;
 
@@ -114,14 +117,18 @@ export const PopIn = keyframes`
   }
 `;
 
-export const SuccessReveal = keyframes`
+export const createSuccessReveal = (
+  color: string,
+  borderColor: string,
+  background: string,
+) => keyframes`
   0% {
     transform: rotateX(0);
   }
   49% {
-    color: #1a1a1b;
-    border-color: #d3d6da;
-    background: #ffffff;
+    color: ${color};
+    border-color: ${borderColor};
+    background: ${background};
   }
   50% {
     color: #ffffff;
@@ -137,14 +144,18 @@ export const SuccessReveal = keyframes`
   }
 `;
 
-export const MixedReveal = keyframes`
+export const createMixedReveal = (
+  color: string,
+  background: string,
+  borderColor: string,
+) => keyframes`
   0% {
     transform: rotateX(0);
   }
   49% {
-    color: #1a1a1b;
-    border-color: #d3d6da;
-    background: #ffffff;
+    color: ${color};
+    border-color: ${borderColor};
+    background: ${background};
   }
   50% {
     color: #ffffff;
@@ -160,14 +171,18 @@ export const MixedReveal = keyframes`
   }
 `;
 
-export const InvalidReveal = keyframes`
+export const createInvalidReveal = (
+  color: string,
+  background: string,
+  borderColor: string,
+) => keyframes`
   0% {
     transform: rotateX(0);
   }
   49% {
-    color: #1a1a1b;
-    border-color: #d3d6da;
-    background: #ffffff;
+    color: ${color};
+    border-color: ${borderColor};
+    background: ${background};
   }
   50% {
     color: #ffffff;

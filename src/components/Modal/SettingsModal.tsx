@@ -99,6 +99,7 @@ const Toggle = styled.div<{ enabled: boolean }>`
   border-radius: 40px;
   margin-left: auto;
   margin-right: 0;
+  cursor: pointer;
   background: ${(p) => (p.enabled ? "#6aaa64" : "#787c7e")};
   transition: all 150ms ease;
 

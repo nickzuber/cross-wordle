@@ -1,9 +1,16 @@
 import { FC, useCallback, useContext, useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
+import { useTheme } from "@emotion/react";
 import { css } from "@emotion/react";
 import { CursorDirections, Letter, Tile, TileChangeReason, TileState } from "../utils/game";
-import { SuccessReveal, PopIn, MixedReveal, InvalidReveal } from "../constants/animations";
+import {
+  createSuccessReveal,
+  PopIn,
+  createMixedReveal,
+  createInvalidReveal,
+} from "../constants/animations";
 import { GameContext } from "../contexts/game";
+import { AppTheme } from "../constants/themes";
 
 type GridTileProps = {
   tile: Tile;
@@ -14,6 +21,7 @@ type GridTileProps = {
 };
 
 export const Board: FC = () => {
+  const theme = useTheme() as AppTheme;
   const { board, updateCursor, isGameOver } = useContext(GameContext);
 
   const handleTileClick = useCallback(
@@ -24,7 +32,7 @@ export const Board: FC = () => {
   );
 
   return (
-    <Container>
+    <Container theme={theme}>
       {board.tiles.map((row) => {
         const rowId = row.map(({ id }) => id).join(",");
         return (
@@ -66,6 +74,7 @@ const GridTile: FC<GridTileProps> = ({
   hasCursorHighlight,
   isGameOver,
 }) => {
+  const theme = useTheme() as AppTheme;
   const prevLetter = useRef<Letter | null>(tile.letter);
   const prevChangeReason = useRef<TileChangeReason | undefined>(tile.changeReason);
   const [gridTileState, setGridTileState] = useState<GridTileState>(GridTileState.Idle);
@@ -132,6 +141,7 @@ const GridTile: FC<GridTileProps> = ({
         hasCursorHighlight={hasCursorHighlight && !isGameOver}
         state={gridTileState}
         revealDelay={tile.row * 100 + tile.col * 100}
+        theme={theme}
       >
         {tile.letter?.letter}
       </TileContents>
@@ -139,9 +149,9 @@ const GridTile: FC<GridTileProps> = ({
   );
 };
 
-const Container = styled.div`
+const Container = styled.div<{ theme: AppTheme }>`
   position: relative;
-  background: #ffffff;
+  background: ${(p) => p.theme.colors.primary};
   width: 360px; // 6 tiles * tile size
   height: 360px;
 
@@ -198,7 +208,8 @@ const TileContents = styled.div<{
   hasCursorHighlight: boolean;
   state: GridTileState;
   revealDelay: number;
-}>(({ hasLetter, hasCursor, hasCursorHighlight, state, revealDelay }) => {
+  theme: AppTheme;
+}>(({ hasLetter, hasCursor, hasCursorHighlight, state, revealDelay, theme }) => {
   let animation;
   let animationDelay = "0ms";
 
@@ -211,19 +222,34 @@ const TileContents = styled.div<{
     case GridTileState.RevealSuccess:
       animationDelay = `${revealDelay}ms`;
       animation = css`
-        animation: ${SuccessReveal} 500ms ease-in;
+        animation: ${createSuccessReveal(
+            theme.colors.text,
+            theme.colors.tileSecondary,
+            theme.colors.primary,
+          )}
+          500ms ease-in;
       `;
       break;
     case GridTileState.RevealMixed:
       animationDelay = `${revealDelay}ms`;
       animation = css`
-        animation: ${MixedReveal} 500ms ease-in;
+        animation: ${createMixedReveal(
+            theme.colors.text,
+            theme.colors.tileSecondary,
+            theme.colors.primary,
+          )}
+          500ms ease-in;
       `;
       break;
     case GridTileState.RevealFail:
       animationDelay = `${revealDelay}ms`;
       animation = css`
-        animation: ${InvalidReveal} 500ms ease-in;
+        animation: ${createInvalidReveal(
+            theme.colors.text,
+            theme.colors.tileSecondary,
+            theme.colors.primary,
+          )}
+          500ms ease-in;
       `;
       break;
   }
@@ -239,17 +265,21 @@ const TileContents = styled.div<{
   const backgroundColor = hasCursor
     ? `${cursorColor}22`
     : hasLetter
-    ? "#ffffff"
+    ? theme.colors.primary
     : hasCursorHighlight
-    ? "#f0f0f0"
-    : "#ffffff";
-  const borderColor = hasCursor ? cursorColor : hasLetter ? "#787c7e" : "#d3d6da";
+    ? theme.colors.highlight
+    : theme.colors.primary;
+  const borderColor = hasCursor
+    ? cursorColor
+    : hasLetter
+    ? "#787c7e"
+    : theme.colors.tileSecondary;
 
   return css`
     background: ${backgroundColor};
     border: 2px solid ${borderColor};
     transition: border 50ms ease-in, background 50ms ease-in;
-    color: #1a1a1b;
+    color: ${theme.colors.text};
     min-height: 50px;
     min-width: 50px;
     max-height: 50px;

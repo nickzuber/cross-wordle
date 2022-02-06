@@ -1,11 +1,13 @@
 import { FC, Fragment, useContext, useEffect, useState } from "react";
 import styled from "@emotion/styled";
+import { useTheme } from "@emotion/react";
 import { Modal } from "./Modal";
 import { GameContext } from "../../contexts/game";
-import { SuccessReveal } from "../../constants/animations";
+import { createSuccessReveal } from "../../constants/animations";
 import { countValidLettersOnBoard } from "../../utils/board-validator";
 import { Config } from "../../utils/game";
 import { ToastContext } from "../../contexts/toast";
+import { AppTheme } from "../../constants/themes";
 
 function zeroPad(num: number, places: number) {
   return String(num).padStart(places, "0");
@@ -48,6 +50,7 @@ function scoreToCompliment(score: number) {
 }
 
 export const StatsModal: FC = () => {
+  const theme = useTheme() as AppTheme;
   const { board, solutionBoard, getShareLink, isGameOver } = useContext(GameContext);
   const { sendToast } = useContext(ToastContext);
   const [timeLeft, setTimeLeft] = useState(getTimeLeftInDay());
@@ -99,6 +102,7 @@ export const StatsModal: FC = () => {
       ) : null}
       {!isGameOver ? (
         <MiniBoard
+          theme={theme}
           hidePreview={true}
           message="You must submit your board before you can see today's original solution"
           isGameOver={isGameOver}
@@ -107,6 +111,7 @@ export const StatsModal: FC = () => {
         </MiniBoard>
       ) : (
         <MiniBoard
+          theme={theme}
           hidePreview={!showPreview}
           message="Tap to see today's original solution"
           isGameOver={isGameOver}
@@ -118,11 +123,14 @@ export const StatsModal: FC = () => {
                 {row.map((letter, c) => (
                   <MiniTileWrapper key={`${r}${c}`}>
                     {letter && showPreview ? (
-                      <MiniTileContentsSuccess animationDelay={r * 100 + c * 100}>
+                      <MiniTileContentsSuccess
+                        theme={theme}
+                        animationDelay={r * 100 + c * 100}
+                      >
                         {letter}
                       </MiniTileContentsSuccess>
                     ) : (
-                      <MiniTileContents />
+                      <MiniTileContents theme={theme} />
                     )}
                   </MiniTileWrapper>
                 ))}
@@ -193,135 +201,141 @@ export const StatsModal: FC = () => {
 };
 
 const MiniBoardEmptyRows = () => {
+  const theme = useTheme() as AppTheme;
   return (
     <Fragment>
       <MiniRow>
         <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents />
-        </MiniTileWrapper>
-      </MiniRow>
-      <MiniRow>
-        <MiniTileWrapper>
-          <MiniTileContents />
-        </MiniTileWrapper>
-        <MiniTileWrapper>
-          <MiniTileContents />
-        </MiniTileWrapper>
-        <MiniTileWrapper>
-          <MiniTileContents />
-        </MiniTileWrapper>
-        <MiniTileWrapper>
-          <MiniTileContents />
-        </MiniTileWrapper>
-        <MiniTileWrapper>
-          <MiniTileContents />
-        </MiniTileWrapper>
-        <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
       </MiniRow>
       <MiniRow>
         <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents />
-        </MiniTileWrapper>
-      </MiniRow>
-      <MiniRow>
-        <MiniTileWrapper>
-          <MiniTileContents />
-        </MiniTileWrapper>
-        <MiniTileWrapper>
-          <MiniTileContents />
-        </MiniTileWrapper>
-        <MiniTileWrapper>
-          <MiniTileContents />
-        </MiniTileWrapper>
-        <MiniTileWrapper>
-          <MiniTileContents />
-        </MiniTileWrapper>
-        <MiniTileWrapper>
-          <MiniTileContents />
-        </MiniTileWrapper>
-        <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
       </MiniRow>
       <MiniRow>
         <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
       </MiniRow>
       <MiniRow>
         <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents />
+          <MiniTileContents theme={theme} />
+        </MiniTileWrapper>
+      </MiniRow>
+      <MiniRow>
+        <MiniTileWrapper>
+          <MiniTileContents theme={theme} />
+        </MiniTileWrapper>
+        <MiniTileWrapper>
+          <MiniTileContents theme={theme} />
+        </MiniTileWrapper>
+        <MiniTileWrapper>
+          <MiniTileContents theme={theme} />
+        </MiniTileWrapper>
+        <MiniTileWrapper>
+          <MiniTileContents theme={theme} />
+        </MiniTileWrapper>
+        <MiniTileWrapper>
+          <MiniTileContents theme={theme} />
+        </MiniTileWrapper>
+        <MiniTileWrapper>
+          <MiniTileContents theme={theme} />
+        </MiniTileWrapper>
+      </MiniRow>
+      <MiniRow>
+        <MiniTileWrapper>
+          <MiniTileContents theme={theme} />
+        </MiniTileWrapper>
+        <MiniTileWrapper>
+          <MiniTileContents theme={theme} />
+        </MiniTileWrapper>
+        <MiniTileWrapper>
+          <MiniTileContents theme={theme} />
+        </MiniTileWrapper>
+        <MiniTileWrapper>
+          <MiniTileContents theme={theme} />
+        </MiniTileWrapper>
+        <MiniTileWrapper>
+          <MiniTileContents theme={theme} />
+        </MiniTileWrapper>
+        <MiniTileWrapper>
+          <MiniTileContents theme={theme} />
         </MiniTileWrapper>
       </MiniRow>
     </Fragment>
   );
 };
 
-const MiniBoard = styled.div<{ isGameOver: boolean; hidePreview?: boolean; message?: string }>`
+const MiniBoard = styled.div<{
+  isGameOver: boolean;
+  hidePreview?: boolean;
+  message?: string;
+  theme: AppTheme;
+}>`
   position: relative;
-  background: #ffffff;
+  background: ${(p) => p.theme.colors.primary};
   width: 240px; // 6 tiles * tile size
   height: 240px;
   margin: 0 auto;
@@ -331,7 +345,7 @@ const MiniBoard = styled.div<{ isGameOver: boolean; hidePreview?: boolean; messa
       ? `
           &:after {
             content: "${p.message || ""}";
-            background: #ffffff14;
+            background: ${p.theme.colors.primary}14;
             position: absolute;
             top: -10px;
             bottom: -10px;
@@ -375,11 +389,11 @@ const MiniTileWrapper = styled.div`
   cursor: default;
 `;
 
-const MiniTileContents = styled.div`
-  background: #ffffff;
-  border: 2px solid #d3d6da;
+const MiniTileContents = styled.div<{ theme: AppTheme }>`
+  background: ${(p) => p.theme.colors.primary};
+  border: 2px solid ${(p) => p.theme.colors.tileSecondary};
   transition: border 50ms ease-in, background 50ms ease-in;
-  color: #1a1a1b;
+  color: ${(p) => p.theme.colors.text};
   min-height: 33px;
   min-width: 33px;
   max-height: 33px;
@@ -396,8 +410,17 @@ const MiniTileContents = styled.div`
   text-transform: uppercase;
 `;
 
-const MiniTileContentsSuccess = styled(MiniTileContents)<{ animationDelay: number }>`
-  animation: ${SuccessReveal} 500ms ease-in;
+const MiniTileContentsSuccess = styled(MiniTileContents)<{
+  animationDelay: number;
+  theme: AppTheme;
+}>`
+  animation: ${(p) =>
+      createSuccessReveal(
+        p.theme.colors.text,
+        p.theme.colors.tileSecondary,
+        p.theme.colors.primary,
+      )}
+    500ms ease-in;
   animation-delay: ${(p) => p.animationDelay}ms;
   animation-fill-mode: forwards;
 `;

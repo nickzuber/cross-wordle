@@ -1,18 +1,21 @@
 import { FC } from "react";
 import styled from "@emotion/styled";
+import { useTheme } from "@emotion/react";
 import { Modal } from "./Modal";
 import {
-  HighlightBlink,
-  HighlightBlinkInverted,
-  InvalidReveal,
+  createHighlightBlink,
+  createHighlightBlinkInverted,
   createLetterBlink,
-  MixedReveal,
-  SuccessReveal,
+  createInvalidReveal,
+  createMixedReveal,
+  createSuccessReveal,
 } from "../../constants/animations";
+import { AppTheme } from "../../constants/themes";
 
 const BaseDelay = 250;
 
 export const InstructionsModal: FC = () => {
+  const theme = useTheme() as AppTheme;
   return (
     <Modal>
       <Title>How to play</Title>
@@ -28,7 +31,7 @@ export const InstructionsModal: FC = () => {
         It will <b>always</b> be possible to use all 20 letters. Have fun!
       </Paragraph>
 
-      <Divider />
+      <Divider theme={theme} />
 
       <Example>
         <ExampleSection>
@@ -64,39 +67,52 @@ export const InstructionsModal: FC = () => {
 };
 
 function MiniBoardTyping() {
+  const theme = useTheme() as AppTheme;
   return (
-    <MiniBoard>
+    <MiniBoard theme={theme}>
       <MiniRow>
         <MiniTileWrapper>
-          <MiniTileContentsSuccess animationDelay={0}>C</MiniTileContentsSuccess>
+          <MiniTileContentsSuccess theme={theme} animationDelay={0}>
+            C
+          </MiniTileContentsSuccess>
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents></MiniTileContents>
+          <MiniTileContents theme={theme}></MiniTileContents>
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents></MiniTileContents>
+          <MiniTileContents theme={theme}></MiniTileContents>
         </MiniTileWrapper>
       </MiniRow>
       <MiniRow>
         <MiniTileWrapper>
-          <MiniTileContentsSuccess animationDelay={100}>A</MiniTileContentsSuccess>
+          <MiniTileContentsSuccess theme={theme} animationDelay={100}>
+            A
+          </MiniTileContentsSuccess>
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContentsSuccess animationDelay={200}>C</MiniTileContentsSuccess>
+          <MiniTileContentsSuccess theme={theme} animationDelay={200}>
+            C
+          </MiniTileContentsSuccess>
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContentsMixed animationDelay={300}>T</MiniTileContentsMixed>
+          <MiniTileContentsMixed theme={theme} animationDelay={300}>
+            T
+          </MiniTileContentsMixed>
         </MiniTileWrapper>
       </MiniRow>
       <MiniRow>
         <MiniTileWrapper>
-          <MiniTileContentsSuccess animationDelay={200}>T</MiniTileContentsSuccess>
+          <MiniTileContentsSuccess theme={theme} animationDelay={200}>
+            T
+          </MiniTileContentsSuccess>
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents></MiniTileContents>
+          <MiniTileContents theme={theme}></MiniTileContents>
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContentsFail animationDelay={300}>K</MiniTileContentsFail>
+          <MiniTileContentsFail theme={theme} animationDelay={300}>
+            K
+          </MiniTileContentsFail>
         </MiniTileWrapper>
       </MiniRow>
     </MiniBoard>
@@ -104,43 +120,50 @@ function MiniBoardTyping() {
 }
 
 function MiniBoardCursor() {
+  const theme = useTheme() as AppTheme;
   return (
-    <MiniBoard>
+    <MiniBoard theme={theme}>
       <MiniRow>
         <MiniTileWrapper>
-          <MiniTileContents></MiniTileContents>
+          <MiniTileContents theme={theme}></MiniTileContents>
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContentsHighlighted invert animationDelay={0}>
+          <MiniTileContentsHighlighted theme={theme} invert animationDelay={0}>
             A
           </MiniTileContentsHighlighted>
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents></MiniTileContents>
+          <MiniTileContents theme={theme}></MiniTileContents>
         </MiniTileWrapper>
       </MiniRow>
       <MiniRow>
         <MiniTileWrapper>
-          <MiniTileContentsHighlighted animationDelay={0}></MiniTileContentsHighlighted>
+          <MiniTileContentsHighlighted
+            theme={theme}
+            animationDelay={0}
+          ></MiniTileContentsHighlighted>
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContentsCursor>G</MiniTileContentsCursor>
+          <MiniTileContentsCursor theme={theme}>G</MiniTileContentsCursor>
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContentsHighlighted animationDelay={0}></MiniTileContentsHighlighted>
+          <MiniTileContentsHighlighted
+            theme={theme}
+            animationDelay={0}
+          ></MiniTileContentsHighlighted>
         </MiniTileWrapper>
       </MiniRow>
       <MiniRow>
         <MiniTileWrapper>
-          <MiniTileContents>R</MiniTileContents>
+          <MiniTileContents theme={theme}>R</MiniTileContents>
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContentsHighlighted invert animationDelay={0}>
+          <MiniTileContentsHighlighted theme={theme} invert animationDelay={0}>
             E
           </MiniTileContentsHighlighted>
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContents>D</MiniTileContents>
+          <MiniTileContents theme={theme}>D</MiniTileContents>
         </MiniTileWrapper>
       </MiniRow>
     </MiniBoard>
@@ -148,48 +171,105 @@ function MiniBoardCursor() {
 }
 
 function MiniBoardShift() {
+  const theme = useTheme() as AppTheme;
   return (
-    <MiniBoard>
+    <MiniBoard theme={theme}>
       <MiniRow>
         <MiniTileWrapper>
-          <MiniTileContentsShift s1="P" s2=" " s3="P" s4="A" animationDelay={0} />
+          <MiniTileContentsShift
+            theme={theme}
+            s1="P"
+            s2=" "
+            s3="P"
+            s4="A"
+            animationDelay={0}
+          />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContentsShift s1="A" s2="P" s3="A" s4=" " animationDelay={0} />
+          <MiniTileContentsShift
+            theme={theme}
+            s1="A"
+            s2="P"
+            s3="A"
+            s4=" "
+            animationDelay={0}
+          />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContentsShift s1=" " s2="A" s3="" s4=" " animationDelay={0} />
+          <MiniTileContentsShift theme={theme} s1=" " s2="A" s3="" s4=" " animationDelay={0} />
         </MiniTileWrapper>
       </MiniRow>
       <MiniRow>
         <MiniTileWrapper>
-          <MiniTileContentsShift s1=" " s2=" " s3=" " s4="G" animationDelay={0} />
+          <MiniTileContentsShift
+            theme={theme}
+            s1=" "
+            s2=" "
+            s3=" "
+            s4="G"
+            animationDelay={0}
+          />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContentsShift s1="G" s2=" " s3="G" s4=" " animationDelay={0} />
+          <MiniTileContentsShift
+            theme={theme}
+            s1="G"
+            s2=" "
+            s3="G"
+            s4=" "
+            animationDelay={0}
+          />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContentsShift s1=" " s2="G" s3=" " s4=" " animationDelay={0} />
+          <MiniTileContentsShift
+            theme={theme}
+            s1=" "
+            s2="G"
+            s3=" "
+            s4=" "
+            animationDelay={0}
+          />
         </MiniTileWrapper>
       </MiniRow>
       <MiniRow>
         <MiniTileWrapper>
-          <MiniTileContentsShift s1="R" s2=" " s3="R" s4="E" animationDelay={0} />
+          <MiniTileContentsShift
+            theme={theme}
+            s1="R"
+            s2=" "
+            s3="R"
+            s4="E"
+            animationDelay={0}
+          />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContentsShift s1="E" s2="R" s3="E" s4="D" animationDelay={0} />
+          <MiniTileContentsShift
+            theme={theme}
+            s1="E"
+            s2="R"
+            s3="E"
+            s4="D"
+            animationDelay={0}
+          />
         </MiniTileWrapper>
         <MiniTileWrapper>
-          <MiniTileContentsShift s1="D" s2="E" s3="D" s4=" " animationDelay={0} />
+          <MiniTileContentsShift
+            theme={theme}
+            s1="D"
+            s2="E"
+            s3="D"
+            s4=" "
+            animationDelay={0}
+          />
         </MiniTileWrapper>
       </MiniRow>
     </MiniBoard>
   );
 }
 
-const MiniBoard = styled.div`
+const MiniBoard = styled.div<{ theme: AppTheme }>`
   position: relative;
-  background: #ffffff;
+  background: ${(p) => p.theme.colors.primary};
   width: 105px; // 3 tiles * tile size
   height: 105px;
 `;
@@ -216,11 +296,11 @@ const MiniTileWrapper = styled.div`
   cursor: pointer;
 `;
 
-const MiniTileContents = styled.div`
-  background: #ffffff;
-  border: 2px solid #d3d6da;
+const MiniTileContents = styled.div<{ theme: AppTheme }>`
+  background: ${(p) => p.theme.colors.primary};
+  border: 2px solid ${(p) => p.theme.colors.tileSecondary};
   transition: border 50ms ease-in, background 50ms ease-in;
-  color: #1a1a1b;
+  color: ${(p) => p.theme.colors.text};
   min-height: 25px;
   min-width: 25px;
   max-height: 25px;
@@ -241,20 +321,47 @@ const MiniTileContentsCursor = styled(MiniTileContents)`
   border-color: #228be6;
 `;
 
-const MiniTileContentsSuccess = styled(MiniTileContents)<{ animationDelay: number }>`
-  animation: ${SuccessReveal} 500ms ease-in;
+const MiniTileContentsSuccess = styled(MiniTileContents)<{
+  animationDelay: number;
+  theme: AppTheme;
+}>`
+  animation: ${(p) =>
+      createSuccessReveal(
+        p.theme.colors.text,
+        p.theme.colors.tileSecondary,
+        p.theme.colors.primary,
+      )}
+    500ms ease-in;
   animation-delay: ${(p) => BaseDelay + p.animationDelay}ms;
   animation-fill-mode: forwards;
 `;
 
-const MiniTileContentsMixed = styled(MiniTileContentsSuccess)<{ animationDelay: number }>`
-  animation: ${MixedReveal} 500ms ease-in;
+const MiniTileContentsMixed = styled(MiniTileContentsSuccess)<{
+  animationDelay: number;
+  theme: AppTheme;
+}>`
+  animation: ${(p) =>
+      createMixedReveal(
+        p.theme.colors.text,
+        p.theme.colors.tileSecondary,
+        p.theme.colors.primary,
+      )}
+    500ms ease-in;
   animation-delay: ${(p) => BaseDelay + p.animationDelay}ms;
   animation-fill-mode: forwards;
 `;
 
-const MiniTileContentsFail = styled(MiniTileContentsSuccess)<{ animationDelay: number }>`
-  animation: ${InvalidReveal} 500ms ease-in;
+const MiniTileContentsFail = styled(MiniTileContentsSuccess)<{
+  animationDelay: number;
+  theme: AppTheme;
+}>`
+  animation: ${(p) =>
+      createInvalidReveal(
+        p.theme.colors.text,
+        p.theme.colors.tileSecondary,
+        p.theme.colors.primary,
+      )}
+    500ms ease-in;
   animation-delay: ${(p) => BaseDelay + p.animationDelay}ms;
   animation-fill-mode: forwards;
 `;
@@ -262,8 +369,13 @@ const MiniTileContentsFail = styled(MiniTileContentsSuccess)<{ animationDelay: n
 const MiniTileContentsHighlighted = styled(MiniTileContentsSuccess)<{
   animationDelay: number;
   invert?: boolean;
+  theme: AppTheme;
 }>`
-  animation: ${(p) => (p.invert ? HighlightBlinkInverted : HighlightBlink)} 4000ms ease-in;
+  animation: ${(p) =>
+      p.invert
+        ? createHighlightBlinkInverted(p.theme.colors.primary, p.theme.colors.highlight)
+        : createHighlightBlink(p.theme.colors.primary, p.theme.colors.highlight)}
+    4000ms ease-in;
   animation-delay: ${(p) => (p.animationDelay ? BaseDelay + p.animationDelay : 0)}ms;
   animation-fill-mode: forwards;
   animation-iteration-count: infinite;
@@ -304,8 +416,8 @@ const Paragraph = styled.p`
   text-align: left;
 `;
 
-const Divider = styled.div`
-  border-bottom: 1px solid #d3d6da;
+const Divider = styled.div<{ theme: AppTheme }>`
+  border-bottom: 1px solid ${(p) => p.theme.colors.tileSecondary};
   width: 100%;
   margin: 12px auto 18px;
 `;
