@@ -40,11 +40,6 @@
     "build-hash": "echo \"window.crosswordle = window.crosswordle || {};\nwindow.crosswordle.hash = '$(git rev-parse --short HEAD)';\" > public/hash.js",
     "prepare": "husky install"
   },
-  "husky": {
-    "hooks": {
-      "post-commit": "npm run build-hash"
-    }
-  },
   "eslintConfig": {
     "extends": [
       "react-app",
