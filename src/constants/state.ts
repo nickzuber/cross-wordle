@@ -11,4 +11,5 @@ export const PersistedStates = {
   Board: seed + PersistedStorage.SeedDivider + PersistedStorage.Stamp + "todays-board",
   Letters: seed + PersistedStorage.SeedDivider + PersistedStorage.Stamp + "todays-letters",
   Stats: PersistedStorage.Stamp + "stats",
+  DarkTheme: PersistedStorage.Stamp + "dark-theme",
 };

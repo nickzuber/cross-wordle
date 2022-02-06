@@ -1,13 +1,13 @@
 import { FC, useContext, useEffect, useMemo, useRef, useState } from "react";
 import styled from "@emotion/styled";
-import { useWindowSize } from "react-use";
 import Confetti from "react-confetti";
+import createPersistedState from "use-persisted-state";
+import { useWindowSize } from "react-use";
 import { Canvas } from "./components";
 import { Controls } from "./components/Controls";
 import { Header } from "./components/Header";
 import { Modal } from "./components/Modal";
 import { ModalsContext } from "./contexts/modals";
-import createPersistedState from "use-persisted-state";
 import { PersistedStates } from "./constants/state";
 import { GameContext } from "./contexts/game";
 import { useLocalStorageGC } from "./hooks/useLocalStorageGC";

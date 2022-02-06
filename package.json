@@ -36,7 +36,13 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build-hash": "echo \"window.crosswordle = window.crosswordle || {};\nwindow.crosswordle.hash = '$(git rev-parse --short HEAD)';\" > public/hash.js"
+  },
+  "husky": {
+    "hooks": {
+      "post-commit": "npm run build-hash"
+    }
   },
   "eslintConfig": {
     "extends": [
@@ -59,6 +65,7 @@
   "devDependencies": {
     "@types/hammerjs": "^2.0.41",
     "@types/random-seed": "^0.3.3",
-    "@types/use-persisted-state": "^0.3.1"
+    "@types/use-persisted-state": "^0.3.1",
+    "husky": "^7.0.4"
   }
 }
