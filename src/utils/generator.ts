@@ -65,23 +65,24 @@ export function getTodaysLetters(): [SolutionBoard, Letter[]] {
   let board = createCompleteBoard();
   let letters = getLettersFromBoard(board);
 
-  // There is a ~99.72% chance that any board we build will have all 20 letters.
+  // There is a ~86.14% chance that any board we build will have all 20 letters.
   // When that low chance hits where we have fewer letters than 20, that board
   // can be discarded and we can just try again.
   // The odds of the board having fewer than 20 letters more than 10 times in
-  // a row is like a really small number, so let's imagine its not possible.
-  // If you're interested, it's around:
+  // a row is like a really small number, so we should be fine.
   //
-  //   2.96e-26 or 1/50,000,000,000,000,000,000,000,000
+  // In a simulation where we generated 100,000 boards, the worst case scenario
+  // took 7 attempts to build a board successfully, and this only happened a
+  // handful of times in that entire simulation.
   //
+  // So a cap of 10 attempts should be more than enough.
   for (let tries = 0; tries < 10; tries++) {
-    if (letters.length === 20) break;
+    if (letters.length === 10) break;
     board = createCompleteBoard();
     letters = getLettersFromBoard(board);
   }
 
   console.clear();
-  analyzeBoardBuildingPerformance(500);
   printBoard(board);
 
   const shuffledLetters = shuffle(letters).map((letter) => ({ id: uuidv4(), letter }));
@@ -92,15 +93,23 @@ export function analyzeBoardBuildingPerformance(iters = 1000) {
   console.info("%cRunning board building performance...", "color: #aaa");
   const start = Date.now();
   const results = new Array(30).fill(0);
+
   for (let i = 0; i < iters; i++) {
-    const b = createCompleteBoard();
-    const letters = getLettersFromBoard(b);
-    results[letters.length]++;
+    let x = 0;
+    let board;
+    let letters = [];
+    for (let tries = 0; tries < 20; tries++) {
+      if (letters.length === 20) break;
+      board = createCompleteBoard();
+      letters = getLettersFromBoard(board);
+      x++;
+    }
+    results[x]++;
   }
   const end = Date.now();
 
   console.info(
-    `%cLetter Frequency / ${iters} iterations`,
+    `%cBoard building attempts until success / ${iters} iterations`,
     "font-weight: 600; text-decoration: underline",
   );
 
