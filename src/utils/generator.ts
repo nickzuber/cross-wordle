@@ -8,6 +8,7 @@ import {
   fillRandomEmptyPositions,
   getLettersFromBoard,
   getWordsOfLength,
+  printBoard,
   randomGenerator,
   SolutionBoard,
   writeWordToBoard,
@@ -78,6 +79,10 @@ export function getTodaysLetters(): [SolutionBoard, Letter[]] {
     board = createCompleteBoard();
     letters = getLettersFromBoard(board);
   }
+
+  console.clear();
+  analyzeBoardBuildingPerformance(500);
+  printBoard(board);
 
   const shuffledLetters = shuffle(letters).map((letter) => ({ id: uuidv4(), letter }));
   return [board, shuffledLetters];
