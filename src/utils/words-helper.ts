@@ -5,6 +5,7 @@ import { words as FourCharWords } from "../constants/words/good-words/four";
 import { words as FiveCharWords } from "../constants/words/good-words/five";
 import { words as SixCharWords } from "../constants/words/good-words/six";
 import { words as dictionary } from "../constants/words";
+import { words as goodDictionary } from "../constants/words/good-words";
 import { Config } from "./game";
 
 const debug = false;
@@ -61,6 +62,21 @@ export function createTestingBoard(): SolutionBoard {
     [undefined, undefined, undefined, "n", undefined, "e"] as unknown as string[],
     ["l", "i", "s", "t", "e", "d"] as unknown as string[],
   ];
+}
+
+export function validateSolutionBoardWithGoodWords(board: SolutionBoard): boolean {
+  // Get all words going left to right.
+  const leftToRight = getWordsFromBoardLTR(board);
+
+  // Get all words going top to bottom.
+  const topToBottom = getWordsFromBoardTTB(board);
+
+  // Collect all the words together.
+  const foundWords = leftToRight.concat(topToBottom);
+
+  // Validate entire board (easier this way).
+  let allWordsAreValid = foundWords.every((word) => goodDictionary.has(word));
+  return allWordsAreValid;
 }
 
 export function validateSolutionBoard(board: SolutionBoard): boolean {
@@ -403,9 +419,34 @@ export function findEasyPositions(board: SolutionBoard): [Position, Direction][]
 export function fillRandomEmptyPositions(board: SolutionBoard): SolutionBoard | null {
   let emptyPositions = findEmptyPositions(board);
 
-  // @TODO
-  // Try all letters randomly, not just vowels.
-  const vowels = ["a", "e", "i", "o", "u"];
+  const letters = [
+    "q",
+    "w",
+    "e",
+    "r",
+    "t",
+    "y",
+    "u",
+    "i",
+    "o",
+    "p",
+    "a",
+    "s",
+    "d",
+    "f",
+    "g",
+    "h",
+    "j",
+    "k",
+    "l",
+    "z",
+    "x",
+    "c",
+    "v",
+    "b",
+    "n",
+    "m",
+  ];
 
   // Attempt to fill each empty position with a letter until we find one
   // that fits into the board validly.
@@ -416,13 +457,13 @@ export function fillRandomEmptyPositions(board: SolutionBoard): SolutionBoard | 
 
     log(`[fillRandomEmptyPositions #${i + 1}]`, position);
 
-    for (let j = 0; j < vowels.length; j++) {
-      const index = (start + j) % vowels.length;
-      const letter = vowels[index];
+    for (let j = 0; j < letters.length; j++) {
+      const index = (start + j) % letters.length;
+      const letter = letters[index];
 
       try {
         const newBoard = writeWordToBoard(letter, position, Direction.Right, board);
-        if (validateSolutionBoard(newBoard)) {
+        if (validateSolutionBoardWithGoodWords(newBoard)) {
           log("new letter added:", letter, position);
           return newBoard;
         }

@@ -31,16 +31,16 @@ function getTimeLeftInDay() {
 }
 
 function scoreToCompliment(score: number) {
-  if (score < 5) {
+  if (score < 10) {
     return "Better luck next time!";
   }
-  if (score < 10) {
+  if (score < 14) {
     return "Not too shabby!";
   }
-  if (score < 14) {
+  if (score < 16) {
     return "Nice.";
   }
-  if (score < 18) {
+  if (score < 20) {
     return "Awesome!";
   }
   if (score >= 20) {
