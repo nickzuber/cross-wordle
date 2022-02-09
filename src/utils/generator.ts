@@ -77,7 +77,7 @@ export function getTodaysLetters(): [SolutionBoard, Letter[]] {
   //
   // So a cap of 10 attempts should be more than enough.
   for (let tries = 0; tries < 10; tries++) {
-    if (letters.length === 10) break;
+    if (letters.length === 20) break;
     board = createCompleteBoard();
     letters = getLettersFromBoard(board);
   }
