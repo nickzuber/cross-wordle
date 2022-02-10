@@ -39,9 +39,9 @@ export function createCompleteBoard(): SolutionBoard {
   board = fillRandomEasyPosition(board, true) || board;
 
   // Try a few times to fill out the board as much as we can.
-  // It should never take more than 10 tries before we fill up.
+  // It should never take more than 15 tries before we fill up.
   // This is just a safe arbitrary buffer.
-  for (let pass = 0; pass < 10; pass++) {
+  for (let pass = 0; pass < 15; pass++) {
     const newBoard = fillRandomEasyPosition(board) || board;
     if (newBoard) board = newBoard;
     else break; // We're not able to add any more word normally.
@@ -57,25 +57,24 @@ export function createCompleteBoard(): SolutionBoard {
 }
 
 export function getTodaysLetters(): [SolutionBoard, Letter[]] {
-  // @TODO
-  // Keep this board somewhere for reference later.
-  // We'll want to show this answer at the end
-  // Maybe only if people fail?
+  // Create a board in one attempt.
   let board = createCompleteBoard();
   let letters = getLettersFromBoard(board);
 
-  // There is a ~86.14% chance that any board we build will have all 20 letters.
-  // When that low chance hits where we have fewer letters than 20, that board
-  // can be discarded and we can just try again.
+  // There is a ~80% chance that any board we build will have all 20 letters.
+  // When that relatively low chance hits where we have fewer letters than 20,
+  // that board can be discarded and we can just try again.
   // The odds of the board having fewer than 20 letters more than 10 times in
-  // a row is like a really small number, so we should be fine.
+  // a row is like, a really small number, so we should be fine.
   //
-  // In a simulation where we generated 100,000 boards, the worst case scenario
-  // took 7 attempts to build a board successfully, and this only happened a
-  // handful of times in that entire simulation.
+  // In a simulation where we generated 1,000 boards, the worst case scenario
+  // took 6 attempts to build a board successfully, and this only happened a
+  // handful of times in that entire simulation. Keep in mind we only generate
+  // 1 board a day.
   //
-  // So a cap of 10 attempts should be more than enough.
-  for (let tries = 0; tries < 10; tries++) {
+  // So a cap of 10 attempts should be more than enough. So I make it 15 so we
+  // can all sleep easy at night.
+  for (let tries = 0; tries < 15; tries++) {
     if (letters.length === 20) break;
     board = createCompleteBoard();
     letters = getLettersFromBoard(board);
@@ -88,13 +87,13 @@ export function getTodaysLetters(): [SolutionBoard, Letter[]] {
 export function analyzeBoardBuildingPerformance(iters = 1000) {
   console.info("%cRunning board building performance...", "color: #aaa");
   const start = Date.now();
-  const results = new Array(30).fill(0);
+  const results = new Array(15).fill(0);
 
   for (let i = 0; i < iters; i++) {
     let x = 0;
     let board;
     let letters = [];
-    for (let tries = 0; tries < 20; tries++) {
+    for (let tries = 0; tries < 15; tries++) {
       if (letters.length === 20) break;
       board = createCompleteBoard();
       letters = getLettersFromBoard(board);
