@@ -157,14 +157,14 @@ export function validateBoard(board: Board): [Board, boolean] {
       case WordDirection.LeftToRight:
         for (let c = 0; c < length; c++) {
           const tile = validatedBoard.tiles[word.row][word.col + c];
-          tile.state = tile.state === TileState.VALID ? TileState.MIXED : tile.state;
+          tile.state = tile.state === TileState.VALID ? TileState.INVALID : tile.state;
         }
         break;
       case WordDirection.TopToBottom:
         for (let r = 0; r < length; r++) {
           if (word.row + r > gridBounds - 1) continue;
           const tile = validatedBoard.tiles[word.row + r][word.col];
-          tile.state = tile.state === TileState.VALID ? TileState.MIXED : tile.state;
+          tile.state = tile.state === TileState.VALID ? TileState.INVALID : tile.state;
         }
         break;
     }
