@@ -264,8 +264,8 @@ const TileContents = styled.div<{
 
   const backgroundColor = hasCursor
     ? `${cursorColor}22`
-    : hasLetter
-    ? theme.colors.primary
+    : hasLetter && hasCursorHighlight
+    ? `${theme.colors.highlight}88`
     : hasCursorHighlight
     ? theme.colors.highlight
     : theme.colors.primary;

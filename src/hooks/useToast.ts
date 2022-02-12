@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
+import { useTheme } from "@emotion/react";
+import { AppTheme, ThemeType } from "../constants/themes";
 
 export type ToastOptions = {
   sendToast: (message: string) => void;
@@ -10,15 +12,25 @@ type Toast = {
 };
 
 const toastId = "__toast__";
-const toastClassName = "__toast-styles__";
 const timing = 4000;
 
-function createToast(toast: Toast) {
+const getToastClassName = (type: ThemeType) => {
+  switch (type) {
+    case ThemeType.Dark:
+      return "__toast-dark-styles__";
+    case ThemeType.Light:
+      return "__toast-light-styles__";
+    default:
+      return "__toast-light-styles__";
+  }
+};
+
+function createToast(toast: Toast, type: ThemeType) {
   removeToast();
 
   const ele = document.createElement("div");
   ele.setAttribute("id", toastId);
-  ele.setAttribute("class", toastClassName);
+  ele.setAttribute("class", getToastClassName(type));
   ele.innerText = toast.message;
   document.body.appendChild(ele);
 }
@@ -29,6 +41,7 @@ function removeToast() {
 }
 
 export const useToast = (): ToastOptions => {
+  const theme = useTheme() as AppTheme;
   const [toast, setToast] = useState<Toast | null>();
 
   useEffect(() => {
@@ -45,7 +58,7 @@ export const useToast = (): ToastOptions => {
   useEffect(() => {
     let ts: ReturnType<typeof setTimeout>;
     if (toast) {
-      createToast(toast);
+      createToast(toast, theme.type);
       ts = setTimeout(() => removeToast(), timing);
     } else {
       removeToast();
@@ -55,7 +68,7 @@ export const useToast = (): ToastOptions => {
       clearTimeout(ts);
       removeToast();
     };
-  }, [toast]);
+  }, [toast, theme.type]);
 
   const sendToast = useCallback((message: string) => {
     setToast({

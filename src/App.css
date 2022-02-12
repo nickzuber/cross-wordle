@@ -21,7 +21,8 @@ body {
   user-select: none;
 }
 
-.__toast-styles__ {
+.__toast-light-styles__,
+.__toast-dark-styles__ {
   position: fixed;
   z-index: 9999;
   width: fit-content;
@@ -40,6 +41,10 @@ body {
   animation: slideIn 200ms ease-in;
   animation-fill-mode: forwards;
   animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+.__toast-dark-styles__ {
+  color: #1a1a1a;
+  box-shadow: rgb(0 0 0 / 24%) 0px 2px 8px 2px;
 }
 
 @keyframes slideIn {
