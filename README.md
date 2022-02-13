@@ -1,1 +1,1 @@
-<img src="public/summary1200x630.png" />
+<img src="public/summary1200x600.png" />
