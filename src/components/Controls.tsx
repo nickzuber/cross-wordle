@@ -1,11 +1,15 @@
 import { FC, useCallback, useContext, useEffect } from "react";
 import styled from "@emotion/styled";
+import createPersistedState from "use-persisted-state";
 import { useTheme } from "@emotion/react";
 import { Directions, Letter } from "../utils/game";
 import { GameContext } from "../contexts/game";
 import { PopIn } from "../constants/animations";
 import { ToastContext } from "../contexts/toast";
 import { AppTheme } from "../constants/themes";
+import { PersistedStates } from "../constants/state";
+
+const useHardMode = createPersistedState(PersistedStates.HardMode);
 
 export const Controls: FC = () => {
   const theme = useTheme() as AppTheme;
@@ -23,22 +27,32 @@ export const Controls: FC = () => {
     unusedLetters,
   } = useContext(GameContext);
   const { sendToast } = useContext(ToastContext);
+  const [hardMode] = useHardMode(false);
 
   const disableEnterButton = !canFinish || isGameOver;
 
   const onEnterPress = useCallback(() => {
     if (disableEnterButton) {
-      const message =
-        unusedLetters.length > 0
-          ? `You still have to place ${unusedLetters.length} letter${
-              unusedLetters.length !== 1 ? "s" : ""
-            } on the board.`
-          : "All words must be connected like a crossword.";
-      sendToast(message);
+      console.info(hardMode);
+      if (hardMode) {
+        const message =
+          unusedLetters.length > 0
+            ? `You still have to place ${unusedLetters.length} letter${
+                unusedLetters.length !== 1 ? "s" : ""
+              } on the board.`
+            : "All words must be connected like a crossword.";
+        sendToast(message);
+      } else {
+        const message =
+          unusedLetters.length > 15
+            ? "Try using some more letters to make as many words as you can - you got this!"
+            : "All words must be connected like a crossword.";
+        sendToast(message);
+      }
     } else {
       requestFinish();
     }
-  }, [sendToast, disableEnterButton, unusedLetters, requestFinish]);
+  }, [hardMode, sendToast, disableEnterButton, unusedLetters, requestFinish]);
 
   const onLetterButtonPress = useCallback(
     (letter: Letter) => {

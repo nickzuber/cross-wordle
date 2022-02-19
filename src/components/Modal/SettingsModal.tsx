@@ -5,6 +5,7 @@ import { Modal } from "./Modal";
 import { PersistedStates } from "../../constants/state";
 
 const useDarkTheme = createPersistedState(PersistedStates.DarkTheme);
+const useHardMode = createPersistedState(PersistedStates.HardMode);
 
 type CrosswordleObj = {
   hash: string;
@@ -20,6 +21,7 @@ function getAppHash() {
 
 export const SettingsModal: FC = () => {
   const [darkTheme, setDarkTheme] = useDarkTheme(false) as [boolean, React.Dispatch<boolean>];
+  const [hardMode, setHardMode] = useHardMode(false) as [boolean, React.Dispatch<boolean>];
   const hash = useMemo(() => getAppHash(), []);
 
   return (
@@ -27,14 +29,27 @@ export const SettingsModal: FC = () => {
       <Title>Settings</Title>
       <Setting>
         <Label>
-          <Name>Dark mode</Name>
+          <Name>Dark theme</Name>
           <Description>Toggles the theme to appear dark</Description>
         </Label>
         <ToggleContainer>
           <Toggle onClick={() => setDarkTheme(!darkTheme)} enabled={darkTheme} />
         </ToggleContainer>
       </Setting>
-      <TagContainer>
+      <Setting>
+        <Label>
+          <Name>Hard mode</Name>
+          <Description>Requires you to place all letters</Description>
+        </Label>
+        <ToggleContainer>
+          <Toggle onClick={() => setHardMode(!hardMode)} enabled={hardMode} />
+        </ToggleContainer>
+      </Setting>
+      <TagContainer
+        onClick={() => {
+          window.open("https://github.com/nickzuber/cross-wordle", "_blank");
+        }}
+      >
         <Tag>© {new Date().getFullYear()} — Nick Zuber</Tag>
         <Tag>Build {`#${hash}`}</Tag>
       </TagContainer>
@@ -124,6 +139,7 @@ const TagContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   opacity: 0.5;
+  cursor: pointer;
   transition: opacity 100ms ease-in;
 
   &:hover {

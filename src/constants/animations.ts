@@ -1,81 +1,58 @@
 import { keyframes } from "@emotion/react";
 
-export const createLetterBlink = (s1: string, s2: string, s3: string, s4: string) => keyframes`
+export const createAnimatedCursorTile = (background: string, borderColor: string) => keyframes`
   0% {
-    content: "${s1}";
+    border-color: #228be6;
+    background: #228be622;
   }
 
-  24% {
-    content: "${s1}";
-  }
-  25% {
-    content: "${s2}";
-  }
-
-  49% {
-    content: "${s2}";
-  }
-  50% {
-    content: "${s3}";
-  }
-
-  74% {
-    content: "${s3}";
-  }
-  75% {
-    content: "${s4}";
-  }
-
-  98% {
-    content: "${s4}";
-  }
-  100% {
-    content: "${s1}";
-  }
-`;
-
-export const createHighlightBlink = (background: string, highlight: string) => keyframes`
-  0% {
-    background: ${background};
-  }
-
-  46% {
-    background: ${background};
-  }
-  50% {
-    background: ${highlight};
-  }
-
-
-  96% {
-    background: ${highlight};
+  99% {
+    border-color: #228be6;
+    background: #228be622;
   }
   100% {
     background: ${background};
+    border-color: ${borderColor};
   }
 `;
 
-export const createHighlightBlinkInverted = (
+export const createAnimatedTile = (
   background: string,
   highlight: string,
+  textColor: string,
+  borderColor: string,
 ) => keyframes`
   0% {
-    background: ${highlight};
+    transform: scale(0.8);
+    color: ${textColor};
+    background: ${background};
+    border-color: #787c7e;
+  }
+  15% {
+    transform: scale(1.1);
+  }
+  30% {
+    transform: scale(1);
   }
 
   46% {
-    background: ${highlight};
+    background: ${background};
+    border-color: #787c7e;
   }
   50% {
-    background: ${background};
+    background: ${highlight};
+    border-color: #787c7e;
   }
 
 
   96% {
-    background: ${background};
+    background: ${highlight};
+    border-color: #787c7e;
   }
   100% {
-    background: ${highlight};
+    background: ${background};
+    border-color: #787c7e;
+    color: ${textColor};
   }
 `;
 

@@ -55,6 +55,12 @@ export const useToast = (): ToastOptions => {
     return () => document.removeEventListener("click", onToastTap);
   }, []);
 
+  // Flushes out the current toast whenever the theme changes.
+  // This prevents the toast from resetting each time you change the theme.
+  useEffect(() => {
+    clearToast();
+  }, [theme.type]);
+
   useEffect(() => {
     let ts: ReturnType<typeof setTimeout>;
     if (toast) {

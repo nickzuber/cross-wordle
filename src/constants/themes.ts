@@ -43,7 +43,7 @@ const DarkTheme: AppTheme = {
     buttonActive: "#656b6e",
   },
   accents: {
-    dropShadow: "rgb(0 0 0 / 24%) 0px 2px 8px 2px",
+    dropShadow: "rgb(0 0 0 / 50%) 0px 2px 8px 2px",
     transparentBackground: "rgba(14, 25, 36, 0.5)",
   },
 };

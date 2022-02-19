@@ -14,6 +14,7 @@ import { ModalsContext } from "../contexts/modals";
 import { ToastContext } from "../contexts/toast";
 
 const useIsGameOver = createPersistedState(PersistedStates.GameOver);
+const useHardMode = createPersistedState(PersistedStates.HardMode);
 
 export type GameOptions = {
   solutionBoard: SolutionBoard;
@@ -39,6 +40,7 @@ export const useGame = (): GameOptions => {
   const { openStats } = useContext(ModalsContext);
   const { clearToast } = useContext(ToastContext);
   const [isGameOver, setIsGameOver] = useIsGameOver(false);
+  const [hardMode] = useHardMode(false);
   const { letters, solutionBoard, shuffleLetters } = useLetters();
   const {
     board,
@@ -66,10 +68,13 @@ export const useGame = (): GameOptions => {
     [board],
   );
 
-  const canFinish = useMemo(
-    () => tilesAreConnected && boardLetterIds.size === Config.MaxLetters,
-    [tilesAreConnected, boardLetterIds],
-  );
+  const canFinish = useMemo(() => {
+    if (hardMode) {
+      return tilesAreConnected && boardLetterIds.size === Config.MaxLetters;
+    } else {
+      return tilesAreConnected && boardLetterIds.size > 5;
+    }
+  }, [hardMode, tilesAreConnected, boardLetterIds]);
 
   const requestFinish = useCallback(() => {
     if (!canFinish) return;
