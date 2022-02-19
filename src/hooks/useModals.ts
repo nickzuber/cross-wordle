@@ -28,7 +28,7 @@ export const useModals = (): ModalsOptions => {
   const closeModal = useCallback(() => {
     setIsFirstTime(false);
     setOpenModal(null);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const openInstructions = useCallback(() => setOpenModal(Modal.Instructions), []);
   const openStats = useCallback(() => setOpenModal(Modal.Stats), []);
   const openSettings = useCallback(() => setOpenModal(Modal.Settings), []);

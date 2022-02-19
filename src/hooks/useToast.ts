@@ -59,7 +59,7 @@ export const useToast = (): ToastOptions => {
   // This prevents the toast from resetting each time you change the theme.
   useEffect(() => {
     clearToast();
-  }, [theme.type]);
+  }, [theme.type]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     let ts: ReturnType<typeof setTimeout>;
