@@ -19,7 +19,7 @@ export const Scene: FC = () => {
   const { width, height } = useWindowSize();
   const { openInstructions, openStats, isStatsOpen } = useContext(ModalsContext);
   const { board, isGameOver } = useContext(GameContext);
-  const [isFirstTime, setFirstTime] = useFirstTime(true);
+  const [isFirstTime] = useFirstTime(true);
   const alreadyShowedConfetti = useRef(false);
   const [showConfetti, setShowConfetti] = useState(false);
 
@@ -39,7 +39,6 @@ export const Scene: FC = () => {
     } else if (isFirstTime) {
       // + 100 for some buffer room.
       ts = setTimeout(openInstructions, 100);
-      setFirstTime(false);
     }
 
     return () => {

@@ -1,4 +1,8 @@
 import { useCallback, useState } from "react";
+import createPersistedState from "use-persisted-state";
+import { PersistedStates } from "../constants/state";
+
+const useFirstTime = createPersistedState(PersistedStates.FirstTime);
 
 export type ModalsOptions = {
   openInstructions: () => void;
@@ -18,9 +22,13 @@ enum Modal {
 }
 
 export const useModals = (): ModalsOptions => {
+  const [, setIsFirstTime] = useFirstTime(true);
   const [openModal, setOpenModal] = useState<Modal | null>(null);
 
-  const closeModal = useCallback(() => setOpenModal(null), []);
+  const closeModal = useCallback(() => {
+    setIsFirstTime(false);
+    setOpenModal(null);
+  }, []);
   const openInstructions = useCallback(() => setOpenModal(Modal.Instructions), []);
   const openStats = useCallback(() => setOpenModal(Modal.Stats), []);
   const openSettings = useCallback(() => setOpenModal(Modal.Settings), []);
