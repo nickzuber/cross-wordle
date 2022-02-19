@@ -99,11 +99,11 @@ export const useGame = (): GameOptions => {
     return [
       `Crosswordle ${getPuzzleNumber()} ${countValidLettersOnBoard(board)}/${
         Config.MaxLetters
-      }`,
+      }${hardMode ? "*" : ""}`,
       "",
       getEmojiBoard(board),
     ].join("\n");
-  }, [board]);
+  }, [board, hardMode]);
 
   return {
     solutionBoard,

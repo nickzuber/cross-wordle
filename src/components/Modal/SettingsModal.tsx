@@ -1,8 +1,11 @@
-import { FC, useMemo } from "react";
+import { FC, useContext, useMemo } from "react";
 import styled from "@emotion/styled";
 import createPersistedState from "use-persisted-state";
 import { Modal } from "./Modal";
 import { PersistedStates } from "../../constants/state";
+import { GameContext } from "../../contexts/game";
+import { Config } from "../../utils/game";
+import { ToastContext } from "../../contexts/toast";
 
 const useDarkTheme = createPersistedState(PersistedStates.DarkTheme);
 const useHardMode = createPersistedState(PersistedStates.HardMode);
@@ -22,6 +25,8 @@ function getAppHash() {
 export const SettingsModal: FC = () => {
   const [darkTheme, setDarkTheme] = useDarkTheme(false) as [boolean, React.Dispatch<boolean>];
   const [hardMode, setHardMode] = useHardMode(false) as [boolean, React.Dispatch<boolean>];
+  const { unusedLetters } = useContext(GameContext);
+  const { sendToast } = useContext(ToastContext);
   const hash = useMemo(() => getAppHash(), []);
 
   return (
@@ -42,7 +47,20 @@ export const SettingsModal: FC = () => {
           <Description>Requires you to place all letters</Description>
         </Label>
         <ToggleContainer>
-          <Toggle onClick={() => setHardMode(!hardMode)} enabled={hardMode} />
+          <Toggle
+            onClick={() => {
+              if (hardMode) {
+                setHardMode(false);
+              } else {
+                if (unusedLetters.length === Config.MaxLetters) {
+                  setHardMode(true);
+                } else {
+                  sendToast("You can only turn on hard mode at the start of a game");
+                }
+              }
+            }}
+            enabled={hardMode}
+          />
         </ToggleContainer>
       </Setting>
       <TagContainer
