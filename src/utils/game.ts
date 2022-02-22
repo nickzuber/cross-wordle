@@ -410,8 +410,14 @@ export function decrementCursor(board: Board): Cursor {
 }
 
 function shiftBoardUp(board: Board): Board {
-  const row = board.tiles[0];
-  const newLetterPositions = [...board.tiles.slice(1), row].map((row) =>
+  const topRow = board.tiles[0];
+
+  // Don't move board in this direction if it'd overflow.
+  if (topRow.some((tile) => tile.letter !== null)) {
+    return board;
+  }
+
+  const newLetterPositions = [...board.tiles.slice(1), topRow].map((row) =>
     row.map((tile) => tile.letter),
   );
 
@@ -433,8 +439,14 @@ function shiftBoardUp(board: Board): Board {
 }
 
 function shiftBoardDown(board: Board): Board {
-  const row = board.tiles[board.tiles.length - 1];
-  const newLetterPositions = [row, ...board.tiles.slice(0, board.tiles.length - 1)].map(
+  const bottomRow = board.tiles[board.tiles.length - 1];
+
+  // Don't move board in this direction if it'd overflow.
+  if (bottomRow.some((tile) => tile.letter !== null)) {
+    return board;
+  }
+
+  const newLetterPositions = [bottomRow, ...board.tiles.slice(0, board.tiles.length - 1)].map(
     (row) => row.map((tile) => tile.letter),
   );
 
@@ -457,6 +469,13 @@ function shiftBoardDown(board: Board): Board {
 
 function shiftBoardLeft(board: Board): Board {
   const maxC = board.tiles[0].length;
+  const leftRow = board.tiles.map((row) => row[0]).flat();
+
+  // Don't move board in this direction if it'd overflow.
+  if (leftRow.some((tile) => tile.letter !== null)) {
+    return board;
+  }
+
   const prevLetterPositions = board.tiles.map((row) => row.map((tile) => tile.letter));
 
   const newLetterPositions = prevLetterPositions.map((_) => []) as (Letter | null)[][];
@@ -486,6 +505,13 @@ function shiftBoardLeft(board: Board): Board {
 
 function shiftBoardRight(board: Board): Board {
   const maxC = board.tiles[0].length;
+  const rightRow = board.tiles.map((row) => row[row.length - 1]).flat();
+
+  // Don't move board in this direction if it'd overflow.
+  if (rightRow.some((tile) => tile.letter !== null)) {
+    return board;
+  }
+
   const prevLetterPositions = board.tiles.map((row) => row.map((tile) => tile.letter));
 
   const newLetterPositions = prevLetterPositions.map((_) => []) as (Letter | null)[][];
