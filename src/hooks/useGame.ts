@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useMemo } from "react";
-import { Board, Config, Directions, getPuzzleNumber, Letter, TileState } from "../utils/game";
+import { Board, Config, Directions, getPuzzleNumber, Letter } from "../utils/game";
 import {
   countValidLettersOnBoard,
   validateBoard,
@@ -126,25 +126,47 @@ export const useGame = (): GameOptions => {
   };
 };
 
+const tileLetterToAscii: Record<string, string> = {
+  a: "𝙰",
+  b: "𝙱",
+  c: "𝙲",
+  d: "𝙳",
+  e: "𝙴",
+  f: "𝙵",
+  g: "𝙶",
+  h: "𝙷",
+  i: "𝙸",
+  j: "𝙹",
+  k: "𝙺",
+  l: "𝙻",
+  m: "𝙼",
+  n: "𝙽",
+  o: "𝙾",
+  p: "𝙿",
+  q: "𝚀",
+  r: "𝚁",
+  s: "𝚂",
+  t: "𝚃",
+  u: "𝚄",
+  v: "𝚅",
+  w: "𝚆",
+  x: "𝚇",
+  y: "𝚈",
+  z: "𝚉",
+};
+
+const EmptyCharacter = "  ";
+const CharacterSpacing = "  ";
+
 function getEmojiBoard(board: Board) {
   const boardString = board.tiles
     .map((row) => {
       return row
         .map((tile) => {
-          switch (tile.state) {
-            case TileState.VALID:
-              return "🟩";
-            case TileState.INVALID:
-              return "⬛";
-            case TileState.MIXED:
-              return "🟩";
-            case TileState.IDLE:
-              return "⬜";
-            default:
-              return "";
-          }
+          const key = tile.letter?.letter.toLocaleLowerCase();
+          return key ? tileLetterToAscii[key] : EmptyCharacter || EmptyCharacter;
         })
-        .join("");
+        .join(CharacterSpacing);
     })
     .join("\n");
 
