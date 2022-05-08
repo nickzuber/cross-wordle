@@ -97,7 +97,6 @@ function findAnyTile(tiles: Tile[][]) {
 
 export function getInvalidWords(board: Board): Array<string> {
   const tiles = board.tiles;
-  const gridBounds = tiles.length;
   const leftToRight = getWordsFromTilesLTR(tiles);
   const topToBottom = getWordsFromTilesTTB(tiles);
   const foundWords = leftToRight.concat(topToBottom);
