@@ -102,18 +102,17 @@ export const useGame = (): GameOptions => {
 
     if (node) {
       const imgBlob = await toBlob(node);
-      const pngData = await toPng(node);
 
-      if (!imgBlob || !pngData) {
+      if (!imgBlob) {
         return null;
       }
 
       try {
         const clipboardItem = new ClipboardItem({
-          "image/png": imgBlob as Blob,
+          "image/jpeg": imgBlob as Blob,
         });
-        const blobFile = new File([imgBlob], "solution.png", {
-          type: "image/png",
+        const blobFile = new File([imgBlob], "solution.jpg", {
+          type: "image/jpg",
         });
         return [clipboardItem, blobFile] as [ClipboardItem, File];
       } catch (error) {
