@@ -112,7 +112,7 @@ export const useGame = (): GameOptions => {
         const clipboardItem = new ClipboardItem({
           "image/png": imgBlob as Blob,
         });
-        const blobFile = new File([pngData], "solution.png", {
+        const blobFile = new File([imgBlob], "solution.png", {
           type: "image/png",
         });
         return [clipboardItem, blobFile] as [ClipboardItem, File];
