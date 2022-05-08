@@ -102,9 +102,9 @@ export const useGame = (): GameOptions => {
 
     if (node) {
       const imgBlob = await toBlob(node);
-      console.info(imgBlob);
+      const pngData = await toPng(node);
 
-      if (!imgBlob) {
+      if (!imgBlob || !pngData) {
         return null;
       }
 
@@ -112,7 +112,7 @@ export const useGame = (): GameOptions => {
         const clipboardItem = new ClipboardItem({
           "image/png": imgBlob as Blob,
         });
-        const blobFile = new File([imgBlob], "solution", {
+        const blobFile = new File([pngData], "solution", {
           type: "image/png",
         });
         return [clipboardItem, blobFile] as [ClipboardItem, File];
