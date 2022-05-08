@@ -51,7 +51,7 @@ function scoreToCompliment(score: number) {
 
 export const StatsModal: FC = () => {
   const theme = useTheme() as AppTheme;
-  const { board, solutionBoard, getShareLink, isGameOver } = useContext(GameContext);
+  const { board, solutionBoard, getShareClipboardItem, isGameOver } = useContext(GameContext);
   const { sendToast } = useContext(ToastContext);
   const [timeLeft, setTimeLeft] = useState(getTimeLeftInDay());
   const [showPreview, setShowPreview] = useState(false);
@@ -61,26 +61,33 @@ export const StatsModal: FC = () => {
     return () => clearInterval(ts);
   }, []);
 
-  function onShareResults() {
+  async function onShareResults() {
+    const results = await getShareClipboardItem();
+    if (!results) {
+      alert("no items");
+      return;
+    }
+    const [clipboardItem, imageFile] = results;
+
     if (navigator.share) {
       navigator
         .share({
           title: document.title,
-          text: getShareLink(),
+          files: [imageFile],
         })
         .catch(() =>
           navigator.clipboard
-            .writeText(getShareLink())
+            .write([clipboardItem])
             .then(() => sendToast("Copied to clipboard!"))
-            .catch(() => sendToast("Something went wrong.")),
+            .catch(alert),
         );
     } else if (navigator.clipboard) {
       navigator.clipboard
-        .writeText(getShareLink())
+        .write([clipboardItem])
         .then(() => sendToast("Copied to clipboard!"))
-        .catch(() => sendToast("Something went wrong."));
+        .catch(alert);
     } else {
-      sendToast("Something went wrong.");
+      alert("Something went wrong.");
     }
   }
 

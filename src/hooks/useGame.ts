@@ -13,6 +13,7 @@ import createPersistedState from "use-persisted-state";
 import { PersistedStates } from "../constants/state";
 import { ModalsContext } from "../contexts/modals";
 import { ToastContext } from "../contexts/toast";
+import { toPng, toJpeg, toBlob, toPixelData, toSvg } from "html-to-image";
 
 const useIsGameOver = createPersistedState(PersistedStates.GameOver);
 const useHardMode = createPersistedState(PersistedStates.HardMode);
@@ -32,7 +33,7 @@ export type GameOptions = {
   canFinish: boolean;
   updateCursor: (row: number, col: number) => void;
   backspaceBoard: () => void;
-  getShareLink: () => string;
+  getShareClipboardItem: () => Promise<[ClipboardItem, File] | null>;
   shiftBoard: (direction: Directions) => void;
   moveCursorInDirection: (direction: Directions) => void;
 };
@@ -96,15 +97,45 @@ export const useGame = (): GameOptions => {
 
   const unusedLetters = letters.filter((letter) => !boardLetterIds.has(letter.id));
 
-  const getShareLink = useCallback(() => {
-    return [
-      `Crosswordle ${getPuzzleNumber()} ${countValidLettersOnBoard(board)}/${
-        Config.MaxLetters
-      }${hardMode ? "*" : ""}`,
-      "",
-      getEmojiBoard(board),
-    ].join("\n");
+  const getShareClipboardItem = useCallback(async () => {
+    const node = document.getElementById("canvas");
+
+    if (node) {
+      const imgBlob = await toBlob(node);
+      console.info(imgBlob);
+
+      if (!imgBlob) {
+        return null;
+      }
+
+      try {
+        const clipboardItem = new ClipboardItem({
+          "image/png": imgBlob as Blob,
+        });
+        const blobFile = new File([imgBlob], "solution", {
+          type: "image/png",
+        });
+        return [clipboardItem, blobFile] as [ClipboardItem, File];
+      } catch (error) {
+        console.error(error);
+        alert(error);
+      }
+    }
+
+    return null;
   }, [board, hardMode]);
+
+  // const getSharePngFile = useCallback(async () => {
+  //   const node = document.getElementById("canvas");
+
+  //   if (node) {
+  //     const pngData = await toPng(node);
+  //     console.info(pngData);
+  //     return new File(pngData)
+  //   }
+
+  //   return null;
+  // }, [board, hardMode]);
 
   return {
     solutionBoard,
@@ -123,7 +154,7 @@ export const useGame = (): GameOptions => {
     shiftBoard,
     moveCursorInDirection,
     isGameOver: isGameOver as boolean,
-    getShareLink,
+    getShareClipboardItem,
   };
 };
 
