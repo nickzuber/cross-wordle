@@ -275,6 +275,10 @@ const TileContents = styled.div<{
     ? "#787c7e"
     : theme.colors.tileSecondary;
 
+  // @NOTE
+  // We center the contents of this div using line-height instead of flexbox
+  // because when we generate png images in the share modal, the image doesn't
+  // respect flexbox for some reason.
   return css`
     background: ${backgroundColor};
     border: 2px solid ${borderColor};
