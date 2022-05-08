@@ -95,6 +95,19 @@ function findAnyTile(tiles: Tile[][]) {
   return null;
 }
 
+export function getInvalidWords(board: Board): Array<string> {
+  const tiles = board.tiles;
+  const gridBounds = tiles.length;
+  const leftToRight = getWordsFromTilesLTR(tiles);
+  const topToBottom = getWordsFromTilesTTB(tiles);
+  const foundWords = leftToRight.concat(topToBottom);
+  const invalidFoundWords = foundWords
+    .filter(({ word }) => !dictionary.has(word))
+    .map(({ word }) => word);
+
+  return invalidFoundWords;
+}
+
 export function validateBoard(board: Board): [Board, boolean] {
   const tiles = board.tiles;
   const gridBounds = tiles.length;

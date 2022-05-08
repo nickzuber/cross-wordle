@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useMemo } from "react";
 import { Board, Config, Directions, getPuzzleNumber, Letter } from "../utils/game";
 import {
   countValidLettersOnBoard,
+  getInvalidWords,
   validateBoard,
   validateWordIsland,
 } from "../utils/board-validator";
@@ -169,6 +170,11 @@ function getEmojiBoard(board: Board) {
         .join(CharacterSpacing);
     })
     .join("\n");
+
+  const invalidWords = getInvalidWords(board);
+  if (invalidWords.length > 0) {
+    return `${boardString}\n\nInvalid words: ${invalidWords.join(", ")}`;
+  }
 
   return boardString;
 }
