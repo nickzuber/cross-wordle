@@ -70,10 +70,9 @@ export const StatsModal: FC = () => {
     const [clipboardItem, imageFile] = results;
 
     if (navigator.share) {
-      alert(file);
+      alert(imageFile);
       navigator
         .share({
-          title: document.title,
           files: [imageFile],
         })
         .catch(() =>
