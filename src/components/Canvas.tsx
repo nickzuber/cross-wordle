@@ -18,10 +18,9 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   flex: 1;
-  width: fit-content;
+  width: 100%;
   min-height: 360px; // 6 tiles * tile size
   margin: 1% auto;
-  padding-top: 4px;
   overflow: hidden;
   touch-action: none;
 

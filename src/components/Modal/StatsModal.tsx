@@ -64,13 +64,12 @@ export const StatsModal: FC = () => {
   async function onShareResults() {
     const results = await getShareClipboardItem();
     if (!results) {
-      alert("no items");
+      sendToast("Something went wrong.");
       return;
     }
-    const [clipboardItem, imageFile] = results;
 
+    const [clipboardItem, imageFile] = results;
     if (navigator.share) {
-      alert(imageFile);
       navigator
         .share({
           files: [imageFile],
@@ -79,15 +78,15 @@ export const StatsModal: FC = () => {
           navigator.clipboard
             .write([clipboardItem])
             .then(() => sendToast("Copied to clipboard!"))
-            .catch(alert),
+            .catch(() => sendToast("Something went wrong.")),
         );
     } else if (navigator.clipboard) {
       navigator.clipboard
         .write([clipboardItem])
         .then(() => sendToast("Copied to clipboard!"))
-        .catch(alert);
+        .catch(() => sendToast("Something went wrong."));
     } else {
-      alert("Something went wrong.");
+      sendToast("Something went wrong.");
     }
   }
 

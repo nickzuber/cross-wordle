@@ -109,32 +109,19 @@ export const useGame = (): GameOptions => {
 
       try {
         const clipboardItem = new ClipboardItem({
-          "image/jpeg": imgBlob as Blob,
+          "image/png": imgBlob as Blob,
         });
-        const blobFile = new File([imgBlob], "solution.jpg", {
-          type: "image/jpg",
+        const blobFile = new File([imgBlob], `Crosswordle-${getPuzzleNumber()}.png`, {
+          type: "image/png",
         });
         return [clipboardItem, blobFile] as [ClipboardItem, File];
       } catch (error) {
-        console.error(error);
-        alert(error);
+        return null;
       }
     }
 
     return null;
   }, [board, hardMode]);
-
-  // const getSharePngFile = useCallback(async () => {
-  //   const node = document.getElementById("canvas");
-
-  //   if (node) {
-  //     const pngData = await toPng(node);
-  //     console.info(pngData);
-  //     return new File(pngData)
-  //   }
-
-  //   return null;
-  // }, [board, hardMode]);
 
   return {
     solutionBoard,
