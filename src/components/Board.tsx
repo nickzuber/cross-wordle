@@ -275,6 +275,10 @@ const TileContents = styled.div<{
     ? "#787c7e"
     : theme.colors.tileSecondary;
 
+  // @NOTE
+  // We center the contents of this div using line-height instead of flexbox
+  // because when we generate png images in the share modal, the image doesn't
+  // respect flexbox for some reason.
   return css`
     background: ${backgroundColor};
     border: 2px solid ${borderColor};
@@ -289,9 +293,13 @@ const TileContents = styled.div<{
     opacity: 1;
     font-weight: 700;
     font-size: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+    // display: flex;
+    // align-items: center;
+    // justify-content: center;
+    text-align: center;
+    line-height: 50px;
+
     user-select: none;
     ${animation}
     animation-delay: ${animationDelay};
@@ -303,6 +311,8 @@ const TileContents = styled.div<{
       min-width: 45px;
       max-height: 45px;
       max-width: 45px;
+
+      line-height: 45px;
     }
 
     @media (max-height: 580px) {
@@ -310,6 +320,8 @@ const TileContents = styled.div<{
       min-width: 40px;
       max-height: 40px;
       max-width: 40px;
+
+      line-height: 40px;
     }
   `;
 });
