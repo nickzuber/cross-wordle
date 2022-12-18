@@ -33,7 +33,6 @@ export const Controls: FC = () => {
 
   const onEnterPress = useCallback(() => {
     if (disableEnterButton) {
-      console.info(hardMode);
       if (hardMode) {
         const message =
           unusedLetters.length > 0
