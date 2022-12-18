@@ -781,6 +781,7 @@ export const words = [
   "blimp",
   "blimy",
   "blind",
+  "bling",
   "blini",
   "blink",
   "blips",
