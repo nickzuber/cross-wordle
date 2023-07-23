@@ -1,13 +1,14 @@
-import "./App.css";
-import { useEffect, useMemo } from "react";
 import { ThemeProvider } from "@emotion/react";
+import { Analytics } from "@vercel/analytics/react";
+import { useEffect, useMemo } from "react";
+import createPersistedState from "use-persisted-state";
+import "./App.css";
+import { Scene } from "./Scene";
+import { PersistedStates } from "./constants/state";
+import { Themes } from "./constants/themes";
 import { GameProvider } from "./contexts/game";
 import { ModalsProvider } from "./contexts/modals";
 import { ToastProvider } from "./contexts/toast";
-import { Scene } from "./Scene";
-import createPersistedState from "use-persisted-state";
-import { PersistedStates } from "./constants/state";
-import { Themes } from "./constants/themes";
 
 const useDarkTheme = createPersistedState(PersistedStates.DarkTheme);
 
@@ -23,6 +24,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
+      <Analytics />
       <ModalsProvider>
         <ToastProvider>
           <GameProvider>
