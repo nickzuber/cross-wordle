@@ -1,16 +1,15 @@
-import { FC, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { css, useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
-import { useTheme } from "@emotion/react";
-import { css } from "@emotion/react";
-import { CursorDirections, Letter, Tile, TileChangeReason, TileState } from "../utils/game";
+import { FC, useCallback, useContext, useEffect, useRef, useState } from "react";
 import {
-  createSuccessReveal,
   PopIn,
-  createMixedReveal,
   createInvalidReveal,
+  createMixedReveal,
+  createSuccessReveal,
 } from "../constants/animations";
-import { GameContext } from "../contexts/game";
 import { AppTheme } from "../constants/themes";
+import { GameContext } from "../contexts/game";
+import { CursorDirections, Letter, Tile, TileChangeReason, TileState } from "../utils/game";
 
 type GridTileProps = {
   tile: Tile;
@@ -272,7 +271,7 @@ const TileContents = styled.div<{
   const borderColor = hasCursor
     ? cursorColor
     : hasLetter
-    ? "#787c7e"
+    ? theme.colors.highlightBorder
     : theme.colors.tileSecondary;
 
   // @NOTE

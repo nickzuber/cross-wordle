@@ -1,14 +1,15 @@
-import { FC, useContext, useMemo } from "react";
 import styled from "@emotion/styled";
+import { FC, useContext, useMemo } from "react";
 import createPersistedState from "use-persisted-state";
-import { Modal } from "./Modal";
 import { PersistedStates } from "../../constants/state";
 import { GameContext } from "../../contexts/game";
-import { Config } from "../../utils/game";
 import { ToastContext } from "../../contexts/toast";
+import { Config } from "../../utils/game";
+import { Modal } from "./Modal";
 
 const useDarkTheme = createPersistedState(PersistedStates.DarkTheme);
 const useHardMode = createPersistedState(PersistedStates.HardMode);
+const useScoreMode = createPersistedState(PersistedStates.ScoreMode);
 
 type CrosswordleObj = {
   hash: string;
@@ -25,6 +26,7 @@ function getAppHash() {
 export const SettingsModal: FC = () => {
   const [darkTheme, setDarkTheme] = useDarkTheme(false) as [boolean, React.Dispatch<boolean>];
   const [hardMode, setHardMode] = useHardMode(false) as [boolean, React.Dispatch<boolean>];
+  const [scoreMode, setScoreMode] = useScoreMode(false) as [boolean, React.Dispatch<boolean>];
   const { unusedLetters } = useContext(GameContext);
   const { sendToast } = useContext(ToastContext);
   const hash = useMemo(() => getAppHash(), []);
@@ -61,6 +63,15 @@ export const SettingsModal: FC = () => {
             }}
             enabled={hardMode}
           />
+        </ToggleContainer>
+      </Setting>
+      <Setting>
+        <Label>
+          <Name>Show score</Name>
+          <Description>Includes a score for each letter</Description>
+        </Label>
+        <ToggleContainer>
+          <Toggle onClick={() => setScoreMode(!scoreMode)} enabled={scoreMode} />
         </ToggleContainer>
       </Setting>
       <TagContainer
