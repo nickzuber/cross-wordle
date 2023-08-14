@@ -178,7 +178,7 @@ const GridTile: FC<GridTileProps> = ({
               <ShineContainer>
                 <ShineWrapper score={tile.score} />
               </ShineContainer>
-              <Score>{tile?.score}</Score>
+              <Score revealDelay={tile.row * 100 + tile.col * 100}>{tile?.score}</Score>
             </>
           ) : null}
         </ScoredTileContents>
@@ -251,17 +251,21 @@ const TileWrapper = styled.div`
   }
 `;
 
-const Score = styled.div`
-  position: absolute;
-  bottom: 2px;
-  right: 3px;
-  font-size: 14px;
-  line-height: 14px;
-  font-weight: 600;
+const Score = styled.div<{ revealDelay: number }>(({ revealDelay }) => {
+  return css`
+    position: absolute;
+    bottom: 2px;
+    right: 3px;
+    font-size: 14px;
+    line-height: 14px;
+    font-weight: 600;
+    opacity: 0;
 
-  animation: ${FadeIn} 300ms ease-in-out;
-  animation-fill-mode: forwards;
-`;
+    animation: ${FadeIn} 300ms ease-in-out 1;
+    animation-delay: ${revealDelay}ms;
+    animation-fill-mode: forwards;
+  `;
+});
 
 const ShineContainer = styled.div`
   position: absolute;

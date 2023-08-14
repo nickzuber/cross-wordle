@@ -1,15 +1,15 @@
-import { FC, useContext, useEffect, useMemo, useRef, useState } from "react";
 import styled from "@emotion/styled";
+import { FC, useContext, useEffect, useMemo, useRef, useState } from "react";
 import Confetti from "react-confetti";
-import createPersistedState from "use-persisted-state";
 import { useWindowSize } from "react-use";
+import createPersistedState from "use-persisted-state";
 import { Canvas } from "./components";
 import { Controls } from "./components/Controls";
 import { Header } from "./components/Header";
 import { Modal } from "./components/Modal";
-import { ModalsContext } from "./contexts/modals";
 import { PersistedStates } from "./constants/state";
 import { GameContext } from "./contexts/game";
+import { ModalsContext } from "./contexts/modals";
 import { useLocalStorageGC } from "./hooks/useLocalStorageGC";
 import { countValidLettersOnBoard } from "./utils/board-validator";
 
@@ -35,7 +35,7 @@ export const Scene: FC = () => {
       // + 1000ms for all animations to kick off.
       // + 500ms for the last animation to finish.
       // + 100 for some buffer room.
-      ts = setTimeout(openStats, 1600);
+      ts = setTimeout(openStats, 2000);
     } else if (isFirstTime) {
       // + 100 for some buffer room.
       ts = setTimeout(openInstructions, 100);
