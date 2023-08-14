@@ -1,13 +1,19 @@
-import { FC, Fragment, useContext, useEffect, useState } from "react";
+import { css, useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
-import { useTheme } from "@emotion/react";
-import { Modal } from "./Modal";
-import { GameContext } from "../../contexts/game";
-import { createSuccessReveal } from "../../constants/animations";
-import { countValidLettersOnBoard } from "../../utils/board-validator";
-import { Config } from "../../utils/game";
-import { ToastContext } from "../../contexts/toast";
+import { FC, Fragment, useContext, useEffect, useMemo, useState } from "react";
+import { FadeIn, Shine, createSuccessReveal } from "../../constants/animations";
 import { AppTheme } from "../../constants/themes";
+import { GameContext } from "../../contexts/game";
+import { ToastContext } from "../../contexts/toast";
+import {
+  countBoardScore,
+  countSolutionBoardScore,
+  countValidLettersOnBoard,
+  createScoredBoard,
+  createScoredSolutionBoard,
+} from "../../utils/board-validator";
+import { Config } from "../../utils/game";
+import { Modal } from "./Modal";
 
 function zeroPad(num: number, places: number) {
   return String(num).padStart(places, "0");
@@ -56,6 +62,15 @@ export const StatsModal: FC = () => {
   const [timeLeft, setTimeLeft] = useState(getTimeLeftInDay());
   const [showPreview, setShowPreview] = useState(false);
 
+  // Solution board but with a score for each tile.
+  const scoredSolutionBoard = useMemo(
+    () => createScoredSolutionBoard(solutionBoard),
+    [solutionBoard],
+  );
+  const scoredBoard = useMemo(() => createScoredBoard(board), [board]);
+
+  const showScoredBoard = true;
+
   useEffect(() => {
     const ts = setInterval(() => setTimeLeft(getTimeLeftInDay()), 1000);
     return () => clearInterval(ts);
@@ -95,15 +110,28 @@ export const StatsModal: FC = () => {
       <Title>Statistics</Title>
       {isGameOver ? (
         <Fragment>
-          <Paragraph>
-            You were able to correctly use
-            <Result>
-              {countValidLettersOnBoard(board)}/{Config.MaxLetters}
-            </Result>
-            letters on your board.
-            <br />
-            <b>{scoreToCompliment(countValidLettersOnBoard(board))}</b>
-          </Paragraph>
+          {showScoredBoard ? (
+            <div>
+              <Paragraph>
+                Your score was
+                <Result>{countBoardScore(scoredBoard)}</Result>
+              </Paragraph>
+              <Paragraph>
+                Today's original score was
+                <Result>{countSolutionBoardScore(scoredSolutionBoard)}</Result>
+              </Paragraph>
+            </div>
+          ) : (
+            <Paragraph>
+              You were able to correctly use
+              <Result>
+                {countValidLettersOnBoard(board)}/{Config.MaxLetters}
+              </Result>
+              letters on your board.
+              <br />
+              <b>{scoreToCompliment(countValidLettersOnBoard(board))}</b>
+            </Paragraph>
+          )}
         </Fragment>
       ) : null}
       {!isGameOver ? (
@@ -123,26 +151,54 @@ export const StatsModal: FC = () => {
           isGameOver={isGameOver}
           onClick={() => setShowPreview(true)}
         >
-          {solutionBoard.map((row, r) => {
-            return (
-              <MiniRow key={r}>
-                {row.map((letter, c) => (
-                  <MiniTileWrapper key={`${r}${c}`}>
-                    {letter && showPreview ? (
-                      <MiniTileContentsSuccess
-                        theme={theme}
-                        animationDelay={r * 100 + c * 100}
-                      >
-                        {letter}
-                      </MiniTileContentsSuccess>
-                    ) : (
-                      <MiniTileContents theme={theme} />
-                    )}
-                  </MiniTileWrapper>
-                ))}
-              </MiniRow>
-            );
-          })}
+          {showScoredBoard
+            ? scoredSolutionBoard.map((row, r) => {
+                return (
+                  <MiniRow key={r}>
+                    {row.map((tile, c) => (
+                      <MiniTileWrapper key={`${r}${c}`}>
+                        {tile.letter && showPreview ? (
+                          <MiniTileContentsSuccess
+                            theme={theme}
+                            animationDelay={r * 100 + c * 100}
+                            score={tile.score}
+                          >
+                            {tile.letter}
+                            <>
+                              <ShineContainer>
+                                <ShineWrapper score={tile.score} />
+                              </ShineContainer>
+                              <Score revealDelay={r * 100 + c * 100}>{tile.score}</Score>
+                            </>
+                          </MiniTileContentsSuccess>
+                        ) : (
+                          <MiniTileContents theme={theme} />
+                        )}
+                      </MiniTileWrapper>
+                    ))}
+                  </MiniRow>
+                );
+              })
+            : solutionBoard.map((row, r) => {
+                return (
+                  <MiniRow key={r}>
+                    {row.map((letter, c) => (
+                      <MiniTileWrapper key={`${r}${c}`}>
+                        {letter && showPreview ? (
+                          <MiniTileContentsSuccess
+                            theme={theme}
+                            animationDelay={r * 100 + c * 100}
+                          >
+                            {letter}
+                          </MiniTileContentsSuccess>
+                        ) : (
+                          <MiniTileContents theme={theme} />
+                        )}
+                      </MiniTileWrapper>
+                    ))}
+                  </MiniRow>
+                );
+              })}
         </MiniBoard>
       )}
 
@@ -419,12 +475,14 @@ const MiniTileContents = styled.div<{ theme: AppTheme }>`
 const MiniTileContentsSuccess = styled(MiniTileContents)<{
   animationDelay: number;
   theme: AppTheme;
+  score?: number;
 }>`
   animation: ${(p) =>
       createSuccessReveal(
         p.theme.colors.text,
         p.theme.colors.tileSecondary,
         p.theme.colors.primary,
+        p.score,
       )}
     500ms ease-in;
   animation-delay: ${(p) => p.animationDelay}ms;
@@ -527,3 +585,60 @@ const ShareButton = styled.button`
     margin-right: 8px;
   }
 `;
+
+const Score = styled.div<{ revealDelay: number }>(({ revealDelay }) => {
+  return css`
+    position: absolute;
+    bottom: 1px;
+    right: 1px;
+    font-size: 10px;
+    line-height: 10px;
+    font-weight: 600;
+    opacity: 0;
+
+    animation: ${FadeIn} 300ms ease-in-out 1;
+    animation-delay: ${revealDelay}ms;
+    animation-fill-mode: forwards;
+  `;
+});
+
+const ShineContainer = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+`;
+
+const ShineWrapper = styled.div<{ score: number | undefined }>(({ score }) => {
+  if (!score) {
+    return css``;
+  }
+
+  if (score === 1) {
+    return css``;
+  }
+
+  return css`
+    animation: ${Shine} 4s ease-in-out infinite;
+    animation-fill-mode: forwards;
+    content: "";
+    position: absolute;
+    top: -110%;
+    left: -210%;
+    width: 200%;
+    height: 200%;
+    opacity: 0;
+    transform: rotate(30deg);
+
+    background: rgba(255, 255, 255, 0.13);
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.13) 0%,
+      rgba(255, 255, 255, 0.13) 77%,
+      rgba(255, 255, 255, 0.5) 92%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  `;
+});

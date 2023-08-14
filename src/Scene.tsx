@@ -34,7 +34,7 @@ export const Scene: FC = () => {
     if (isGameOver) {
       // + 1000ms for all animations to kick off.
       // + 500ms for the last animation to finish.
-      // + 100 for some buffer room.
+      // + 500 for some buffer room to soak in the tile flipping animation.
       ts = setTimeout(openStats, 2000);
     } else if (isFirstTime) {
       // + 100 for some buffer room.

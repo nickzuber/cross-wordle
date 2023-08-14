@@ -5,7 +5,6 @@ import {
   SolutionBoard,
   countLettersOnBoard,
   createBoard,
-  createTestingBoard,
   fillRandomEasyPosition,
   fillRandomEmptyPositions,
   getLettersFromBoard,
@@ -15,7 +14,6 @@ import {
 } from "./words-helper";
 
 export function createCompleteBoard(): SolutionBoard {
-  return createTestingBoard();
   // Initialize scene.
   let board = createBoard();
   let direction = Direction.Right;
