@@ -1,19 +1,21 @@
-import React, { useCallback, useContext, useMemo } from "react";
-import { Board, Config, Directions, getPuzzleNumber, Letter } from "../utils/game";
-import {
-  countValidLettersOnBoard,
-  getInvalidWords,
-  validateBoard,
-  validateWordIsland,
-} from "../utils/board-validator";
-import { useBoard } from "./useBoard";
-import { useLetters } from "./useLetters";
-import { SolutionBoard } from "../utils/words-helper";
+import { toBlob } from "html-to-image";
+import React, { useCallback, useContext, useEffect, useMemo } from "react";
 import createPersistedState from "use-persisted-state";
 import { PersistedStates } from "../constants/state";
 import { ModalsContext } from "../contexts/modals";
 import { ToastContext } from "../contexts/toast";
-import { toPng, toJpeg, toBlob, toPixelData, toSvg } from "html-to-image";
+import {
+  countSolutionBoardScore,
+  createScoredBoard,
+  createScoredSolutionBoard,
+  getInvalidWords,
+  validateBoard,
+  validateWordIsland,
+} from "../utils/board-validator";
+import { Board, Config, Directions, Letter, getPuzzleNumber } from "../utils/game";
+import { ScoredSolutionBoard, SolutionBoard } from "../utils/words-helper";
+import { useBoard } from "./useBoard";
+import { useLetters } from "./useLetters";
 
 const useIsGameOver = createPersistedState(PersistedStates.GameOver);
 const useHardMode = createPersistedState(PersistedStates.HardMode);
@@ -56,6 +58,16 @@ export const useGame = (): GameOptions => {
     moveCursorInDirection,
   } = useBoard();
 
+  useEffect(() => {
+    const scoredSolutionBoard = createScoredSolutionBoard(solutionBoard);
+    printEmojiScoredSolutionBoard(scoredSolutionBoard);
+  }, []);
+
+  useEffect(() => {
+    const scoredBoard = createScoredBoard(board);
+    setBoard(scoredBoard);
+  }, []);
+
   const tilesAreConnected = React.useMemo(() => validateWordIsland(board), [board]);
 
   const boardLetterIds = React.useMemo(
@@ -85,8 +97,11 @@ export const useGame = (): GameOptions => {
     // Validate the board.
     const [newBoard] = validateBoard(board);
 
+    // Score the board.
+    const scoredBoard = createScoredBoard(newBoard);
+
     // Animate the tiles.
-    setBoard(newBoard);
+    setBoard(scoredBoard);
 
     // End the game.
     setIsGameOver(true);
@@ -194,4 +209,68 @@ function getEmojiBoard(board: Board) {
   }
 
   return boardString;
+}
+
+function getEmojiSolutionBoard(board: SolutionBoard) {
+  const boardString = board
+    .map((row) => {
+      return row
+        .map((tile) => {
+          const letter = tile?.toLocaleLowerCase();
+          return letter ?? " ";
+        })
+        .join(CharacterSpacing);
+    })
+    .join("\n");
+
+  return boardString;
+}
+
+function printEmojiScoredSolutionBoard(board: ScoredSolutionBoard) {
+  const parts = [""];
+  const styles = [];
+  for (let c = 0; c < 6; c++) {
+    for (let r = 0; r < 6; r++) {
+      const tile = board[c][r];
+      const letter = tile.letter?.toLocaleLowerCase();
+      switch (tile.score) {
+        case 1:
+          parts.push(`%c${letter}`);
+          styles.push("color: #da77f2");
+          break;
+        case 2:
+          parts.push(`%c${letter}`);
+          styles.push("color: #ffd43b");
+          break;
+        case 3:
+          parts.push(`%c${letter}`);
+          styles.push("color: #40c057");
+          break;
+        case 4:
+          parts.push(`%c${letter}`);
+          styles.push("color: #fa5252");
+          break;
+        default:
+          parts.push("%c" + (letter ?? " "));
+          styles.push("color: #495057");
+      }
+      parts.push(" ");
+    }
+    parts.push("\n");
+  }
+
+  console.info(parts.join(""), ...styles);
+
+  const score = countSolutionBoardScore(board);
+  console.info(
+    `Score: %c${score}`,
+    `color: ${score > 30 ? "green" : score > 24 ? "blue" : "#aaa"}`,
+  );
+  console.info(
+    `%c1, %c2, %c3, %c4`,
+    "color: #da77f2",
+    "color: #ffd43b",
+    "color: #40c057",
+    "color: #fa5252",
+  );
 }

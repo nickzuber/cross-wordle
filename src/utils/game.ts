@@ -40,19 +40,39 @@ export enum TileChangeReason {
   LETTER = "letter",
 }
 
-export type Tile = {
+export interface Tile {
   id: string;
   row: number;
   col: number;
   letter: Letter | null;
   state: TileState;
   changeReason: TileChangeReason | undefined;
-};
+}
 
-export type Board = {
+export interface Board {
   tiles: Tile[][];
   cursor: Cursor;
-};
+}
+
+export interface ScoredTile extends Tile {
+  score: number | undefined;
+}
+
+export interface ScoredBoard extends Board {
+  tiles: ScoredTile[][];
+}
+
+export function shouldShowTileScore(tile: ScoredTile): boolean {
+  return Boolean(!!tile.letter?.letter && tile?.score && tile.score > 0);
+}
+
+export function isTileScored(tile: Tile | ScoredTile): tile is ScoredTile {
+  if ("score" in tile) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 // https://en.wikipedia.org/wiki/Bananagrams#cite_note-7
 const Letters = [
@@ -202,7 +222,7 @@ const Letters = [
 ];
 
 // @TODO use a seeded randomizer so we can get one combo per day.
-function getRandom<T>(arr: T[], n: number) {
+export function getRandom<T>(arr: T[], n: number) {
   var result = new Array(n),
     len = arr.length,
     taken = new Array(len);

@@ -1,5 +1,6 @@
-import { Board, Tile, TileState } from "./game";
 import { words as dictionary } from "../constants/words";
+import { Board, ScoredBoard, ScoredTile, Tile, TileState } from "./game";
+import { ScoredSolutionBoard, ScoredSolutionLetter, SolutionBoard } from "./words-helper";
 
 enum WordDirection {
   LeftToRight,
@@ -183,6 +184,173 @@ export function validateBoard(board: Board): [Board, boolean] {
   }
 
   return [validatedBoard, allWordsAreValid];
+}
+
+export function countSolutionBoardScore(board: ScoredSolutionBoard): number {
+  return board
+    .map((row) => row.map((tile) => tile.score ?? 0))
+    .flat()
+    .reduce((acc, score) => acc + score, 0);
+}
+
+export function countBoardScore(board: ScoredBoard): number {
+  return board.tiles
+    .map((row) => row.map((tile) => tile.score ?? 0))
+    .flat()
+    .reduce((acc, score) => acc + score, 0);
+}
+
+export function createScoredBoard(board: Board): ScoredBoard {
+  const scoredBoard: ScoredBoard = {
+    cursor: board.cursor,
+    tiles: scoreTiles(board.tiles),
+  };
+
+  return scoredBoard;
+}
+
+function scoreTiles(tiles: Tile[][]): ScoredTile[][] {
+  const scoredTiles: ScoredTile[][] = tiles.map((row) =>
+    row.map((tile) => ({ ...tile, score: tile.letter ? 0 : undefined })),
+  );
+
+  // Search for clusters of letters up to a 4x4 grid.
+  // Since there are only 20 letters, a 4x4 cluster is actually the best you can do,
+  // since a 5x5 would require 25+ letters.
+  for (let clusterSize = 1; clusterSize <= 4; clusterSize++) {
+    for (let c = 0; c <= scoredTiles[0].length - clusterSize; c++) {
+      for (let r = 0; r <= scoredTiles.length - clusterSize; r++) {
+        const startingCoordinate = [c, r] as [number, number];
+        if (
+          isClusterFullOfValidLetters({
+            tiles: scoredTiles,
+            clusterSize,
+            startingCoordinate,
+          })
+        ) {
+          scoreClusterOfTiles({
+            tiles: scoredTiles,
+            clusterSize,
+            startingCoordinate,
+            newScore: clusterSize,
+          });
+        }
+      }
+    }
+  }
+
+  return scoredTiles;
+}
+
+function isClusterFullOfValidLetters(args: {
+  tiles: ScoredTile[][];
+  clusterSize: number;
+  startingCoordinate: [number, number];
+}): boolean {
+  const { tiles, clusterSize, startingCoordinate } = args;
+  const [startingC, startingR] = startingCoordinate;
+  for (let c = startingC; c < startingC + clusterSize; c++) {
+    for (let r = startingR; r < startingR + clusterSize; r++) {
+      const tile = tiles[r][c];
+      if (!tile.letter || tile.state !== TileState.VALID) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+function scoreClusterOfTiles(args: {
+  tiles: ScoredTile[][];
+  clusterSize: number;
+  startingCoordinate: [number, number];
+  newScore: number;
+}): ScoredTile[][] {
+  const { tiles, clusterSize, startingCoordinate, newScore } = args;
+  const [startingC, startingR] = startingCoordinate;
+  for (let c = startingC; c < startingC + clusterSize; c++) {
+    for (let r = startingR; r < startingR + clusterSize; r++) {
+      const tile = tiles[r][c];
+      if (tile.letter) {
+        tile.score = newScore;
+      }
+    }
+  }
+
+  return tiles;
+}
+
+export function createScoredSolutionBoard(board: SolutionBoard): ScoredSolutionBoard {
+  const scoredLetters: ScoredSolutionLetter[][] = board.map((row) =>
+    row.map((letter) => ({ letter, score: 0 })),
+  );
+
+  // Search for clusters of letters up to a 4x4 grid.
+  // Since there are only 20 letters, a 4x4 cluster is actually the best you can do,
+  // since a 5x5 would require 25+ letters.
+  for (let clusterSize = 1; clusterSize <= 4; clusterSize++) {
+    for (let c = 0; c <= scoredLetters[0].length - clusterSize; c++) {
+      for (let r = 0; r <= scoredLetters.length - clusterSize; r++) {
+        const startingCoordinate = [c, r] as [number, number];
+        if (
+          isClusterFullOfValidSolutionLetters({
+            scoredLetters,
+            clusterSize,
+            startingCoordinate,
+          })
+        ) {
+          scoreClusterOfSolutionLetters({
+            scoredLetters,
+            clusterSize,
+            startingCoordinate,
+            newScore: clusterSize,
+          });
+        }
+      }
+    }
+  }
+
+  return scoredLetters;
+}
+
+function isClusterFullOfValidSolutionLetters(args: {
+  scoredLetters: ScoredSolutionLetter[][];
+  clusterSize: number;
+  startingCoordinate: [number, number];
+}): boolean {
+  const { scoredLetters, clusterSize, startingCoordinate } = args;
+  const [startingC, startingR] = startingCoordinate;
+  for (let c = startingC; c < startingC + clusterSize; c++) {
+    for (let r = startingR; r < startingR + clusterSize; r++) {
+      const tile = scoredLetters[r][c];
+      if (!tile.letter) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+function scoreClusterOfSolutionLetters(args: {
+  scoredLetters: ScoredSolutionLetter[][];
+  clusterSize: number;
+  startingCoordinate: [number, number];
+  newScore: number;
+}): ScoredSolutionLetter[][] {
+  const { scoredLetters, clusterSize, startingCoordinate, newScore } = args;
+  const [startingC, startingR] = startingCoordinate;
+  for (let c = startingC; c < startingC + clusterSize; c++) {
+    for (let r = startingR; r < startingR + clusterSize; r++) {
+      const letter = scoredLetters[r][c];
+      if (letter.letter) {
+        letter.score = newScore;
+      }
+    }
+  }
+
+  return scoredLetters;
 }
 
 function getWordsFromTilesLTR(tiles: Tile[][]): WordFromTile[] {

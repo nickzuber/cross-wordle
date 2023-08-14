@@ -94,11 +94,41 @@ export const PopIn = keyframes`
   }
 `;
 
+export const Shine = keyframes`
+  20% {
+    opacity: 1;
+    top: -30%;
+    left: -30%;
+    transition-property: left, top, opacity;
+    transition-duration: 0.7s, 0.7s, 0.15s;
+    transition-timing-function: ease;
+  }
+  100% {
+    opacity: 0;
+    top: -30%;
+    left: -30%;
+    transition-property: left, top, opacity;
+  }
+`;
+
 export const createSuccessReveal = (
   color: string,
   borderColor: string,
   background: string,
-) => keyframes`
+  score?: number | undefined,
+) => {
+  let finalBackground = "#6aaa64";
+  let finalBorder = "#6aaa64";
+
+  if (score && score >= 3) {
+    finalBackground = `
+      radial-gradient(ellipse farthest-corner at right bottom, #c6a818 0%, #ce9b34 8%, #daae53 30%, #ddaf47 40%, transparent 80%),
+      radial-gradient(ellipse farthest-corner at left top, #c9aa2f 0%, #e2c427 8%, #e3b32c 25%, #9a7a30 62.5%, #c19738 100%)
+    `;
+    finalBorder = "#c9aa2f";
+  }
+
+  return keyframes`
   0% {
     transform: rotateX(0);
   }
@@ -109,17 +139,18 @@ export const createSuccessReveal = (
   }
   50% {
     color: #ffffff;
-    border-color: #6aaa64;
-    background: #6aaa64;
+    border-color: ${finalBorder};
+    background: ${finalBackground};
     transform: rotateX(-90deg);
   }
   100% {
     color: #ffffff;
-    border-color: #6aaa64;
-    background: #6aaa64;
+    border-color: ${finalBorder};
+    background: ${finalBackground};
     transform: rotateX(0);
   }
 `;
+};
 
 export const createMixedReveal = (
   color: string,

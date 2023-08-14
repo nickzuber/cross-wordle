@@ -1,19 +1,21 @@
 import { v4 as uuidv4 } from "uuid";
 import { Config, Letter, shuffle } from "../utils/game";
 import {
+  Direction,
+  SolutionBoard,
   countLettersOnBoard,
   createBoard,
-  Direction,
+  createTestingBoard,
   fillRandomEasyPosition,
   fillRandomEmptyPositions,
   getLettersFromBoard,
   getWordsOfLength,
   randomGenerator,
-  SolutionBoard,
   writeWordToBoard,
 } from "./words-helper";
 
 export function createCompleteBoard(): SolutionBoard {
+  return createTestingBoard();
   // Initialize scene.
   let board = createBoard();
   let direction = Direction.Right;
