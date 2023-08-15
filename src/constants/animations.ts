@@ -122,10 +122,10 @@ export const createSuccessReveal = (
 
   if (score && score >= 3) {
     finalBackground = `
-      radial-gradient(ellipse farthest-corner at right bottom, #c6a818 0%, #ce9b34 8%, #daae53 30%, #ddaf47 40%, transparent 80%),
+      radial-gradient(ellipse farthest-corner at right bottom, #c6a818 0%, #ce9b34 8%, #daae53 30%, #ddaf47 40%, #fcc52a 80%, #dbab4b 100%),
       radial-gradient(ellipse farthest-corner at left top, #c9aa2f 0%, #e2c427 8%, #e3b32c 25%, #9a7a30 62.5%, #c19738 100%)
     `;
-    finalBorder = "#c9aa2f";
+    finalBorder = "#d3ad4b";
   }
 
   return keyframes`
