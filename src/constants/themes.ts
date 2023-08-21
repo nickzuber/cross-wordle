@@ -11,6 +11,7 @@ export type AppTheme = {
     tileSecondary: string;
     highlight: string;
     buttonActive: string;
+    highlightBorder: string;
   };
   accents: {
     dropShadow: string;
@@ -25,6 +26,7 @@ const LightTheme: AppTheme = {
     text: "#1a1a1b",
     tileSecondary: "#d3d6da",
     highlight: "#f0f0f0",
+    highlightBorder: "#2e2f2f",
     buttonActive: "#c0c4ca",
   },
   accents: {
@@ -40,6 +42,7 @@ const DarkTheme: AppTheme = {
     text: "#ffffff",
     tileSecondary: "#4d5a62",
     highlight: "#133652",
+    highlightBorder: "#c4c5c5",
     buttonActive: "#656b6e",
   },
   accents: {

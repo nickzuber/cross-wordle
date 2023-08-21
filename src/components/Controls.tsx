@@ -1,13 +1,13 @@
-import { FC, useCallback, useContext, useEffect } from "react";
-import styled from "@emotion/styled";
-import createPersistedState from "use-persisted-state";
 import { useTheme } from "@emotion/react";
-import { Directions, Letter } from "../utils/game";
-import { GameContext } from "../contexts/game";
+import styled from "@emotion/styled";
+import { FC, useCallback, useContext, useEffect } from "react";
+import createPersistedState from "use-persisted-state";
 import { PopIn } from "../constants/animations";
-import { ToastContext } from "../contexts/toast";
-import { AppTheme } from "../constants/themes";
 import { PersistedStates } from "../constants/state";
+import { AppTheme } from "../constants/themes";
+import { GameContext } from "../contexts/game";
+import { ToastContext } from "../contexts/toast";
+import { Directions, Letter } from "../utils/game";
 
 const useHardMode = createPersistedState(PersistedStates.HardMode);
 

@@ -1,11 +1,11 @@
 import generator from "random-seed";
-import { words as TwoCharWords } from "../constants/words/good-words/two";
-import { words as ThreeCharWords } from "../constants/words/good-words/three";
-import { words as FourCharWords } from "../constants/words/good-words/four";
-import { words as FiveCharWords } from "../constants/words/good-words/five";
-import { words as SixCharWords } from "../constants/words/good-words/six";
 import { words as dictionary } from "../constants/words";
 import { words as goodDictionary } from "../constants/words/good-words";
+import { words as FiveCharWords } from "../constants/words/good-words/five";
+import { words as FourCharWords } from "../constants/words/good-words/four";
+import { words as SixCharWords } from "../constants/words/good-words/six";
+import { words as ThreeCharWords } from "../constants/words/good-words/three";
+import { words as TwoCharWords } from "../constants/words/good-words/two";
 import { Config } from "./game";
 
 const debug = false;
@@ -14,6 +14,9 @@ const logError = debug ? console.error : (args: any[]): void => {};
 
 // 2D board of letters being used.
 export type SolutionBoard = string[][];
+
+export type ScoredSolutionLetter = { letter: string; score: number };
+export type ScoredSolutionBoard = ScoredSolutionLetter[][];
 
 // Position on the board.
 export type Position = {
@@ -55,12 +58,12 @@ export function createBoard(): SolutionBoard {
 // The last usage of this was for that evil "isbn" bug... *shivers*
 export function createTestingBoard(): SolutionBoard {
   return [
-    [undefined, undefined, undefined, "s"] as unknown as string[],
-    [undefined, undefined, undefined, "i", undefined, "b"] as unknown as string[],
-    [undefined, undefined, undefined, "l", undefined, "o"] as unknown as string[],
-    [undefined, undefined, undefined, "e", undefined, "x"] as unknown as string[],
-    [undefined, undefined, undefined, "n", undefined, "e"] as unknown as string[],
-    ["l", "i", "s", "t", "e", "d"] as unknown as string[],
+    [undefined, undefined, undefined, undefined, "h", undefined] as unknown as string[],
+    [undefined, undefined, undefined, "m", "o", "m"] as unknown as string[],
+    ["c", "r", "u", "i", "s", "e"] as unknown as string[],
+    ["r", undefined, undefined, "s", "e", "t"] as unknown as string[],
+    ["u", undefined, undefined, "t", undefined, "a"] as unknown as string[],
+    ["d", "o", undefined, undefined, undefined, "l"] as unknown as string[],
   ];
 }
 

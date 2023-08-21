@@ -1,13 +1,24 @@
-import { FC, Fragment, useContext, useEffect, useState } from "react";
+import { css, useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
-import { useTheme } from "@emotion/react";
-import { Modal } from "./Modal";
-import { GameContext } from "../../contexts/game";
-import { createSuccessReveal } from "../../constants/animations";
-import { countValidLettersOnBoard } from "../../utils/board-validator";
-import { Config } from "../../utils/game";
-import { ToastContext } from "../../contexts/toast";
+import { FC, Fragment, useContext, useEffect, useMemo, useState } from "react";
+import createPersistedState from "use-persisted-state";
+import { FadeIn, Shine, createSuccessReveal } from "../../constants/animations";
+import { PersistedStates } from "../../constants/state";
 import { AppTheme } from "../../constants/themes";
+import { GameContext } from "../../contexts/game";
+import { ToastContext } from "../../contexts/toast";
+import {
+  countBoardScore,
+  countSolutionBoardScore,
+  countValidLettersOnBoard,
+  createScoredBoard,
+  createScoredSolutionBoard,
+  createUnscoredBoard,
+} from "../../utils/board-validator";
+import { Config, isBoardScored } from "../../utils/game";
+import { Modal } from "./Modal";
+
+const useScoreMode = createPersistedState(PersistedStates.ScoreMode);
 
 function zeroPad(num: number, places: number) {
   return String(num).padStart(places, "0");
@@ -30,7 +41,7 @@ function getTimeLeftInDay() {
   )}`;
 }
 
-function scoreToCompliment(score: number) {
+function letterCountToCompliment(score: number) {
   if (score < 10) {
     return "Better luck next time!";
   }
@@ -49,12 +60,44 @@ function scoreToCompliment(score: number) {
   return "";
 }
 
+function scoreToCompliment(score: number, target: number) {
+  if (score < target) {
+    return "Better luck next time!";
+  }
+  if (score === target) {
+    return "Right on point!";
+  }
+  if (score > 30) {
+    return "Wow, great score!";
+  }
+  if (score > 40) {
+    return "You are a legend — this score is insanely rare!";
+  }
+  if (score > target) {
+    return "Great job!";
+  }
+  return "";
+}
+
 export const StatsModal: FC = () => {
   const theme = useTheme() as AppTheme;
   const { board, solutionBoard, getShareClipboardItem, isGameOver } = useContext(GameContext);
   const { sendToast } = useContext(ToastContext);
   const [timeLeft, setTimeLeft] = useState(getTimeLeftInDay());
   const [showPreview, setShowPreview] = useState(false);
+  const [scoreMode] = useScoreMode(false);
+
+  // Solution board but with a score for each tile.
+  const scoredSolutionBoard = useMemo(
+    () => createScoredSolutionBoard(solutionBoard),
+    [solutionBoard],
+  );
+  const yourBoard = useMemo(
+    () => (scoreMode ? createScoredBoard(board) : createUnscoredBoard(board)),
+    [board, scoreMode],
+  );
+
+  const showScoredBoard = scoreMode && isBoardScored(yourBoard);
 
   useEffect(() => {
     const ts = setInterval(() => setTimeLeft(getTimeLeftInDay()), 1000);
@@ -95,15 +138,32 @@ export const StatsModal: FC = () => {
       <Title>Statistics</Title>
       {isGameOver ? (
         <Fragment>
-          <Paragraph>
-            You were able to correctly use
-            <Result>
-              {countValidLettersOnBoard(board)}/{Config.MaxLetters}
-            </Result>
-            letters on your board.
-            <br />
-            <b>{scoreToCompliment(countValidLettersOnBoard(board))}</b>
-          </Paragraph>
+          {showScoredBoard ? (
+            <Paragraph>
+              You were able to get a score of
+              <Result>
+                {countBoardScore(yourBoard)}/{countSolutionBoardScore(scoredSolutionBoard)}
+              </Result>
+              compared to today's target.
+              <br />
+              <b>
+                {scoreToCompliment(
+                  countBoardScore(yourBoard),
+                  countSolutionBoardScore(scoredSolutionBoard),
+                )}
+              </b>
+            </Paragraph>
+          ) : (
+            <Paragraph>
+              You were able to correctly use
+              <Result>
+                {countValidLettersOnBoard(board)}/{Config.MaxLetters}
+              </Result>
+              letters on your board.
+              <br />
+              <b>{letterCountToCompliment(countValidLettersOnBoard(board))}</b>
+            </Paragraph>
+          )}
         </Fragment>
       ) : null}
       {!isGameOver ? (
@@ -123,26 +183,54 @@ export const StatsModal: FC = () => {
           isGameOver={isGameOver}
           onClick={() => setShowPreview(true)}
         >
-          {solutionBoard.map((row, r) => {
-            return (
-              <MiniRow key={r}>
-                {row.map((letter, c) => (
-                  <MiniTileWrapper key={`${r}${c}`}>
-                    {letter && showPreview ? (
-                      <MiniTileContentsSuccess
-                        theme={theme}
-                        animationDelay={r * 100 + c * 100}
-                      >
-                        {letter}
-                      </MiniTileContentsSuccess>
-                    ) : (
-                      <MiniTileContents theme={theme} />
-                    )}
-                  </MiniTileWrapper>
-                ))}
-              </MiniRow>
-            );
-          })}
+          {showScoredBoard
+            ? scoredSolutionBoard.map((row, r) => {
+                return (
+                  <MiniRow key={r}>
+                    {row.map((tile, c) => (
+                      <MiniTileWrapper key={`${r}${c}`}>
+                        {tile.letter && showPreview ? (
+                          <MiniTileContentsSuccess
+                            theme={theme}
+                            animationDelay={r * 100 + c * 100}
+                            score={tile.score}
+                          >
+                            {tile.letter}
+                            <>
+                              <ShineContainer>
+                                <ShineWrapper score={tile.score} />
+                              </ShineContainer>
+                              <Score revealDelay={r * 100 + c * 100}>{tile.score}</Score>
+                            </>
+                          </MiniTileContentsSuccess>
+                        ) : (
+                          <MiniTileContents theme={theme} />
+                        )}
+                      </MiniTileWrapper>
+                    ))}
+                  </MiniRow>
+                );
+              })
+            : solutionBoard.map((row, r) => {
+                return (
+                  <MiniRow key={r}>
+                    {row.map((letter, c) => (
+                      <MiniTileWrapper key={`${r}${c}`}>
+                        {letter && showPreview ? (
+                          <MiniTileContentsSuccess
+                            theme={theme}
+                            animationDelay={r * 100 + c * 100}
+                          >
+                            {letter}
+                          </MiniTileContentsSuccess>
+                        ) : (
+                          <MiniTileContents theme={theme} />
+                        )}
+                      </MiniTileWrapper>
+                    ))}
+                  </MiniRow>
+                );
+              })}
         </MiniBoard>
       )}
 
@@ -419,12 +507,14 @@ const MiniTileContents = styled.div<{ theme: AppTheme }>`
 const MiniTileContentsSuccess = styled(MiniTileContents)<{
   animationDelay: number;
   theme: AppTheme;
+  score?: number;
 }>`
   animation: ${(p) =>
       createSuccessReveal(
         p.theme.colors.text,
         p.theme.colors.tileSecondary,
         p.theme.colors.primary,
+        p.score,
       )}
     500ms ease-in;
   animation-delay: ${(p) => p.animationDelay}ms;
@@ -527,3 +617,67 @@ const ShareButton = styled.button`
     margin-right: 8px;
   }
 `;
+
+const Score = styled.div<{ revealDelay: number }>(({ revealDelay }) => {
+  return css`
+    position: absolute;
+    bottom: 1px;
+    right: 1px;
+    font-size: 10px;
+    line-height: 10px;
+    font-weight: 600;
+    opacity: 0;
+
+    animation: ${FadeIn} 300ms ease-in-out 1;
+    animation-delay: ${revealDelay}ms;
+    animation-fill-mode: forwards;
+  `;
+});
+
+const SmallSpan = styled.span`
+  display: inline-block;
+  font-size: 14px;
+  line-height: 14px;
+  margin-left: 4px;
+`;
+
+const ShineContainer = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+`;
+
+const ShineWrapper = styled.div<{ score: number | undefined }>(({ score }) => {
+  if (!score) {
+    return css``;
+  }
+
+  if (score === 1) {
+    return css``;
+  }
+
+  return css`
+    animation: ${Shine} 4s ease-in-out infinite;
+    animation-fill-mode: forwards;
+    content: "";
+    position: absolute;
+    top: -110%;
+    left: -210%;
+    width: 200%;
+    height: 200%;
+    opacity: 0;
+    transform: rotate(30deg);
+
+    background: rgba(255, 255, 255, 0.13);
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.13) 0%,
+      rgba(255, 255, 255, 0.13) 77%,
+      rgba(255, 255, 255, 0.5) 92%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  `;
+});

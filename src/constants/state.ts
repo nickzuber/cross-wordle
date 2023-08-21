@@ -13,4 +13,5 @@ export const PersistedStates = {
   Stats: PersistedStorage.Stamp + "stats",
   DarkTheme: PersistedStorage.Stamp + "dark-theme",
   HardMode: PersistedStorage.Stamp + "hard-mode",
+  ScoreMode: PersistedStorage.Stamp + "score-mode",
 };

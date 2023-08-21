@@ -1,15 +1,15 @@
 import { v4 as uuidv4 } from "uuid";
 import { Config, Letter, shuffle } from "../utils/game";
 import {
+  Direction,
+  SolutionBoard,
   countLettersOnBoard,
   createBoard,
-  Direction,
   fillRandomEasyPosition,
   fillRandomEmptyPositions,
   getLettersFromBoard,
   getWordsOfLength,
   randomGenerator,
-  SolutionBoard,
   writeWordToBoard,
 } from "./words-helper";
 
