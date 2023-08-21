@@ -54,7 +54,7 @@ export const SettingsModal: FC = () => {
               if (hardMode) {
                 setHardMode(false);
               } else {
-                if (1 || unusedLetters.length === Config.MaxLetters) {
+                if (unusedLetters.length === Config.MaxLetters) {
                   setHardMode(true);
                 } else {
                   sendToast("You can only turn on hard mode at the start of a game");
