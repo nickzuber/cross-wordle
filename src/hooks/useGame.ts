@@ -73,19 +73,15 @@ export const useGame = (): GameOptions => {
     if (!isGameOver) return;
 
     if (!scoreMode && isBoardScored(board)) {
-      console.info("UN-SCORING");
-      const unscoredBoard = createUnscoredBoard(board);
-      setBoard(unscoredBoard);
+      setBoard(createUnscoredBoard(board));
       return;
     }
 
     if (scoreMode && !isBoardScored(board)) {
-      console.info("SCORING");
-      const scoredBoard = createScoredBoard(board);
-      setBoard(scoredBoard);
+      setBoard(createScoredBoard(board));
       return;
     }
-  }, [scoreMode, isGameOver, board]);
+  }, [scoreMode, isGameOver, board, setBoard]);
 
   const tilesAreConnected = React.useMemo(() => validateWordIsland(board), [board]);
 
@@ -155,7 +151,7 @@ export const useGame = (): GameOptions => {
     }
 
     return null;
-  }, [board, hardMode]);
+  }, [board]);
 
   return {
     solutionBoard,

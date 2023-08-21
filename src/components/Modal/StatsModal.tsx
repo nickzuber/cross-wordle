@@ -41,7 +41,7 @@ function getTimeLeftInDay() {
   )}`;
 }
 
-function scoreToCompliment(score: number) {
+function letterCountToCompliment(score: number) {
   if (score < 10) {
     return "Better luck next time!";
   }
@@ -60,6 +60,25 @@ function scoreToCompliment(score: number) {
   return "";
 }
 
+function scoreToCompliment(score: number, target: number) {
+  if (score < target) {
+    return "Better luck next time!";
+  }
+  if (score === target) {
+    return "Right on point!";
+  }
+  if (score > 30) {
+    return "Wow, great score!";
+  }
+  if (score > 40) {
+    return "You are a legend — this score is insanely rare!";
+  }
+  if (score > target) {
+    return "Great job!";
+  }
+  return "";
+}
+
 export const StatsModal: FC = () => {
   const theme = useTheme() as AppTheme;
   const { board, solutionBoard, getShareClipboardItem, isGameOver } = useContext(GameContext);
@@ -73,12 +92,12 @@ export const StatsModal: FC = () => {
     () => createScoredSolutionBoard(solutionBoard),
     [solutionBoard],
   );
-  const demoBoard = useMemo(
+  const yourBoard = useMemo(
     () => (scoreMode ? createScoredBoard(board) : createUnscoredBoard(board)),
     [board, scoreMode],
   );
 
-  const showScoredBoard = scoreMode && isBoardScored(demoBoard);
+  const showScoredBoard = scoreMode && isBoardScored(yourBoard);
 
   useEffect(() => {
     const ts = setInterval(() => setTimeLeft(getTimeLeftInDay()), 1000);
@@ -120,16 +139,20 @@ export const StatsModal: FC = () => {
       {isGameOver ? (
         <Fragment>
           {showScoredBoard ? (
-            <div>
-              <Paragraph>
-                Your score was
-                <Result>{countBoardScore(demoBoard)}</Result>
-              </Paragraph>
-              <Paragraph>
-                Today's original score was
-                <Result>{countSolutionBoardScore(scoredSolutionBoard)}</Result>
-              </Paragraph>
-            </div>
+            <Paragraph>
+              You were able to get a score of
+              <Result>
+                {countBoardScore(yourBoard)}/{countSolutionBoardScore(scoredSolutionBoard)}
+              </Result>
+              compared to today's target.
+              <br />
+              <b>
+                {scoreToCompliment(
+                  countBoardScore(yourBoard),
+                  countSolutionBoardScore(scoredSolutionBoard),
+                )}
+              </b>
+            </Paragraph>
           ) : (
             <Paragraph>
               You were able to correctly use
@@ -138,7 +161,7 @@ export const StatsModal: FC = () => {
               </Result>
               letters on your board.
               <br />
-              <b>{scoreToCompliment(countValidLettersOnBoard(board))}</b>
+              <b>{letterCountToCompliment(countValidLettersOnBoard(board))}</b>
             </Paragraph>
           )}
         </Fragment>
@@ -610,6 +633,13 @@ const Score = styled.div<{ revealDelay: number }>(({ revealDelay }) => {
     animation-fill-mode: forwards;
   `;
 });
+
+const SmallSpan = styled.span`
+  display: inline-block;
+  font-size: 14px;
+  line-height: 14px;
+  margin-left: 4px;
+`;
 
 const ShineContainer = styled.div`
   position: absolute;

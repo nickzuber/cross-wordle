@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { FC, useContext, useEffect, useMemo } from "react";
+import { FC, useContext, useMemo } from "react";
 import createPersistedState from "use-persisted-state";
 import { PersistedStates } from "../../constants/state";
 import { GameContext } from "../../contexts/game";
@@ -30,10 +30,6 @@ export const SettingsModal: FC = () => {
   const { unusedLetters } = useContext(GameContext);
   const { sendToast } = useContext(ToastContext);
   const hash = useMemo(() => getAppHash(), []);
-
-  useEffect(() => {
-    console.info("() scoreMode", scoreMode);
-  }, [scoreMode]);
 
   return (
     <Modal>
@@ -71,17 +67,13 @@ export const SettingsModal: FC = () => {
       </Setting>
       <Setting>
         <Label>
-          <Name>Show score</Name>
+          <Name>
+            Show score<Badge>new</Badge>
+          </Name>
           <Description>Includes a score for each letter</Description>
         </Label>
         <ToggleContainer>
-          <Toggle
-            onClick={() => {
-              console.info("settings to", !scoreMode);
-              setScoreMode(!scoreMode);
-            }}
-            enabled={scoreMode}
-          />
+          <Toggle onClick={() => setScoreMode(!scoreMode)} enabled={scoreMode} />
         </ToggleContainer>
       </Setting>
       <TagContainer
@@ -95,6 +87,22 @@ export const SettingsModal: FC = () => {
     </Modal>
   );
 };
+
+const Badge = styled.span`
+  position: absolute;
+  text-transform: uppercase;
+  letter-spacing: 0.025rem;
+  font-size: 12px;
+  line-height: 11px;
+  background: #fa5252;
+  color: #ffffff;
+  padding: 4px 6px;
+  border-radius: 6px;
+  margin-left: 2px;
+  margin-top: 2px;
+  border: 0;
+  transform: scale(0.9);
+`;
 
 const Title = styled.h1`
   margin: 0 0 24px;
