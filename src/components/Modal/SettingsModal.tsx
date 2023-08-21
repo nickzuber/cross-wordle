@@ -27,7 +27,7 @@ export const SettingsModal: FC = () => {
   const [darkTheme, setDarkTheme] = useDarkTheme(false) as [boolean, React.Dispatch<boolean>];
   const [hardMode, setHardMode] = useHardMode(false) as [boolean, React.Dispatch<boolean>];
   const [scoreMode, setScoreMode] = useScoreMode(false) as [boolean, React.Dispatch<boolean>];
-  const { unusedLetters } = useContext(GameContext);
+  const { unusedLetters, updateBoardWithNewScoreMode } = useContext(GameContext);
   const { sendToast } = useContext(ToastContext);
   const hash = useMemo(() => getAppHash(), []);
 
@@ -73,7 +73,14 @@ export const SettingsModal: FC = () => {
           <Description>Includes a score for each letter</Description>
         </Label>
         <ToggleContainer>
-          <Toggle onClick={() => setScoreMode(!scoreMode)} enabled={scoreMode} />
+          <Toggle
+            onClick={() => {
+              const nextScoreMode = !scoreMode;
+              setScoreMode(nextScoreMode);
+              updateBoardWithNewScoreMode(nextScoreMode);
+            }}
+            enabled={scoreMode}
+          />
         </ToggleContainer>
       </Setting>
       <TagContainer

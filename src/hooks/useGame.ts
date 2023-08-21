@@ -1,5 +1,5 @@
 import { toBlob } from "html-to-image";
-import React, { useCallback, useContext, useEffect, useMemo } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import createPersistedState from "use-persisted-state";
 import { PersistedStates } from "../constants/state";
 import { ModalsContext } from "../contexts/modals";
@@ -8,7 +8,6 @@ import {
   countSolutionBoardScore,
   createScoredBoard,
   createUnscoredBoard,
-  getInvalidWords,
   validateBoard,
   validateWordIsland,
 } from "../utils/board-validator";
@@ -46,6 +45,7 @@ export type GameOptions = {
   getShareClipboardItem: () => Promise<[ClipboardItem, File] | null>;
   shiftBoard: (direction: Directions) => void;
   moveCursorInDirection: (direction: Directions) => void;
+  updateBoardWithNewScoreMode: (newScoreMode: boolean) => void;
 };
 
 export const useGame = (): GameOptions => {
@@ -67,21 +67,24 @@ export const useGame = (): GameOptions => {
     moveCursorInDirection,
   } = useBoard();
 
-  // If the board is in score mode and the board isn't already scored
-  // (on fresh page load), we should score it.
-  useEffect(() => {
-    if (!isGameOver) return;
+  const updateBoardWithNewScoreMode = useCallback(
+    (newScoreMode: boolean) => {
+      if (!isGameOver) return;
 
-    if (!scoreMode && isBoardScored(board)) {
-      setBoard(createUnscoredBoard(board));
-      return;
-    }
+      if (!newScoreMode && isBoardScored(board)) {
+        console.info("Remove score");
+        setBoard(createUnscoredBoard(board));
+        return;
+      }
 
-    if (scoreMode && !isBoardScored(board)) {
-      setBoard(createScoredBoard(board));
-      return;
-    }
-  }, [scoreMode, isGameOver, board, setBoard]);
+      if (newScoreMode && !isBoardScored(board)) {
+        console.info("Create score");
+        setBoard(createScoredBoard(board));
+        return;
+      }
+    },
+    [isGameOver, board, setBoard],
+  );
 
   const tilesAreConnected = React.useMemo(() => validateWordIsland(board), [board]);
 
@@ -151,7 +154,7 @@ export const useGame = (): GameOptions => {
     }
 
     return null;
-  }, [board]);
+  }, []);
 
   return {
     solutionBoard,
@@ -171,75 +174,9 @@ export const useGame = (): GameOptions => {
     moveCursorInDirection,
     isGameOver: isGameOver as boolean,
     getShareClipboardItem,
+    updateBoardWithNewScoreMode,
   };
 };
-
-const tileLetterToAscii: Record<string, string> = {
-  a: "𝙰",
-  b: "𝙱",
-  c: "𝙲",
-  d: "𝙳",
-  e: "𝙴",
-  f: "𝙵",
-  g: "𝙶",
-  h: "𝙷",
-  i: "𝙸",
-  j: "𝙹",
-  k: "𝙺",
-  l: "𝙻",
-  m: "𝙼",
-  n: "𝙽",
-  o: "𝙾",
-  p: "𝙿",
-  q: "𝚀",
-  r: "𝚁",
-  s: "𝚂",
-  t: "𝚃",
-  u: "𝚄",
-  v: "𝚅",
-  w: "𝚆",
-  x: "𝚇",
-  y: "𝚈",
-  z: "𝚉",
-};
-
-const EmptyCharacter = "  ";
-const CharacterSpacing = "  ";
-
-function getEmojiBoard(board: Board) {
-  const boardString = board.tiles
-    .map((row) => {
-      return row
-        .map((tile) => {
-          const key = tile.letter?.letter.toLocaleLowerCase();
-          return key ? tileLetterToAscii[key] : EmptyCharacter || EmptyCharacter;
-        })
-        .join(CharacterSpacing);
-    })
-    .join("\n");
-
-  const invalidWords = getInvalidWords(board);
-  if (invalidWords.length > 0) {
-    return `${boardString}\n\nInvalid words: ${invalidWords.join(", ")}`;
-  }
-
-  return boardString;
-}
-
-function getEmojiSolutionBoard(board: SolutionBoard) {
-  const boardString = board
-    .map((row) => {
-      return row
-        .map((tile) => {
-          const letter = tile?.toLocaleLowerCase();
-          return letter ?? " ";
-        })
-        .join(CharacterSpacing);
-    })
-    .join("\n");
-
-  return boardString;
-}
 
 function printEmojiScoredSolutionBoard(board: ScoredSolutionBoard) {
   const parts = [""];

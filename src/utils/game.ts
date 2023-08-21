@@ -75,12 +75,13 @@ export function isTileScored(tile: Tile | ScoredTile): tile is ScoredTile {
 }
 
 export function isBoardScored(board: Board | ScoredBoard): board is ScoredBoard {
-  const tile = board.tiles[0][0];
-  if ("score" in tile) {
-    return true;
-  } else {
-    return false;
-  }
+  return board.tiles.flat().some((tile) => {
+    if ("score" in tile) {
+      return true;
+    } else {
+      return false;
+    }
+  });
 }
 
 // https://en.wikipedia.org/wiki/Bananagrams#cite_note-7
