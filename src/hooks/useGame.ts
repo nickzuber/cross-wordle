@@ -72,13 +72,11 @@ export const useGame = (): GameOptions => {
       if (!isGameOver) return;
 
       if (!newScoreMode && isBoardScored(board)) {
-        console.info("Remove score");
         setBoard(createUnscoredBoard(board));
         return;
       }
 
       if (newScoreMode && !isBoardScored(board)) {
-        console.info("Create score");
         setBoard(createScoredBoard(board));
         return;
       }
