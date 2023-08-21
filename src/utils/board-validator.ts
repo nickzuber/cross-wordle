@@ -209,6 +209,26 @@ export function createScoredBoard(board: Board): ScoredBoard {
   return scoredBoard;
 }
 
+export function createUnscoredBoard(board: ScoredBoard | Board): Board {
+  const scoredBoard: Board = {
+    cursor: board.cursor,
+    tiles: removeScoreFromTiles(board.tiles),
+  };
+
+  return scoredBoard;
+}
+
+function removeScoreFromTiles(tiles: (ScoredTile | Tile)[][]): Tile[][] {
+  return tiles.map((row) =>
+    row.map((tile) => {
+      if ("score" in tile) {
+        delete tile.score;
+      }
+      return tile;
+    }),
+  );
+}
+
 function scoreTiles(tiles: Tile[][]): ScoredTile[][] {
   const scoredTiles: ScoredTile[][] = tiles.map((row) =>
     row.map((tile) => ({ ...tile, score: tile.letter ? 0 : undefined })),

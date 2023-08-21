@@ -7,18 +7,26 @@ import { ToastContext } from "../contexts/toast";
 import {
   countSolutionBoardScore,
   createScoredBoard,
-  createScoredSolutionBoard,
+  createUnscoredBoard,
   getInvalidWords,
   validateBoard,
   validateWordIsland,
 } from "../utils/board-validator";
-import { Board, Config, Directions, Letter, getPuzzleNumber } from "../utils/game";
+import {
+  Board,
+  Config,
+  Directions,
+  Letter,
+  getPuzzleNumber,
+  isBoardScored,
+} from "../utils/game";
 import { ScoredSolutionBoard, SolutionBoard } from "../utils/words-helper";
 import { useBoard } from "./useBoard";
 import { useLetters } from "./useLetters";
 
 const useIsGameOver = createPersistedState(PersistedStates.GameOver);
 const useHardMode = createPersistedState(PersistedStates.HardMode);
+const useScoreMode = createPersistedState(PersistedStates.ScoreMode);
 
 export type GameOptions = {
   solutionBoard: SolutionBoard;
@@ -45,6 +53,7 @@ export const useGame = (): GameOptions => {
   const { clearToast } = useContext(ToastContext);
   const [isGameOver, setIsGameOver] = useIsGameOver(false);
   const [hardMode] = useHardMode(false);
+  const [scoreMode] = useScoreMode(false);
   const { letters, solutionBoard, shuffleLetters } = useLetters();
   const {
     board,
@@ -58,15 +67,25 @@ export const useGame = (): GameOptions => {
     moveCursorInDirection,
   } = useBoard();
 
+  // If the board is in score mode and the board isn't already scored
+  // (on fresh page load), we should score it.
   useEffect(() => {
-    const scoredSolutionBoard = createScoredSolutionBoard(solutionBoard);
-    printEmojiScoredSolutionBoard(scoredSolutionBoard);
-  }, []);
+    if (!isGameOver) return;
 
-  useEffect(() => {
-    const scoredBoard = createScoredBoard(board);
-    setBoard(scoredBoard);
-  }, []);
+    if (!scoreMode && isBoardScored(board)) {
+      console.info("UN-SCORING");
+      const unscoredBoard = createUnscoredBoard(board);
+      setBoard(unscoredBoard);
+      return;
+    }
+
+    if (scoreMode && !isBoardScored(board)) {
+      console.info("SCORING");
+      const scoredBoard = createScoredBoard(board);
+      setBoard(scoredBoard);
+      return;
+    }
+  }, [scoreMode, isGameOver, board]);
 
   const tilesAreConnected = React.useMemo(() => validateWordIsland(board), [board]);
 
@@ -98,17 +117,17 @@ export const useGame = (): GameOptions => {
     const [newBoard] = validateBoard(board);
 
     // Score the board.
-    const scoredBoard = createScoredBoard(newBoard);
+    const finalBoard = scoreMode ? createScoredBoard(newBoard) : newBoard;
 
     // Animate the tiles.
-    setBoard(scoredBoard);
+    setBoard(finalBoard);
 
     // End the game.
     setIsGameOver(true);
 
     // Show the stats modal.
     setTimeout(openStats, 2000);
-  }, [board, canFinish, clearToast]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [board, canFinish, clearToast, scoreMode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const unusedLetters = letters.filter((letter) => !boardLetterIds.has(letter.id));
 

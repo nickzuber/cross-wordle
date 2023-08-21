@@ -1,7 +1,9 @@
 import { css, useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
 import { FC, Fragment, useContext, useEffect, useMemo, useState } from "react";
+import createPersistedState from "use-persisted-state";
 import { FadeIn, Shine, createSuccessReveal } from "../../constants/animations";
+import { PersistedStates } from "../../constants/state";
 import { AppTheme } from "../../constants/themes";
 import { GameContext } from "../../contexts/game";
 import { ToastContext } from "../../contexts/toast";
@@ -11,9 +13,12 @@ import {
   countValidLettersOnBoard,
   createScoredBoard,
   createScoredSolutionBoard,
+  createUnscoredBoard,
 } from "../../utils/board-validator";
-import { Config } from "../../utils/game";
+import { Config, isBoardScored } from "../../utils/game";
 import { Modal } from "./Modal";
+
+const useScoreMode = createPersistedState(PersistedStates.ScoreMode);
 
 function zeroPad(num: number, places: number) {
   return String(num).padStart(places, "0");
@@ -61,15 +66,19 @@ export const StatsModal: FC = () => {
   const { sendToast } = useContext(ToastContext);
   const [timeLeft, setTimeLeft] = useState(getTimeLeftInDay());
   const [showPreview, setShowPreview] = useState(false);
+  const [scoreMode] = useScoreMode(false);
 
   // Solution board but with a score for each tile.
   const scoredSolutionBoard = useMemo(
     () => createScoredSolutionBoard(solutionBoard),
     [solutionBoard],
   );
-  const scoredBoard = useMemo(() => createScoredBoard(board), [board]);
+  const demoBoard = useMemo(
+    () => (scoreMode ? createScoredBoard(board) : createUnscoredBoard(board)),
+    [board, scoreMode],
+  );
 
-  const showScoredBoard = true;
+  const showScoredBoard = scoreMode && isBoardScored(demoBoard);
 
   useEffect(() => {
     const ts = setInterval(() => setTimeLeft(getTimeLeftInDay()), 1000);
@@ -114,7 +123,7 @@ export const StatsModal: FC = () => {
             <div>
               <Paragraph>
                 Your score was
-                <Result>{countBoardScore(scoredBoard)}</Result>
+                <Result>{countBoardScore(demoBoard)}</Result>
               </Paragraph>
               <Paragraph>
                 Today's original score was

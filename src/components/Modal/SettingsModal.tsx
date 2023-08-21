@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { FC, useContext, useMemo } from "react";
+import { FC, useContext, useEffect, useMemo } from "react";
 import createPersistedState from "use-persisted-state";
 import { PersistedStates } from "../../constants/state";
 import { GameContext } from "../../contexts/game";
@@ -31,6 +31,10 @@ export const SettingsModal: FC = () => {
   const { sendToast } = useContext(ToastContext);
   const hash = useMemo(() => getAppHash(), []);
 
+  useEffect(() => {
+    console.info("() scoreMode", scoreMode);
+  }, [scoreMode]);
+
   return (
     <Modal>
       <Title>Settings</Title>
@@ -54,7 +58,7 @@ export const SettingsModal: FC = () => {
               if (hardMode) {
                 setHardMode(false);
               } else {
-                if (unusedLetters.length === Config.MaxLetters) {
+                if (1 || unusedLetters.length === Config.MaxLetters) {
                   setHardMode(true);
                 } else {
                   sendToast("You can only turn on hard mode at the start of a game");
@@ -71,7 +75,13 @@ export const SettingsModal: FC = () => {
           <Description>Includes a score for each letter</Description>
         </Label>
         <ToggleContainer>
-          <Toggle onClick={() => setScoreMode(!scoreMode)} enabled={scoreMode} />
+          <Toggle
+            onClick={() => {
+              console.info("settings to", !scoreMode);
+              setScoreMode(!scoreMode);
+            }}
+            enabled={scoreMode}
+          />
         </ToggleContainer>
       </Setting>
       <TagContainer

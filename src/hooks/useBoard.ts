@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+import createPersistedState from "use-persisted-state";
 import { v4 as uuidv4 } from "uuid";
 import { PersistedStates } from "../constants/state";
 import {
@@ -11,17 +12,17 @@ import {
   incrementCursor,
   Letter,
   moveBoard,
+  ScoredBoard,
   TileChangeReason,
   TileState,
   updateCursorInDirection,
 } from "../utils/game";
-import createPersistedState from "use-persisted-state";
 
 const usePersistedBoard = createPersistedState(PersistedStates.Board);
 const defaultBoard = initalizeBoard();
 
 type BoardOptions = {
-  board: Board;
+  board: Board | ScoredBoard;
   setLetterOnBoard: (letter: Letter) => void;
   resetBoard: () => void;
   setBoard: (board: Board) => void;
