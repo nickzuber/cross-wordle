@@ -1,5 +1,5 @@
-import { FC } from "react";
 import styled from "@emotion/styled";
+import { FC } from "react";
 import { Board } from "./Board";
 
 type CanvasProps = {};

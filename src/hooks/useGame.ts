@@ -43,6 +43,7 @@ export type GameOptions = {
   updateCursor: (row: number, col: number) => void;
   backspaceBoard: () => void;
   getShareClipboardItem: () => Promise<[ClipboardItem, File] | null>;
+  getScoredShareClipboardItem: () => Promise<[ClipboardItem, File] | null>;
   shiftBoard: (direction: Directions) => void;
   moveCursorInDirection: (direction: Directions) => void;
   updateBoardWithNewScoreMode: (newScoreMode: boolean) => void;
@@ -131,27 +132,65 @@ export const useGame = (): GameOptions => {
   const getShareClipboardItem = useCallback(async () => {
     const node = document.getElementById("canvas");
 
-    if (node) {
-      const imgBlob = await toBlob(node);
-
-      if (!imgBlob) {
-        return null;
-      }
-
-      try {
-        const clipboardItem = new ClipboardItem({
-          "image/png": imgBlob as Blob,
-        });
-        const blobFile = new File([imgBlob], `Crosswordle-${getPuzzleNumber()}.png`, {
-          type: "image/png",
-        });
-        return [clipboardItem, blobFile] as [ClipboardItem, File];
-      } catch (error) {
-        return null;
-      }
+    if (!node) {
+      return null;
     }
 
-    return null;
+    const imgBlob = await toBlob(node);
+
+    if (!imgBlob) {
+      return null;
+    }
+
+    try {
+      const clipboardItem = new ClipboardItem({
+        "image/png": imgBlob as Blob,
+      });
+      const blobFile = new File([imgBlob], `Crosswordle-${getPuzzleNumber()}.png`, {
+        type: "image/png",
+      });
+      return [clipboardItem, blobFile] as [ClipboardItem, File];
+    } catch (error) {
+      return null;
+    }
+  }, []);
+
+  const getScoredShareClipboardItem = useCallback(async () => {
+    const node = document.getElementById("canvas");
+    const keyboardNode = document.getElementById("keyboard");
+    const scoreNode = document.getElementById("score");
+    if (!node || !keyboardNode || !scoreNode) {
+      return null;
+    }
+
+    const prevScoreStyles = scoreNode.style.cssText;
+    scoreNode.style.cssText = "display: flex";
+    const prevKeyboardStyles = keyboardNode.style.cssText;
+    keyboardNode.style.cssText = "display: none";
+
+    const imgBlob = await toBlob(node);
+
+    if (!imgBlob) {
+      return null;
+    }
+
+    try {
+      const clipboardItem = new ClipboardItem({
+        "image/png": imgBlob as Blob,
+      });
+      const blobFile = new File([imgBlob], `Crosswordle-${getPuzzleNumber()}.png`, {
+        type: "image/png",
+      });
+
+      keyboardNode.style.cssText = prevKeyboardStyles;
+      scoreNode.style.cssText = prevScoreStyles;
+
+      return [clipboardItem, blobFile] as [ClipboardItem, File];
+    } catch (error) {
+      keyboardNode.style.cssText = prevKeyboardStyles;
+      scoreNode.style.cssText = prevScoreStyles;
+      return null;
+    }
   }, []);
 
   return {
@@ -172,6 +211,7 @@ export const useGame = (): GameOptions => {
     moveCursorInDirection,
     isGameOver: isGameOver as boolean,
     getShareClipboardItem,
+    getScoredShareClipboardItem,
     updateBoardWithNewScoreMode,
   };
 };

@@ -1,6 +1,16 @@
 import { css, useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
-import { FC, useCallback, useContext, useEffect, useRef, useState } from "react";
+import {
+  FC,
+  Fragment,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import createPersistedState from "use-persisted-state";
 import {
   FadeIn,
   PopIn,
@@ -9,8 +19,10 @@ import {
   createMixedReveal,
   createSuccessReveal,
 } from "../constants/animations";
+import { PersistedStates } from "../constants/state";
 import { AppTheme } from "../constants/themes";
 import { GameContext } from "../contexts/game";
+import { countBoardScore, createScoredBoard } from "../utils/board-validator";
 import {
   CursorDirections,
   Letter,
@@ -22,6 +34,8 @@ import {
   shouldShowTileScore,
 } from "../utils/game";
 
+const useScoreMode = createPersistedState(PersistedStates.ScoreMode);
+
 type GridTileProps = {
   tile: Tile | ScoredTile;
   hasCursor: boolean;
@@ -32,7 +46,13 @@ type GridTileProps = {
 
 export const Board: FC = () => {
   const theme = useTheme() as AppTheme;
+  const [scoreMode] = useScoreMode(false);
   const { board, updateCursor, isGameOver } = useContext(GameContext);
+
+  const score = useMemo(
+    () => (isGameOver ? countBoardScore(createScoredBoard(board)) : null),
+    [board, isGameOver],
+  );
 
   const handleTileClick = useCallback(
     (tile: Tile) => {
@@ -64,6 +84,15 @@ export const Board: FC = () => {
           </Row>
         );
       })}
+      {scoreMode && score !== null ? (
+        <Fragment>
+          <Spacer theme={theme} />
+          <ScoreContainer id="score" theme={theme}>
+            <ScoreLabel>Score</ScoreLabel>
+            <ScoreValue score={score}>{score}</ScoreValue>
+          </ScoreContainer>
+        </Fragment>
+      ) : null}
     </Container>
   );
 };
@@ -197,6 +226,88 @@ const GridTile: FC<GridTileProps> = ({
     </TileWrapper>
   );
 };
+
+const Spacer = styled.div<{ theme: AppTheme }>`
+  position: relative;
+  box-sizing: border-box;
+  background: ${(p) => p.theme.colors.primary};
+  height: 12px;
+  width: 360px; // 6 tiles * tile size
+
+  @media (max-height: 620px), (max-width: 370px) {
+    width: 320px; // 6 tiles * tile size
+  }
+
+  @media (max-height: 580px) {
+    width: 290px; // 6 tiles * tile size
+  }
+`;
+
+const ScoreContainer = styled.div<{ theme: AppTheme }>`
+  position: relative;
+  box-sizing: border-box;
+  background: ${(p) => p.theme.colors.primary};
+  width: 360px; // 6 tiles * tile size
+  height: calc(60px + 8px);
+  border-top: 2px solid ${(p) => p.theme.colors.tileSecondary};
+  padding: 12px 8px;
+
+  @media (max-height: 620px), (max-width: 370px) {
+    width: 320px; // 6 tiles * tile size
+    height: calc(54px + 8px);
+  }
+
+  @media (max-height: 580px) {
+    width: 290px; // 6 tiles * tile size
+    height: calc(48px + 8px);
+  }
+
+  align-items: center;
+  justify-content: space-between;
+  // display: flex;
+  display: none;
+`;
+
+const ScoreLabel = styled.span`
+  font-weight: 700;
+  font-size: 24px;
+  text-transform: uppercase;
+`;
+
+const ScoreValue = styled.span<{ score: number }>`
+  font-weight: 700;
+  font-size: 28px;
+  color: #ffffff;
+
+  text-shadow: 2px 2px 4px ${(p) => (p.score < 40 ? "#4f824b" : "#ae8e44")};
+  border: 2px solid ${(p) => (p.score < 40 ? "#5a9755" : "#ceaa55")};
+  background: ${(p) =>
+    p.score < 40
+      ? "#6aaa64"
+      : `
+        radial-gradient(
+          ellipse farthest-corner at right bottom,
+          #c6a818 0%,
+          #ce9b34 8%,
+          #daae53 30%,
+          #ddaf47 40%,
+          #fcc52a 80%,
+          #dbab4b 100%
+        ),
+        radial-gradient(
+          ellipse farthest-corner at left top,
+          #c9aa2f 0%,
+          #e2c427 8%,
+          #e3b32c 25%,
+          #9a7a30 62.5%,
+          #c19738 100%
+        );
+  `};
+  border-radius: 4px;
+  padding: 2px 8px;
+  width: 40px;
+  text-align: center;
+`;
 
 const Container = styled.div<{ theme: AppTheme }>`
   position: relative;
@@ -400,9 +511,6 @@ const TileContents = styled.div<{
     font-weight: 700;
     font-size: 24px;
 
-    // display: flex;
-    // align-items: center;
-    // justify-content: center;
     text-align: center;
     line-height: 50px;
 
