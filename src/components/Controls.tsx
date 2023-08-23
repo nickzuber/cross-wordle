@@ -117,7 +117,7 @@ export const Controls: FC = () => {
   const bottomLetters = letters.slice(15, 20);
 
   return (
-    <Container>
+    <Container id="keyboard">
       <ButtonsContainer theme={theme}>
         <BoardButton
           theme={theme}

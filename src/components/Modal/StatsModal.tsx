@@ -81,17 +81,28 @@ function scoreToCompliment(score: number, target: number) {
 
 export const StatsModal: FC = () => {
   const theme = useTheme() as AppTheme;
-  const { board, solutionBoard, getShareClipboardItem, isGameOver } = useContext(GameContext);
+  const {
+    board,
+    solutionBoard,
+    getShareClipboardItem,
+    getScoredShareClipboardItem,
+    isGameOver,
+  } = useContext(GameContext);
   const { sendToast } = useContext(ToastContext);
   const [timeLeft, setTimeLeft] = useState(getTimeLeftInDay());
   const [showPreview, setShowPreview] = useState(false);
   const [scoreMode] = useScoreMode(false);
+
+  const getShareClipboardItemForBoard = scoreMode
+    ? getScoredShareClipboardItem
+    : getShareClipboardItem;
 
   // Solution board but with a score for each tile.
   const scoredSolutionBoard = useMemo(
     () => createScoredSolutionBoard(solutionBoard),
     [solutionBoard],
   );
+
   const yourBoard = useMemo(
     () => (scoreMode ? createScoredBoard(board) : createUnscoredBoard(board)),
     [board, scoreMode],
@@ -105,7 +116,7 @@ export const StatsModal: FC = () => {
   }, []);
 
   async function onShareResults() {
-    const results = await getShareClipboardItem();
+    const results = await getShareClipboardItemForBoard();
     if (!results) {
       sendToast("Something went wrong.");
       return;
@@ -121,15 +132,15 @@ export const StatsModal: FC = () => {
           navigator.clipboard
             .write([clipboardItem])
             .then(() => sendToast("Copied to clipboard!"))
-            .catch(() => sendToast("Something went wrong.")),
+            .catch(() => sendToast("(1) Something went wrong.")),
         );
     } else if (navigator.clipboard) {
       navigator.clipboard
         .write([clipboardItem])
         .then(() => sendToast("Copied to clipboard!"))
-        .catch(() => sendToast("Something went wrong."));
+        .catch(() => sendToast("(2) Something went wrong."));
     } else {
-      sendToast("Something went wrong.");
+      sendToast("(3) Something went wrong.");
     }
   }
 
