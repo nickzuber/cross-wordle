@@ -1,6 +1,15 @@
 import { css, useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
-import { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  FC,
+  Fragment,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import createPersistedState from "use-persisted-state";
 import {
   FadeIn,
@@ -76,13 +85,13 @@ export const Board: FC = () => {
         );
       })}
       {scoreMode && score !== null ? (
-        <ScoreContainer id="score" theme={theme}>
-          <ScoreLabel>Score</ScoreLabel>
-          <Flexed>
+        <Fragment>
+          <Spacer theme={theme} />
+          <ScoreContainer id="score" theme={theme}>
+            <ScoreLabel>Score</ScoreLabel>
             <ScoreValue score={score}>{score}</ScoreValue>
-            {/* <ScoreSuffix>pts</ScoreSuffix> */}
-          </Flexed>
-        </ScoreContainer>
+          </ScoreContainer>
+        </Fragment>
       ) : null}
     </Container>
   );
@@ -218,27 +227,44 @@ const GridTile: FC<GridTileProps> = ({
   );
 };
 
+const Spacer = styled.div<{ theme: AppTheme }>`
+  position: relative;
+  box-sizing: border-box;
+  background: ${(p) => p.theme.colors.primary};
+  height: 12px;
+  width: 360px; // 6 tiles * tile size
+
+  @media (max-height: 620px), (max-width: 370px) {
+    width: 320px; // 6 tiles * tile size
+  }
+
+  @media (max-height: 580px) {
+    width: 290px; // 6 tiles * tile size
+  }
+`;
+
 const ScoreContainer = styled.div<{ theme: AppTheme }>`
   position: relative;
   box-sizing: border-box;
   background: ${(p) => p.theme.colors.primary};
   width: 360px; // 6 tiles * tile size
-  height: 60px;
-  // display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 12px;
+  height: calc(60px + 8px);
+  border-top: 2px solid ${(p) => p.theme.colors.tileSecondary};
+  padding: 12px 8px;
 
   @media (max-height: 620px), (max-width: 370px) {
     width: 320px; // 6 tiles * tile size
-    height: 54px;
+    height: calc(54px + 8px);
   }
 
   @media (max-height: 580px) {
     width: 290px; // 6 tiles * tile size
-    height: 48px;
+    height: calc(48px + 8px);
   }
 
+  align-items: center;
+  justify-content: space-between;
+  // display: flex;
   display: none;
 `;
 
@@ -248,21 +274,16 @@ const ScoreLabel = styled.span`
   text-transform: uppercase;
 `;
 
-const Flexed = styled.div`
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 8px;
-`;
-
 const ScoreValue = styled.span<{ score: number }>`
   font-weight: 700;
   font-size: 28px;
   color: #ffffff;
-  // font-family: monospace;
+
+  text-shadow: 2px 2px 4px ${(p) => (p.score < 40 ? "#4f824b" : "#ae8e44")};
+  border: 2px solid ${(p) => (p.score < 40 ? "#5a9755" : "#ceaa55")};
   background: ${(p) =>
     p.score < 40
-      ? "#599754"
+      ? "#6aaa64"
       : `
         radial-gradient(
           ellipse farthest-corner at right bottom,
@@ -282,14 +303,10 @@ const ScoreValue = styled.span<{ score: number }>`
           #c19738 100%
         );
   `};
-  border-radius: 8px;
-  padding: 3px 10px;
-`;
-
-const ScoreSuffix = styled.span`
-  font-weight: 700;
-  font-size: 22px;
-  text-transform: uppercase;
+  border-radius: 4px;
+  padding: 2px 8px;
+  width: 40px;
+  text-align: center;
 `;
 
 const Container = styled.div<{ theme: AppTheme }>`

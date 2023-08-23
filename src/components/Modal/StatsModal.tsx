@@ -153,7 +153,7 @@ export const StatsModal: FC = () => {
         <Fragment>
           {showScoredBoard ? (
             <Paragraph>
-              You were able to get a score of
+              Your score today was
               <Result>
                 {countBoardScore(yourBoard)}/{countSolutionBoardScore(scoredSolutionBoard)}
               </Result>
