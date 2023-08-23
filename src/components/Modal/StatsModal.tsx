@@ -132,15 +132,17 @@ export const StatsModal: FC = () => {
           navigator.clipboard
             .write([clipboardItem])
             .then(() => sendToast("Copied to clipboard!"))
-            .catch(() => sendToast("(1) Something went wrong.")),
+            .catch(() =>
+              sendToast("Something went wrong with your device's native sharing options."),
+            ),
         );
     } else if (navigator.clipboard) {
       navigator.clipboard
         .write([clipboardItem])
         .then(() => sendToast("Copied to clipboard!"))
-        .catch(() => sendToast("(2) Something went wrong."));
+        .catch(() => sendToast("Something went wrong with your device's clipboard."));
     } else {
-      sendToast("(3) Something went wrong.");
+      sendToast("Something went wrong.");
     }
   }
 
