@@ -41,8 +41,8 @@ export const Board: FC = () => {
   const { board, updateCursor, isGameOver } = useContext(GameContext);
 
   const score = useMemo(
-    () => (isGameOver && scoreMode ? countBoardScore(createScoredBoard(board)) : null),
-    [board, isGameOver, scoreMode],
+    () => (isGameOver ? countBoardScore(createScoredBoard(board)) : null),
+    [board, isGameOver],
   );
 
   const handleTileClick = useCallback(
@@ -75,7 +75,7 @@ export const Board: FC = () => {
           </Row>
         );
       })}
-      {score !== null ? (
+      {scoreMode && score !== null ? (
         <ScoreContainer id="score" theme={theme}>
           <ScoreLabel>Score</ScoreLabel>
           <Flexed>
@@ -170,7 +170,7 @@ const GridTile: FC<GridTileProps> = ({
     } else if (state === TileState.MIXED) {
       setGridTileState(GridTileState.RevealMixed);
     } else if (state === TileState.INVALID) {
-      setGridTileState(GridTileState.RevealSuccess);
+      setGridTileState(GridTileState.RevealFail);
     }
   }, [tile.state]);
 
