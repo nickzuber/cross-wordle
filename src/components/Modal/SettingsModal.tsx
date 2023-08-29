@@ -65,7 +65,7 @@ export const SettingsModal: FC = () => {
           />
         </ToggleContainer>
       </Setting>
-      <Setting>
+      {/* <Setting>
         <Label>
           <Name>
             Show score<Badge>new</Badge>
@@ -82,7 +82,7 @@ export const SettingsModal: FC = () => {
             enabled={scoreMode}
           />
         </ToggleContainer>
-      </Setting>
+      </Setting> */}
       <TagContainer
         onClick={() => {
           window.open("https://github.com/nickzuber/cross-wordle", "_blank");

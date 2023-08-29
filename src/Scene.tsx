@@ -14,6 +14,7 @@ import { useLocalStorageGC } from "./hooks/useLocalStorageGC";
 import { countValidLettersOnBoard } from "./utils/board-validator";
 
 const useFirstTime = createPersistedState(PersistedStates.FirstTime);
+const useScoreMode = createPersistedState(PersistedStates.ScoreMode);
 
 export const Scene: FC = () => {
   const { width, height } = useWindowSize();
@@ -27,6 +28,9 @@ export const Scene: FC = () => {
 
   // Clean up old keys.
   useLocalStorageGC();
+
+  // Turn off "score mode" if it was set on previously.
+  useResetScoreMode();
 
   useEffect(() => {
     let ts: ReturnType<typeof setTimeout>;
@@ -88,3 +92,13 @@ const Container = styled.div`
     z-index: 9999 !important;
   }
 `;
+
+function useResetScoreMode() {
+  const [scoreMode, setScoreMode] = useScoreMode(false);
+
+  useEffect(() => {
+    if (scoreMode) {
+      setScoreMode(false);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+}
