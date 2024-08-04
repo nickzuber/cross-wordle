@@ -31,6 +31,7 @@ export const words = [
   "er",
   "es",
   "et",
+  "ew",
   "ex",
   "fa",
   "fe",
