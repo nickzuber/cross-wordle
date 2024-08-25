@@ -1,17 +1,24 @@
-import { FC, useContext } from "react";
-import styled from "@emotion/styled";
 import { useTheme } from "@emotion/react";
-import { ModalsContext } from "../../contexts/modals";
-import { InstructionsModal } from "./InstructionsModal";
-import { StatsModal } from "./StatsModal";
-import { SettingsModal } from "./SettingsModal";
+import styled from "@emotion/styled";
+import { FC, useContext } from "react";
 import { FadeIn } from "../../constants/animations";
 import { AppTheme } from "../../constants/themes";
+import { ModalsContext } from "../../contexts/modals";
+import { InstructionsModal } from "./InstructionsModal";
+import { ScrambledAnnouncementModal } from "./ScrambledAnnouncementModal";
+import { SettingsModal } from "./SettingsModal";
+import { StatsModal } from "./StatsModal";
 
 export const Modal: FC = () => {
   const theme = useTheme() as AppTheme;
-  const { isInstructionsOpen, isStatsOpen, isSettingsOpen, isAnyModalOpen, closeModal } =
-    useContext(ModalsContext);
+  const {
+    isScrambledAnnouncementOpen,
+    isInstructionsOpen,
+    isStatsOpen,
+    isSettingsOpen,
+    isAnyModalOpen,
+    closeModal,
+  } = useContext(ModalsContext);
 
   if (!isAnyModalOpen) {
     return null;
@@ -25,6 +32,8 @@ export const Modal: FC = () => {
         <StatsModal />
       ) : isSettingsOpen ? (
         <SettingsModal />
+      ) : isScrambledAnnouncementOpen ? (
+        <ScrambledAnnouncementModal />
       ) : null}
     </Container>
   );

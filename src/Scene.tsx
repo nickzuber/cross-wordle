@@ -13,14 +13,19 @@ import { ModalsContext } from "./contexts/modals";
 import { useLocalStorageGC } from "./hooks/useLocalStorageGC";
 import { countValidLettersOnBoard } from "./utils/board-validator";
 
-const useFirstTime = createPersistedState(PersistedStates.FirstTime);
-const useScoreMode = createPersistedState(PersistedStates.ScoreMode);
+const useFirstTime = createPersistedState<boolean>(PersistedStates.FirstTime);
+const useScoreMode = createPersistedState<boolean>(PersistedStates.ScoreMode);
+const useScrambledAnnouncement = createPersistedState<boolean>(
+  PersistedStates.ScrambledAnnouncement,
+);
 
 export const Scene: FC = () => {
   const { width, height } = useWindowSize();
-  const { openInstructions, openStats, isStatsOpen } = useContext(ModalsContext);
+  const { openScrambledAnnouncement, openInstructions, openStats, isStatsOpen } =
+    useContext(ModalsContext);
   const { board, isGameOver } = useContext(GameContext);
   const [isFirstTime] = useFirstTime(true);
+  const [hasNotSeenScrambledAnnouncement] = useScrambledAnnouncement(true);
   const alreadyShowedConfetti = useRef(false);
   const [showConfetti, setShowConfetti] = useState(false);
 
@@ -43,6 +48,9 @@ export const Scene: FC = () => {
     } else if (isFirstTime) {
       // + 100 for some buffer room.
       ts = setTimeout(openInstructions, 100);
+    } else if (hasNotSeenScrambledAnnouncement) {
+      // + 100 for some buffer room.
+      ts = setTimeout(openScrambledAnnouncement, 100);
     }
 
     return () => {
