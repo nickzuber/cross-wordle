@@ -34,7 +34,7 @@ export const useModals = (): ModalsOptions => {
 
   const closeModal = useCallback(() => {
     setIsFirstTime(false);
-    // setScrambledAnnouncement(false);
+    setScrambledAnnouncement(false);
     setOpenModal(null);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const openScrambledAnnouncement = useCallback(

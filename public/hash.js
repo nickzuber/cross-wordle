@@ -1,2 +1,2 @@
 window.crosswordle = window.crosswordle || {};
-window.crosswordle.hash = '75b0d10';
+window.crosswordle.hash = '918ed84';

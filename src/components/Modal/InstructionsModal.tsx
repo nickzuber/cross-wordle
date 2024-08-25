@@ -1,23 +1,29 @@
-import { FC } from "react";
-import styled from "@emotion/styled";
 import { useTheme } from "@emotion/react";
-import { Modal } from "./Modal";
+import styled from "@emotion/styled";
+import { FC, useContext } from "react";
 import {
   createAnimatedCursorTile,
   createAnimatedTile,
   createSuccessReveal,
 } from "../../constants/animations";
 import { AppTheme } from "../../constants/themes";
+import { ModalsContext } from "../../contexts/modals";
+import { Modal } from "./Modal";
 
 const BaseDelay = 500;
 const TypingDelay = 250;
 
 export const InstructionsModal: FC = () => {
   const theme = useTheme() as AppTheme;
+  const { openScrambledAnnouncement } = useContext(ModalsContext);
 
   return (
     <Modal>
       <Title>How to play</Title>
+      <AnnouncementCallout onClick={openScrambledAnnouncement}>
+        Read our latest announcement →
+        <RedDot theme={theme} />
+      </AnnouncementCallout>
       <Paragraph>Build a crossword by connecting all the letters on the board.</Paragraph>
       <Paragraph>
         Each word must be a real English word. Words must be connected to each other.
@@ -320,4 +326,31 @@ const Divider = styled.div<{ theme: AppTheme }>`
   border-bottom: 1px solid ${(p) => p.theme.colors.tileSecondary};
   width: 100%;
   margin: 12px auto 18px;
+`;
+
+const AnnouncementCallout = styled.div`
+  position: relative;
+  padding: 12px 18px;
+  margin: 4px auto 18px;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 8px;
+
+  background: #f9c929;
+  border: 1px solid #d6ad30;
+  color: #1a1a1b;
+
+  font-weight: 600;
+  font-size: 0.9rem;
+`;
+
+const RedDot = styled.div<{ theme: AppTheme }>`
+  position: absolute;
+  background: red;
+  height: 12px;
+  width: 12px;
+  border-radius: 100%;
+  border: 3px solid ${(p) => p.theme.colors.primary};
+  top: -8px;
+  left: -8px;
 `;

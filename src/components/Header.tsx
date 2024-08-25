@@ -1,8 +1,8 @@
-import { FC, useContext } from "react";
-import styled from "@emotion/styled";
 import { useTheme } from "@emotion/react";
-import { ModalsContext } from "../contexts/modals";
+import styled from "@emotion/styled";
+import { FC, useContext } from "react";
 import { AppTheme } from "../constants/themes";
+import { ModalsContext } from "../contexts/modals";
 
 export const Header: FC = () => {
   const theme = useTheme() as AppTheme;
@@ -35,6 +35,7 @@ export const Header: FC = () => {
               d="M12.5 16C12.5 16.2761 12.2761 16.5 12 16.5C11.7239 16.5 11.5 16.2761 11.5 16C11.5 15.7239 11.7239 15.5 12 15.5C12.2761 15.5 12.5 15.7239 12.5 16Z"
             ></path>
           </svg>
+          <RedDot theme={theme} />
         </Button>
       </ButtonContainer>
       <Title theme={theme}>Cross Wordle</Title>
@@ -122,6 +123,17 @@ export const Header: FC = () => {
   );
 };
 
+const RedDot = styled.div<{ theme: AppTheme }>`
+  position: absolute;
+  background: red;
+  height: 10px;
+  width: 10px;
+  border-radius: 100%;
+  border: 3px solid ${(p) => p.theme.colors.primary};
+  margin-right: -18px;
+  margin-top: -18px;
+`;
+
 const Container = styled.div<{ theme: AppTheme }>`
   position: relative;
   border-bottom: 1px solid ${(p) => p.theme.colors.tileSecondary};
@@ -141,6 +153,7 @@ const ButtonContainer = styled.div`
 `;
 
 const Button = styled.button`
+  position: relative;
   border: 0;
   background: none;
   width: 40px;
